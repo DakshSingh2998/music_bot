@@ -12,7 +12,7 @@ from youtube_dl import YoutubeDL
 
 
 ytdlopts = {
-    'format': 'bestaudio/best',
+    'format': 'worstaudio/worst',
     'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
     'restrictfilenames': True,
     'noplaylist': True,
