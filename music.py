@@ -26,7 +26,7 @@ ytdlopts = {
 }
 
 ffmpegopts = {
-    'before_options': '-nostdin',
+    'before_options': '-nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options',
     'options': '-vn'
 }
 
@@ -60,7 +60,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     async def create_source(cls, ctx, search: str, *, loop, download=False):
         loop = loop or asyncio.get_event_loop()
 
-        to_run = partial(ytdl.extract_info, url=search, stream=True)
+        to_run = partial(ytdl.extract_info, url=search, download=True)
         data = await loop.run_in_executor(None, to_run)
 
         if 'entries' in data:
@@ -80,7 +80,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         loop = loop or asyncio.get_event_loop()
         requester = data['requester']
 
-        to_run = partial(ytdl.extract_info, url=data['webpage_url'], stream=True)
+        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=True)
         data = await loop.run_in_executor(None, to_run)
 
         return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
