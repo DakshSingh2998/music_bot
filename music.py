@@ -73,6 +73,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             source = ytdl.prepare_filename(data)
         else:
             return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
+        global ffmpegopts
 
         return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author)
 
@@ -83,6 +84,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
         data = await loop.run_in_executor(None, to_run)
+        global ffmpegopts
 
         return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
 
