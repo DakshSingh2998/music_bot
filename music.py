@@ -384,7 +384,7 @@ class Music(commands.Cog):
 
         await self.cleanup(ctx.guild)
     @commands.command(name='seek')
-    async def seek_(self,ctx, *, search: int)
+    async def seek_(self,ctx, *, search: int):
         vc=ctx.voice_client
         if not vc or not vc.is_connected():
             return #await ctx.send('I am not currently playing anything!', delete_after=10)
