@@ -22,7 +22,17 @@ ytdlopts = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0'  # ipv6 addresses cause issues sometimes
+    'source_address': '0.0.0.0',# ipv6 addresses cause issues sometimes
+    
+    'postprocessors': [{
+        'key': 'FFmpegExtractAudio',
+        'preferredcodec': 'mp3',
+        'preferredquality': '8',
+    }],
+    
+    'skip_download':True,
+    
+    
 }
 
 timeestamp=200
@@ -133,6 +143,29 @@ class MusicPlayer:
             self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url}')
         except Exception as e:
             await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
+            
+            
+            
+            
+            
+    async def seek(self,ctx):
+        try:
+        # Grab up to 5 entries from the queue...
+            vc = ctx.voice_client
+
+            if not vc or not vc.is_connected():
+                return #await ctx.send('I am not currently connected to voice!',delete_after=10)
+            
+            
+            temp=self.queue.copy
+            self.queue = asyncio.Queue()
+            await self.queue.put(nowp)
+            tsize=temp.qsize()
+            while(qsize>0):
+                t=await temp.get()
+                await self.queue.put(t)
+                qsize=qsize-1
+                
 
         
 
@@ -145,6 +178,7 @@ class MusicPlayer:
             try:
                 async with timeout(99999999):  # 5 minutes...
                     source = await self.queue.get()
+                    nowp=source
             except asyncio.TimeoutError:
                 return self.destroy(self._guild)
 
@@ -163,6 +197,8 @@ class MusicPlayer:
 
             self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
             await self.showw(ctx)
+            global timeestamp
+            timeestamp=0
             await self.next.wait()
 
             source.cleanup()
@@ -372,6 +408,22 @@ class Music(commands.Cog):
 
         await self.cleanup(ctx.guild)
 
+        
+    
+    @commands.command(name='seek')
+    async def seek_(self, ctx, *, search: int):
+        vc = ctx.voice_client
+        if not vc or not vc.is_connected():
+            return #await ctx.send('I am not currently playing anything!', delete_after=10)
+        player=self.get_player(ctx)
+        player.seek(ctx)
+        global timeestamp
+        timeestamp=search
+        
+        vc.stop()
+        
+            
+            
 
 def setup(bot):
     bot.add_cog(Music(bot))
