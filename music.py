@@ -166,9 +166,11 @@ class MusicPlayer:
                 await self.queue.put(t)
                 qsize=qsize-1
                 
-
+            yy=5
+        except Exception as e:
+            yy=5
         
-
+        
     async def player_loop(self,ctx):
         await self.bot.wait_until_ready()
 
