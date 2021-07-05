@@ -418,7 +418,7 @@ class Music(commands.Cog):
         if not vc or not vc.is_connected():
             return #await ctx.send('I am not currently playing anything!', delete_after=10)
         player=self.get_player(ctx)
-        player.seek(ctx)
+        await player.seek(ctx)
         global timeestamp
         timeestamp=search
         
