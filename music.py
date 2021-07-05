@@ -80,8 +80,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
             global timeestamp
         
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -threads 12 -probesize 32 -analyzeduration 0 -fflags nobuffer -thread_queue_size 10000' ,
-        'options': f'-vn -preset ultrafast -ab 64 -tune zerolatency'
+        'before_options': f'-vn -nostdin -ss {timeestamp}' ,
+        'options': f'-vn'
         }
 
         if download:
@@ -101,8 +101,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         global timeestamp
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -threads 12 -probesize 32 -analyzeduration 0 -fflags nobuffer -thread_queue_size 10000' ,
-        'options': '-vn -preset ultrafast -ab 64 -tune zerolatency'
+        'before_options': f'-vn -nostdin -ss {timeestamp}' ,
+        'options': f'-vn'
         }
 
         return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
