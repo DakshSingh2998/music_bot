@@ -35,7 +35,7 @@ ytdlopts = {
 }
 timeestamp=0
 ffmpegopts = {
-    'before_options': '-vn -ss {timeestamp} -nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5' ,
+    'before_options': f'-vn -ss {timeestamp} -nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5' ,
     'options': '-vn'
 }
 
