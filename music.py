@@ -362,7 +362,7 @@ class Music(commands.Cog):
         source = await YTDLSource.create_source(ctx, search, loop=self.bot.loop, download=False)
 
         await player.queue.put(source)
-        await player.searchqueue.put(search)
+        await player.searchqueue.put(source["webpage_url"])
         await self.now_playing_(ctx)
         try:
             await ctx.message.delete()
