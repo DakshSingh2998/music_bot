@@ -30,11 +30,13 @@ ytdlopts = {
         'preferredquality': '8',
     }],
     
+    'skip_download':True,
+    
 }
 
 ffmpegopts = {
     'before_options': '-nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5' ,
-    'options': '-vn'
+    'options': '-vn -ss 150'
 }
 
 ytdl = YoutubeDL(ytdlopts)
