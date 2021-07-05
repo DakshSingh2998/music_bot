@@ -413,7 +413,7 @@ class Music(commands.Cog):
             except Exception as e:
                 await player._channel.send(f'There was an error processing your song.\n'
                                          f'```css\n[{e}]\n```',delete_after=10)
-                continue
+                
 
         source.volume = player.volume
 
