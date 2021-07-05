@@ -22,18 +22,10 @@ ytdlopts = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0',  # ipv6 addresses cause issues sometimes
-    
-'postprocessors': [{
-        'key': 'FFmpegExtractAudio',
-        'preferredcodec': 'mp3',
-        'preferredquality': '8',
-    }],
-    
-    'skip_download':True,
-    
+    'source_address': '0.0.0.0'  # ipv6 addresses cause issues sometimes
 }
-timeestamp=0
+
+timeestamp=200
 ffmpegopts = {
     'before_options': f'-vn -ss {timeestamp} -nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5' ,
     'options': '-vn'
@@ -69,21 +61,20 @@ class YTDLSource(discord.PCMVolumeTransformer):
     async def create_source(cls, ctx, search: str, *, loop, download=False):
         loop = loop or asyncio.get_event_loop()
 
-        to_run = partial(ytdl.extract_info, url=search, download=False)
+        to_run = partial(ytdl.extract_info, url=search, download=download)
         data = await loop.run_in_executor(None, to_run)
 
         if 'entries' in data:
             # take first item from a playlist
             data = data['entries'][0]
-        
 
-        global ffmpegopts
+
         if download:
             source = ytdl.prepare_filename(data)
         else:
             return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
 
-        return cls(discord.FFmpegPCMAudio(source, **ffmpegopts), data=data, requester=ctx.author)
+        return cls(discord.FFmpegPCMAudio(source), data=data, requester=ctx.author)
 
     @classmethod
     async def regather_stream(cls, data, *, loop):
@@ -92,13 +83,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
         data = await loop.run_in_executor(None, to_run)
-        global ffmpegopts
-        return cls(discord.FFmpegPCMAudio(data['url'], **ffmpegopts), data=data, requester=requester)
+
+        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
 
 
 class MusicPlayer:
 
-    __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume','que','embed','nowp')
+    __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume','que','embed')
 
     def __init__(self, ctx):
         self.bot = ctx.bot
@@ -114,7 +105,6 @@ class MusicPlayer:
         self.embed=None
         self.volume = 1.0
         self.current = None
-        self.nowp=None
 
         ctx.bot.loop.create_task(self.player_loop(ctx))
 
@@ -151,7 +141,7 @@ class MusicPlayer:
             self.next.clear()
 
             try:
-                async with timeout(999999999):  # 5 minutes...
+                async with timeout(99999999):  # 5 minutes...
                     source = await self.queue.get()
             except asyncio.TimeoutError:
                 return self.destroy(self._guild)
@@ -160,7 +150,6 @@ class MusicPlayer:
                 # Source was probably a stream (not downloaded)
                 # So we should regather to prevent stream expiration
                 try:
-                    self.nowp=source
                     source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
                 except Exception as e:
                     await self._channel.send(f'There was an error processing your song.\n'
@@ -171,7 +160,6 @@ class MusicPlayer:
             self.current = source
 
             self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-            
             await self.showw(ctx)
             await self.next.wait()
 
@@ -262,8 +250,6 @@ class Music(commands.Cog):
 
     @commands.command(name='play', aliases=['sing','p'])
     async def play_(self, ctx, *, search: str):
-        global timeestamp
-        timeestamp=0
         await ctx.trigger_typing()
 
         vc = ctx.voice_client
@@ -383,55 +369,7 @@ class Music(commands.Cog):
             print("stop",e)
 
         await self.cleanup(ctx.guild)
-    @commands.command(name='seek')
-    async def seek_(self,ctx, *, search: int):
-        global timeestamp
-        timeestamp=search
-        vc = ctx.voice_client
 
-        if not vc or not vc.is_connected():
-            return #await ctx.send('I am not currently playing anything!', delete_after=10)
-
-        if vc.is_paused():
-            pass
-        elif not vc.is_playing():
-            return
-        try:
-            await ctx.message.delete()
-        except Exception as e:
-            print("skip",e)
-        vc.stop()
-        player==self.get_player(ctx)
-        source=player.nowp
-
-        if not isinstance(source, YTDLSource):
-            # Source was probably a stream (not downloaded)
-            # So we should regather to prevent stream expiration
-            try:
-                source = await YTDLSource.create_source(ctx, source, loop=self.bot.loop, download=False)
-                source = await YTDLSource.regather_stream(source, loop=player.bot.loop)
-            except Exception as e:
-                await player._channel.send(f'There was an error processing your song.\n'
-                                         f'```css\n[{e}]\n```',delete_after=10)
-                
-
-        source.volume = player.volume
-
-        player._guild.voice_client.play(source, after=lambda _: player.bot.loop.call_soon_threadsafe(player.next.set))
-
-        await player.next.wait()
-
-        source.cleanup()
-        player.current = None
-
-        try:
-            await player.que.delete()
-            await player.np.delete()
-        except discord.HTTPException:
-            pass
-
-            
-            
 
 def setup(bot):
     bot.add_cog(Music(bot))
