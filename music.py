@@ -27,7 +27,7 @@ ytdlopts = {
 'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
-        'preferredquality': '64',
+        'preferredquality': '32',
     }],
     
 }
