@@ -1,0 +1,7 @@
+requests
+async_timeout
+discord
+Flask
+PyNaCl
+youtube-dl
+ffmpeg
