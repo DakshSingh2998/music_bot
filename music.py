@@ -385,57 +385,50 @@ class Music(commands.Cog):
         await self.cleanup(ctx.guild)
     @commands.command(name='seek')
     async def seek_(self,ctx, *, search: int):
-        vc=ctx.voice_client
+        global timeestamp
+        timeestamp=search
+        vc = ctx.voice_client
+
         if not vc or not vc.is_connected():
             return #await ctx.send('I am not currently playing anything!', delete_after=10)
+
+        if vc.is_paused():
+            pass
+        elif not vc.is_playing():
+            return
         try:
-            player=self.get_player(ctx)
             await ctx.message.delete()
-            vc.stop()
         except Exception as e:
-            print("stop",e)
-        timeestamp=search
+            print("skip",e)
+        vc.stop()
+        player==self.get_player(ctx)
         source=player.nowp
-        await ctx.trigger_typing()
-        
-        
-        try:
-            await ctx.message.delete()
-        except Exception as e:
-            print(e)
-            
-        await player.bot.wait_until_ready()
 
-        while not player.bot.is_closed():
-            player.next.clear()
-
-
-            if not isinstance(source, YTDLSource):
-                # Source was probably a stream (not downloaded)
-                # So we should regather to prevent stream expiration
-                try:
-                    player.nowp=source
-                    source = await YTDLSource.regather_stream(source, loop=player.bot.loop)
-                except Exception as e:
-                    await player._channel.send(f'There was an error processing your song.\n'
-                                             f'```css\n[{e}]\n```',delete_after=10)
-                    continue
-
-            source.volume = player.volume
-            player.current = source
-
-            player._guild.voice_client.play(source, after=lambda _: player.bot.loop.call_soon_threadsafe(player.next.set))
-            
-            await player.next.wait()
-
-            source.cleanup()
-            player.current = None
-
+        if not isinstance(source, YTDLSource):
+            # Source was probably a stream (not downloaded)
+            # So we should regather to prevent stream expiration
             try:
-                await player.que.delete()
-                await player.np.delete()
-            except discord.HTTPException:
-                pass
+                source = await YTDLSource.create_source(ctx, source, loop=self.bot.loop, download=False)
+                source = await YTDLSource.regather_stream(source, loop=player.bot.loop)
+            except Exception as e:
+                await player._channel.send(f'There was an error processing your song.\n'
+                                         f'```css\n[{e}]\n```',delete_after=10)
+                continue
+
+        source.volume = player.volume
+
+        player._guild.voice_client.play(source, after=lambda _: player.bot.loop.call_soon_threadsafe(player.next.set))
+
+        await player.next.wait()
+
+        source.cleanup()
+        player.current = None
+
+        try:
+            await player.que.delete()
+            await player.np.delete()
+        except discord.HTTPException:
+            pass
 
             
             
