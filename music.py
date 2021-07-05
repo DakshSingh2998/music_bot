@@ -33,10 +33,10 @@ ytdlopts = {
     'skip_download':True,
     
 }
-
+timeestamp=0
 ffmpegopts = {
-    'before_options': '-vn -ss 100 -nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5' ,
-    'options': '-vn -ss 100'
+    'before_options': '-vn -ss {timeestamp} -nostdin -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5' ,
+    'options': '-vn'
 }
 
 ytdl = YoutubeDL(ytdlopts)
@@ -98,7 +98,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
 class MusicPlayer:
 
-    __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume','que','embed')
+    __slots__ = ('bot', '_guild', '_channel', '_cog', 'queue', 'next', 'current', 'np', 'volume','que','embed','nowp')
 
     def __init__(self, ctx):
         self.bot = ctx.bot
@@ -114,6 +114,7 @@ class MusicPlayer:
         self.embed=None
         self.volume = 1.0
         self.current = None
+        self.nowp=None
 
         ctx.bot.loop.create_task(self.player_loop(ctx))
 
@@ -150,7 +151,7 @@ class MusicPlayer:
             self.next.clear()
 
             try:
-                async with timeout(99999999):  # 5 minutes...
+                async with timeout(999999999):  # 5 minutes...
                     source = await self.queue.get()
             except asyncio.TimeoutError:
                 return self.destroy(self._guild)
@@ -159,6 +160,7 @@ class MusicPlayer:
                 # Source was probably a stream (not downloaded)
                 # So we should regather to prevent stream expiration
                 try:
+                    self.nowp=source
                     source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
                 except Exception as e:
                     await self._channel.send(f'There was an error processing your song.\n'
@@ -169,6 +171,7 @@ class MusicPlayer:
             self.current = source
 
             self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+            
             await self.showw(ctx)
             await self.next.wait()
 
@@ -259,6 +262,8 @@ class Music(commands.Cog):
 
     @commands.command(name='play', aliases=['sing','p'])
     async def play_(self, ctx, *, search: str):
+        global timeestamp
+        timeestamp=0
         await ctx.trigger_typing()
 
         vc = ctx.voice_client
@@ -378,7 +383,62 @@ class Music(commands.Cog):
             print("stop",e)
 
         await self.cleanup(ctx.guild)
+    @commands.command(name='seek')
+    async def seek_(self,ctx, *, search: int)
+        vc=ctx.voice_client
+        if not vc or not vc.is_connected():
+            return #await ctx.send('I am not currently playing anything!', delete_after=10)
+        try:
+            player=self.get_player(ctx)
+            await ctx.message.delete()
+            vc.stop()
+        except Exception as e:
+            print("stop",e)
+        timeestamp=search
+        source=player.nowp
+        await ctx.trigger_typing()
+        
+        await player.now_playing_(ctx)
+        try:
+            await ctx.message.delete()
+        except Exception as e:
+            print(e)
+            
+        await player.bot.wait_until_ready()
 
+        while not player.bot.is_closed():
+            player.next.clear()
+
+
+            if not isinstance(source, YTDLSource):
+                # Source was probably a stream (not downloaded)
+                # So we should regather to prevent stream expiration
+                try:
+                    player.nowp=source
+                    source = await YTDLSource.regather_stream(source, loop=player.bot.loop)
+                except Exception as e:
+                    await player._channel.send(f'There was an error processing your song.\n'
+                                             f'```css\n[{e}]\n```',delete_after=10)
+                    continue
+
+            source.volume = player.volume
+            player.current = source
+
+            player._guild.voice_client.play(source, after=lambda _: player.bot.loop.call_soon_threadsafe(player.next.set))
+            
+            await player.next.wait()
+
+            source.cleanup()
+            player.current = None
+
+            try:
+                await player.que.delete()
+                await player.np.delete()
+            except discord.HTTPException:
+                pass
+
+            
+            
 
 def setup(bot):
     bot.add_cog(Music(bot))
