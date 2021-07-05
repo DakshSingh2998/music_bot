@@ -398,7 +398,7 @@ class Music(commands.Cog):
         source=player.nowp
         await ctx.trigger_typing()
         
-        await player.now_playing_(ctx)
+        
         try:
             await ctx.message.delete()
         except Exception as e:
