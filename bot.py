@@ -167,7 +167,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         
         ffmpegopts = {
         'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000' ,
-        'options': f'-vn -nostdin'
+        'options': f''
         }
 
         if download:
@@ -188,7 +188,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         global timeestamp
         ffmpegopts = {
         'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000' ,
-        'options': f'-vn -nostdin'
+        'options': f''
         }
 
         return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
