@@ -16,7 +16,11 @@ status="♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥"
 async def on_ready():
   print("Ready Daksh. Hey ",client.user)
   await client.change_presence(activity=discord.Game(status))
-  try:
+  await load()
+  sav.start()
+  
+async def load():
+    try:
       access_key=os.environ.get('access_key')
       access_secret=os.environ.get('access_secret')
       bucket_name=os.environ.get('bucket_name')
@@ -63,7 +67,7 @@ async def on_ready():
           vc_channel = client.get_channel(824253644718997514)
           await vc_channel.connect()
           print(channel)
-          await channel.send(f'**********************************************************')
+          await channel.send(f'^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
           await channel.send(f';play {str(nowp)}')
           await asyncio.sleep(5)
           size=len(searchqueue)
@@ -758,6 +762,7 @@ async def save_(ctx=None):
 
 @tasks.loop(seconds = 15)
 async def sav():
+  await asyncio.sleep(20)
   global temp_ctx
   await save_(temp_ctx)
   print('saved')
