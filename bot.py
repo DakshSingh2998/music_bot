@@ -756,7 +756,7 @@ async def save_(ctx=None):
 
 @tasks.loop(seconds = 300)
 async def sav():
-  await asyncio.sleep(20)
+  await asyncio.sleep(200)
   global temp_ctx
   await save_(temp_ctx)
   print('saved')
