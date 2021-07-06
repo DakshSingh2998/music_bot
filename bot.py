@@ -26,8 +26,6 @@ async def on_ready():
       aws_secret_access_key=access_secret
       )
       
-      if os.path.exists(f'./storage/ctxs'):
-          os.remove(f'./storage/ctxs')
       client_s3.download_file(bucket_name,'ctxs',os.path.join('./storage/','ctxs'))
       #
       dbfile = open('./storage/ctxs', 'rb')     
@@ -35,12 +33,14 @@ async def on_ready():
       print(ctxs)
       dbfile.close()
       for x in ctxs:
+          """
           if os.path.exists(f'./storage/channelid{x}'):
               os.remove(f'./storage/channelid{x}')
           if os.path.exists(f'./storage/nowp{x}'):
               os.remove(f'./storage/nowp{x}')
           if os.path.exists(f'./storage/searchqueue{x}'):
               os.remove(f'./storage/searchqueue{x}')
+          """
           client_s3.download_file(bucket_name,f'channelid{x}',os.path.join('./storage/',f'channelid{x}'))
           client_s3.download_file(bucket_name,f'nowp{x}',os.path.join('./storage/',f'nowp{x}'))
           client_s3.download_file(bucket_name,f'searchqueue{x}',os.path.join('./storage/',f'searchqueue{x}'))
