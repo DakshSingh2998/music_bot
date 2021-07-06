@@ -166,8 +166,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
             global timeestamp
         
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 4000 -ab 64' ,
-        'options': f'-vn'
+        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 4000' ,
+        'options': f'-vn -nostdin'
         }
 
         if download:
@@ -187,8 +187,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         global timeestamp
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 4000 -ab 64' ,
-        'options': f'-vn'
+        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_delay_max 4000' ,
+        'options': f'-vn -nostdin'
         }
 
         return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
@@ -508,7 +508,7 @@ async def play_( ctx, search):
     try:
         await ctx.message.delete()
     except Exception as e:
-        print(e)
+        #print(e)
     await ctx.trigger_typing()
     
 
@@ -561,7 +561,7 @@ async def skip_( ctx):
         await player.que.delete()
         await ctx.message.delete()
     except Exception as e:
-        print("skip",e)
+        #print("skip",e)
     vc.stop()
     await ctx.send(f'**`{ctx.author}`**: Skipped the song!',delete_after=10)
     
@@ -585,7 +585,7 @@ async def now_playing_( ctx):
     try:
         await ctx.message.delete()
     except Exception as e:
-        print(e)
+        #print(e)
     yy=5
     
 
@@ -623,7 +623,7 @@ async def stop_( ctx):
         await player.que.delete()
         await ctx.message.delete()
     except Exception as e:
-        print("stop",e)
+        #print("stop",e)
 
     await cleanup(ctx.guild)
     
@@ -712,6 +712,8 @@ async def remove_( ctx,index:int):
 #####################################   save
 @commands.command(name="save", aliases=["savee"])
 async def save_(ctx=None):
+    print('saved')
+    await ctx.send(f'**`{ctx.author}`**:State Saved !',delete_after=30)
     global players
     
 
@@ -750,7 +752,7 @@ async def save_(ctx=None):
         
         
     except Exception as e:
-        print(e)
+        #print(e)
 
 
 
@@ -759,7 +761,6 @@ async def sav():
   await asyncio.sleep(200)
   global temp_ctx
   await save_(temp_ctx)
-  print('saved')
 ##################    load
 
 @client.event
