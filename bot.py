@@ -77,13 +77,7 @@ async def load():
               j=j+1
               await channel.send(f';play {str(que)}')
               await asyncio.sleep(5)
-
-              
-              
-                
-                  
-              
-  except Exception as e:
+    except Exception as e:
       print(e)
 
 
