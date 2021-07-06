@@ -8,7 +8,7 @@ import boto3
 #Daksh
 import time
 
-
+temp_ctx=None
 auto_now=0
 client=commands.Bot(command_prefix=';')
 status="♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥♥"
@@ -63,6 +63,7 @@ async def on_ready():
           vc_channel = client.get_channel(824253644718997514)
           await vc_channel.connect()
           print(channel)
+          await channel.send(f'**********************************************************')
           await channel.send(f';play {str(nowp)}')
           await asyncio.sleep(5)
           size=len(searchqueue)
@@ -502,6 +503,8 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
         yy=5
 @commands.command(name='play', aliases=['sing','p'])
 async def play_( ctx, search):
+    global temp_ctx
+    temp_ctx=ctx
     global auto_now
 
     try:
@@ -707,10 +710,10 @@ async def remove_( ctx,index:int):
     
     await ctx.send(f'**`{ctx.author}`**: Removed the song!',delete_after=40)
     await ctx.message.delete()
-        
+      
 #####################################   save
 @commands.command(name="save", aliases=["savee"])
-async def save_():
+async def save_(ctx=None):
     global players
     
 
@@ -729,8 +732,6 @@ async def save_():
         
         ctxs=list(players.keys())
         print(ctxs)
-        if os.path.exists(f'./storage/ctxs'):
-            os.remove(f'./storage/ctxs')
         dbfile = open(f'./storage/ctxs', 'wb')
         pickle.dump(ctxs, dbfile)
         dbfile.close()
@@ -757,7 +758,8 @@ async def save_():
 
 @tasks.loop(seconds = 15)
 async def sav():
-  await save_()
+  global temp_ctx
+  await save_(temp_ctx)
   print('saved')
 ##################    load
 
