@@ -6,4 +6,3 @@ PyNaCl
 youtube-dl
 ffmpeg
 boto3
-pickle-mixi
