@@ -509,6 +509,7 @@ async def play_( ctx, search):
         await ctx.message.delete()
     except Exception as e:
         #print(e)
+        pass
     await ctx.trigger_typing()
     
 
@@ -562,6 +563,7 @@ async def skip_( ctx):
         await ctx.message.delete()
     except Exception as e:
         #print("skip",e)
+        pass
     vc.stop()
     await ctx.send(f'**`{ctx.author}`**: Skipped the song!',delete_after=10)
     
@@ -586,6 +588,7 @@ async def now_playing_( ctx):
         await ctx.message.delete()
     except Exception as e:
         #print(e)
+        pass
     yy=5
     
 
@@ -624,6 +627,7 @@ async def stop_( ctx):
         await ctx.message.delete()
     except Exception as e:
         #print("stop",e)
+        pass
 
     await cleanup(ctx.guild)
     
@@ -753,12 +757,13 @@ async def save_(ctx=None):
         
     except Exception as e:
         #print(e)
+        pass
 
 
 
 @tasks.loop(seconds = 300)
 async def sav():
-  await asyncio.sleep(200)
+  await asyncio.sleep(30)
   global temp_ctx
   await save_(temp_ctx)
 ##################    load
