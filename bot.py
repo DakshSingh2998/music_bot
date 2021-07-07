@@ -99,7 +99,7 @@ import pickle
 
 timeestamp=0
 ytdlopts = {
-    'format': 'bestaudio/best',
+    'format': 'worstaudio/worst',
     'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
     'restrictfilenames': True,
     'noplaylist': True,
@@ -169,8 +169,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
             global timeestamp
         
         ffmpegopts = {
-        'before_options': f'-ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10' ,
-        'options': f'-vn'
+        'before_options': f'-nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10' ,
+        'options': f'-vn -b:a 64k'
         }
 
         if download:
@@ -190,8 +190,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         global timeestamp
         ffmpegopts = {
-        'before_options': f'-ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-        'options': f'-vn'
+        'before_options': f'-nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
+        'options': f'-vn -b:a 64k'
         }
 
         return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
