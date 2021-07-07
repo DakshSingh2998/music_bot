@@ -166,7 +166,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             global timeestamp
         
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000 -keyint_min 24' ,
+        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000 -probsize 32 -fflag nobuffer' ,
         'options': f''
         }
 
@@ -187,7 +187,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         global timeestamp
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000  -keyint_min 24' ,
+        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000  -probsize 32 -fflag nobuffer' ,
         'options': f''
         }
 
