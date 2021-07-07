@@ -104,11 +104,11 @@ ytdlopts = {
     'restrictfilenames': True,
     'noplaylist': True,
     'nocheckcertificate': True,
-    'ignoreerrors': False,
+    'ignoreerrors': True,
     'logtostderr': False,
     'quiet': True,
     'no_warnings': True,
-    'default_search': 'auto',
+    'default_search': 'ytsearch',
     'extract_audio':True,
     'source_address': '0.0.0.0',# ipv6 addresses cause issues sometimes
     
@@ -119,6 +119,9 @@ ytdlopts = {
     }],
     
     'skip_download':True,
+    "simulate": True,
+    "nooverwrites": True,
+    "keepvideo": False,
     
     
     
