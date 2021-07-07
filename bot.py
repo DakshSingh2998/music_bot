@@ -115,7 +115,7 @@ ytdlopts = {
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
-        'preferredquality': '4',
+        'preferredquality': '64',
     }],
     
     'skip_download':True,
@@ -166,7 +166,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             global timeestamp
         
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000' ,
+        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000 -thread_queue_size 10000' ,
         'options': f''
         }
 
@@ -187,7 +187,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         global timeestamp
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000' ,
+        'before_options': f'-vn -nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 4000 -thread_queue_size 10000' ,
         'options': f''
         }
 
