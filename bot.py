@@ -161,6 +161,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
               'skipdownload':True,
               'simulate': True,
               'nooverwrites': True,
+              'agelimit':30,
               'keepvideo': False,
               'flatplaylist':True,
               
@@ -193,6 +194,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
               'skipdownload':True,
               'simulate': True,
               'nooverwrites': True,
+              'agelimit':30,
               'keepvideo': False,
               'flatplaylist':True,
               
@@ -247,6 +249,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
               'simulate': True,
               'nooverwrites': True,
               'keepvideo': False,
+              'agelimit':30,
               'flatplaylist':True,
             
             
@@ -309,6 +312,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
             "nooverwrites": True,
             "keepvideo": False,
             "flat_playlist":True,
+            'agelimit':30,
             #"playlist_start":f'{playliststart}',
             
         }
@@ -318,7 +322,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         global timeestamp
         ffmpegopts = {
-        'before_options': f'-nostdin -ss {timeestamp} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10 -agelimit 30',
+        'before_options': f'-nostdin -ss {timeestamp} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
         'options': f'-threads 0 -vn -preset ultrafast -r 60 -segment_wrap 5'
         }
 
