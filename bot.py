@@ -161,7 +161,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
               'skipdownload':True,
               'simulate': True,
               'nooverwrites': True,
-              'agelimit':30,
+              #'agelimit':30,
               'keepvideo': False,
               'flatplaylist':True,
               
@@ -194,7 +194,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
               'skipdownload':True,
               'simulate': True,
               'nooverwrites': True,
-              'agelimit':30,
+              #'agelimit':30,
               'keepvideo': False,
               'flatplaylist':True,
               
@@ -249,7 +249,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
               'simulate': True,
               'nooverwrites': True,
               'keepvideo': False,
-              'agelimit':30,
+              #'agelimit':30,
               'flatplaylist':True,
             
             
@@ -312,10 +312,10 @@ class YTDLSource(discord.PCMVolumeTransformer):
             "nooverwrites": True,
             "keepvideo": False,
             "flat_playlist":True,
-            'agelimit':30,
+            #'agelimit':30,
             #"playlist_start":f'{playliststart}',
             
-        }
+            }
         ytdl = YoutubeDL(ytdlopts)
         
         to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
