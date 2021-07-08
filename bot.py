@@ -20,7 +20,7 @@ async def on_ready():
   #await load()
   #sav.start()
   #autorestart.start()
-  get_members.start()
+  #get_members.start()
 timeestamp=0
 #ctx_data={}
 #ctx_data_flag=0
