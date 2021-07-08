@@ -20,7 +20,7 @@ async def on_ready():
   #await load()
   #sav.start()
   #autorestart.start()
-  #get_members.start()
+  get_members.start()
 timeestamp=0
 #ctx_data={}
 #ctx_data_flag=0
@@ -1085,7 +1085,7 @@ async def get_members():
         channel = ctx.voice_client.channel
         member_ids = channel.voice_states.keys()
         if ctx.voice_client.is_playing():
-          if(len(member_ids)==1):
+          if(len(member_ids)==-1):
             await pause_(ctx,1)
         elif ctx.voice_client.is_paused():
           if(len(member_ids)>1):
