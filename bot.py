@@ -8,7 +8,7 @@ import boto3
 #Daksh
 import time
 from datetime import datetime
-seek_flag=0
+ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
 client=commands.Bot(command_prefix=';')
@@ -20,13 +20,14 @@ async def on_ready():
   #await load()
   #sav.start()
   #autorestart.start()
-  #get_members.start()
-timeestamp=0
+  await get_members.start()
+
 #ctx_data={}
 #ctx_data_flag=0
+"""
 async def load():
     global ctx_data_flag
-    global timeestamp
+    
     try:
       global ctx_data
 
@@ -80,7 +81,7 @@ async def load():
       ctx_data_flag=1
 
 
-
+"""
 import discord
 from discord.ext import commands
 
@@ -96,9 +97,6 @@ import boto3
 import pickle
 
 
-playliststart=1
-
-sflag=0
 
 
 
@@ -131,9 +129,10 @@ class YTDLSource(discord.PCMVolumeTransformer):
     @classmethod
     async def create_source(cls, ctx, search: str, *, loop, download=False,isplaylist=True):
         loop = loop or asyncio.get_event_loop()
-        global sflag
-        global playliststart
-        #print(playliststart)
+        global ctx_save
+        
+        
+        #print(ctx_save[int(ctx.guild.id)][2])
         ytdlopts={}
         if isplaylist==False:
           #print('\n\n')
@@ -168,12 +167,13 @@ class YTDLSource(discord.PCMVolumeTransformer):
               
               }
         else:
+          
           ytdlopts = {
               'format': 'worstaudio/worst',
               'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
               'restrictfilenames': True,
-              'playliststart':playliststart,
-              'playlistend':playliststart+1,
+              'playliststart':ctx_save[int(ctx.guild.id)][2],
+              'playlistend':ctx_save[int(ctx.guild.id)][2]+1,
               'yesplaylist': isplaylist,
               'nocheckcertificate': True,
               'ignoreerrors': True,
@@ -206,15 +206,16 @@ class YTDLSource(discord.PCMVolumeTransformer):
         data = await loop.run_in_executor(None, to_run)
         
         #print(data)
+         
         ffmpegopts = {
-        'before_options': f'-nostdin -ss {timeestamp} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10' ,
+        'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10' ,
         'options': f'-vn -preset veryfast'
         }
         #print(data)
         if download:
             source = ytdl.prepare_filename(data)
         else:
-            if sflag==1:
+            if ctx_save[int(ctx.guild.id)][1]==1:
               #print('seeking')
               if 'entries' in data:
                   # take first item from a playlist
@@ -260,14 +261,15 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         to_run = partial(ytdl.extract_info, url=search, download=download)
         data = await loop.run_in_executor(None, to_run)
+        global ctx_save
 
         if 'entries' in data:
             # take first item from a playlist
             data = data['entries'][0]
-            global timeestamp
+            
         
         ffmpegopts = {
-        'before_options': f'-vn -nostdin -ss {timeestamp} -threads 12 -probesize 32 -analyzeduration 0 -fflags nobuffer -thread_queue_size 10000' ,
+        'before_options': f'-vn -nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -threads 12 -probesize 32 -analyzeduration 0 -fflags nobuffer -thread_queue_size 10000' ,
         'options': f'-vn -preset ultrafast -ab 64 -tune zerolatency'
         }
 
@@ -283,10 +285,10 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
 
     @classmethod
-    async def regather_stream(cls, data, *, loop):
+    async def regather_stream(cls, data, *, loop,ctx):
         loop = loop or asyncio.get_event_loop()
         requester = data['requester']
-        global playliststart
+        
         ytdlopts = {
             'format': 'worstaudio/worst',
             'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
@@ -313,16 +315,17 @@ class YTDLSource(discord.PCMVolumeTransformer):
             "keepvideo": False,
             "flat_playlist":True,
             #'agelimit':30,
-            #"playlist_start":f'{playliststart}',
+            #"playlist_start":f'{ctx_save[int(ctx.guild.id)][2]}',
             
             }
         ytdl = YoutubeDL(ytdlopts)
+        global ctx_save
         
         to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
         data = await loop.run_in_executor(None, to_run)
-        global timeestamp
+        
         ffmpegopts = {
-        'before_options': f'-nostdin -ss {timeestamp} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
+        'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
         'options': f'-threads 0 -vn -preset ultrafast -r 60 -segment_wrap 5'
         }
 
@@ -387,8 +390,11 @@ class MusicPlayer:
             fmt=''
             for temp in upcoming:
                 tt=temp["title"]
+                if len(tt)>31:
+                  tt=tt[0:30]
+                  tt=tt+'...'
                 ii=ii+1
-                fmt=fmt+f'{ii}. {temp["title"]}\n'
+                fmt=fmt+f'{ii}. {tt}\n'
                 #print(temp)
                 #print("##########")
                 
@@ -403,8 +409,15 @@ class MusicPlayer:
             self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
             self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url}')
             #auto_now=0
+            await self.np.add_reaction('⏯️')
+            await self.np.add_reaction('⏸️')
+            await self.np.add_reaction('⏭️')
+            await self.np.add_reaction('⏹️')
+            await self.np.add_reaction('⌚')
+            
         except Exception as e:
-            await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
+            #print(e)
+            #await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
             yy=5
             
             
@@ -453,7 +466,7 @@ class MusicPlayer:
             #print(self.queue)
             await self.np.delete()
             await self.que.delete()
-            await ctx.message.delete()
+            #await ctx.message.delete()
 
 
             
@@ -470,6 +483,7 @@ class MusicPlayer:
 
         while not self.bot.is_closed():
             self.next.clear()
+            global ctx_save
             try:
 
               try:
@@ -479,13 +493,13 @@ class MusicPlayer:
                       self.nowp=ssearch
               except asyncio.TimeoutError:
                   return self.destroy(self._guild)
-              global sflag
-              global timeestamp
+              
+              
               """
-              if sflag==1:
+              if ctx_save[int(ctx.guild.id)][1]==1:
                 yy=5
               else:
-                timeestamp=0
+                ctx_save[int(ctx.guild.id)]['timeestamp']=0
                 self.elapsed=0.0
               """
                 
@@ -494,7 +508,7 @@ class MusicPlayer:
                   # Source was probably a stream (not downloaded)
                   # So we should regather to prevent stream expiration
                   try:
-                      source = await YTDLSource.regather_stream(source, loop=self.bot.loop)
+                      source = await YTDLSource.regather_stream(source, loop=self.bot.loop,ctx=ctx)
                       
                   except Exception as e:
                       await self._channel.send(f'There was an error processing your song.\n'
@@ -518,12 +532,12 @@ class MusicPlayer:
               
               await self.next.wait()
               #self.ispaused=False
-              #print('ssss',sflag)
-              if sflag==0:
-                  timeestamp=0
+              #print('ssss',ctx_save[int(ctx.guild.id)][1])
+              if ctx_save[int(ctx.guild.id)][1]==0:
+                  ctx_save[int(ctx.guild.id)][0]=0
                   self.elapsed=0.0
               else:
-                  sflag=0
+                  ctx_save[int(ctx.guild.id)][1]=0
               source.cleanup()
               self.current = None
 
@@ -585,8 +599,20 @@ def get_player(ctx):
     try:
         player = players[ctx.guild.id]
     except KeyError:
+        global ctx_save
         player = MusicPlayer(ctx)
         players[ctx.guild.id] = player
+        
+        
+        #print(ctx.guild.id)
+        #ctx_save[int(ctx.guild.id)].append(0)
+        #ctx_save[int(ctx.guild.id)].append(0)
+        #ctx_save[int(ctx.guild.id)].append(1)
+        templist=[0.0,0,1]
+        ctx_save[int(ctx.guild.id)]=templist
+        #print(ctx_save[int(ctx.guild.id)][0])
+        yy=5
+        
     #auto_now=auto_now+1
 
     return player
@@ -618,13 +644,19 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
                 raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.',delete_after=10)
 
         await ctx.send(f'Connected to: **{channel}**', delete_after=10)
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
         #print(e)
         yy=5
 @commands.command(name='play', aliases=['sing','p'])
-async def play_( ctx, search,isplaylist=0):
+async def play_( ctx, search,isplaylist=0,listsize=0):
+
     try:
+        player = get_player(ctx)
+        #print('success')
+        if listsize==10:
+          await player.showw(ctx)
+          return
         #global temp_ctx
         #global ctx_data
         #global ctx_data_flag
@@ -634,12 +666,13 @@ async def play_( ctx, search,isplaylist=0):
         
 
         vc = ctx.voice_client
+        global ctx_save
 
         if not vc:
             await ctx.invoke(connect_)
 
-        player = get_player(ctx)
-        global playliststart
+        
+        
         player.ispaused=0
         player.ispaused=0
         serr=search.lower()
@@ -666,8 +699,11 @@ async def play_( ctx, search,isplaylist=0):
           #print(serr[ind_ind::])
           ind_ind=serr[ind_ind::]
           ind_ind=int(ind_ind)
-          playliststart=ind_ind
-          #print(playliststart)
+          
+          ctx_save[int(ctx.guild.id)][2]=ind_ind
+          
+          
+          #print(ctx_save[int(ctx.guild.id)][2])
           
           isplaylist=1
           player.isplaylist=1
@@ -703,7 +739,7 @@ async def play_( ctx, search,isplaylist=0):
               serr=str(source['entries'][1]["webpage_url"])+f'&list={listt}&index={ind_ind+1}'
               #print('ssssssssssssssssssssssss',serr)
               
-              await play_(ctx,serr,1)
+              await play_(ctx,serr,1,listsize+1)
             except Exception as e:
               await now_playing_(ctx)
             #await asyncio.sleep(2)
@@ -717,15 +753,219 @@ async def play_( ctx, search,isplaylist=0):
             await player.searchqueue.put(source["webpage_url"])
             await now_playing_(ctx)
         else:
+          
           source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
-          #print(source)
+          #print(ctx_save)
           await player.queue.put(source)
           await player.searchqueue.put(source['webpage_url'])
           await now_playing_(ctx)
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
         #print('playyy',e)
         yy=5
+
+
+
+
+@commands.command(name='insert', aliases=['ins'])
+async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
+    try:
+        player = get_player(ctx)
+        if listsize==10:
+          await player.showw(ctx)
+          return
+        #global temp_ctx
+        #global ctx_data
+        #global ctx_data_flag
+        #temp_ctx=ctx
+        #global auto_now
+        await ctx.trigger_typing()
+        
+
+        vc = ctx.voice_client
+
+        if not vc:
+            await ctx.invoke(connect_)
+        #print(position)
+        if position-1>player.queue.qsize():
+          return
+        
+        player.ispaused=0
+        serr=search.lower()
+        list_ind=serr.find('&list=')
+        if list_ind==-1:
+          list_ind=serr.find('?list=')
+        #print(list_ind)
+        ind_ind=0
+        
+        if not list_ind==-1:
+
+          ind_ind=serr.find('&index=')
+          if ind_ind==-1:
+            ind_ind=serr.find('&start_radio=')
+            if ind_ind==-1:
+              ind_ind=len(search)
+              search=search+'&index=1'
+              serr=serr+'&index=1'
+              ind_ind=ind_ind+7
+            else:
+              ind_ind=ind_ind+13
+          else:
+            ind_ind=ind_ind+7
+          #print(serr[ind_ind::])
+          ind_ind=serr[ind_ind::]
+          ind_ind=int(ind_ind)
+          ctx_save[int(ctx.guild.id)][2]=ind_ind
+          #print(ctx_save[int(ctx.guild.id)][2])
+          
+          isplaylist=1
+          player.isplaylist=1
+          list_ind=list_ind+6
+          listt=''
+          temp_list=list_ind
+          while True:
+            if serr[temp_list]=='&':
+              break
+            listt=listt+search[temp_list]
+            temp_list=temp_list+1
+
+
+
+          
+          #if ctx_data_flag==0:
+          #  player.elapsed=ctx_data[ctx.guild.id][3]
+          #  player.startt=ctx_data[ctx.guild.id][4]
+          #  player.stopt=ctx_data[ctx.guild.id][5]
+          #  player.ispaused=ctx_data[ctx.guild.id][6]
+          source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
+          l=0
+          if 'entries' in source:
+            try:
+              tempp={}
+              # take first item from a playlist
+              tempp['webpage_url']=source['entries'][0]["webpage_url"]
+              tempp['requester']=ctx.author
+              tempp['title']=source['entries'][0]["title"]
+              ### insert code
+              #print(source)
+              temp=asyncio.Queue()
+              temp2=asyncio.Queue()
+              tsize=player.queue.qsize()
+              while(tsize>0):
+                t=await player.queue.get()
+                t2=await player.searchqueue.get()
+                await temp2.put(t2)
+                await temp.put(t)
+                tsize=tsize-1
+              pos=0
+              player.queue=asyncio.Queue()
+              player.searchqueue=asyncio.Queue()
+              while(pos<position-1):
+                t=await temp.get()
+                await player.queue.put(t)
+                t2=await temp2.get()
+                await player.searchqueue.put(t2)
+                pos=pos+1
+              await player.queue.put(tempp)
+              await player.searchqueue.put(source['entries'][0]['webpage_url'])
+              tsize=temp.qsize()
+              pos=0
+              while(pos<tsize):
+                t=await temp.get()
+                await player.queue.put(t)
+                t2=await temp2.get()
+                await player.searchqueue.put(t2)
+                pos=pos+1
+              #print(source['entries'][0]['webpage_url'])
+
+              ####11
+              l=l+1
+              serr=str(source['entries'][1]["webpage_url"])+f'&list={listt}&index={ind_ind+1}'
+              #print('ssssssssssssssssssssssss',serr)
+              
+              await insert_(ctx=ctx,search=serr,isplaylist=1,position=position+1,listsize=listsize+1)
+            except Exception as e:
+              await now_playing_(ctx)
+            #await asyncio.sleep(2)
+          else:
+            #print('ppppppppppppppppppppppppppppp')
+            tempp={}
+            tempp['webpage_url']=source["webpage_url"]
+            tempp['requester']=ctx.author
+            tempp['title']=source["title"]
+            #print(source)
+            temp=asyncio.Queue()
+            temp2=asyncio.Queue()
+            tsize=player.queue.qsize()
+            while(tsize>0):
+              t=await player.queue.get()
+              t2=await player.searchqueue.get()
+              await temp2.put(t2)
+              await temp.put(t)
+              tsize=tsize-1
+            pos=0
+            player.queue=asyncio.Queue()
+            player.searchqueue=asyncio.Queue()
+            while(pos<position-1):
+              t=await temp.get()
+              await player.queue.put(t)
+              t2=await temp2.get()
+              await player.searchqueue.put(t2)
+              pos=pos+1
+            await player.queue.put(source)
+            await player.searchqueue.put(source['webpage_url'])
+            tsize=temp.qsize()
+            pos=0
+            while(pos<tsize):
+              t=await temp.get()
+              await player.queue.put(t)
+              t2=await temp2.get()
+              await player.searchqueue.put(t2)
+              pos=pos+1
+            await now_playing_(ctx)
+        else:
+          source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
+          #print(source)
+          temp=asyncio.Queue()
+          temp2=asyncio.Queue()
+          tsize=player.queue.qsize()
+          while(tsize>0):
+            t=await player.queue.get()
+            t2=await player.searchqueue.get()
+            await temp2.put(t2)
+            await temp.put(t)
+            tsize=tsize-1
+          pos=0
+          player.queue=asyncio.Queue()
+          player.searchqueue=asyncio.Queue()
+          while(pos<position-1):
+            t=await temp.get()
+            await player.queue.put(t)
+            t2=await temp2.get()
+            await player.searchqueue.put(t2)
+            pos=pos+1
+          await player.queue.put(source)
+          await player.searchqueue.put(source['webpage_url'])
+          tsize=temp.qsize()
+          pos=0
+          while(pos<tsize):
+            t=await temp.get()
+            await player.queue.put(t)
+            t2=await temp2.get()
+            await player.searchqueue.put(t2)
+            pos=pos+1
+          await now_playing_(ctx)
+        #await ctx.message.delete()
+    except Exception as e:
+        #print('playyy',e)
+        yy=5
+
+
+
+#########################################
+
+
+
 @commands.command(name='resume', aliases=['r','res'])
 async def resume_( ctx):
   try:
@@ -749,7 +989,7 @@ async def resume_( ctx):
       except Exception as e:
         #print(e)
         yy=5
-      await ctx.message.delete()
+      #await ctx.message.delete()
   except Exception as e:
     #print(e)
     yy=5
@@ -768,12 +1008,13 @@ async def skip_( ctx):
     elif not vc.is_playing():
         return
     try:
-        global timeestamp
-        timeestamp=0
+        global ctx_save
+        
+        ctx_save[int(ctx.guild.id)][0]=0
         player=get_player(ctx)
         await player.np.delete()
         await player.que.delete()
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
         #print("skip",e)
         yy=5
@@ -790,7 +1031,7 @@ async def queue_info( ctx):
     try:
         player = get_player(ctx)
         await player.showw(ctx)
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
       #print(e)
       yy=5
@@ -804,9 +1045,10 @@ async def now_playing_( ctx):
         return #await ctx.send('I am not currently playing anything!',delete_after=10)
     await player.showw(ctx)
     try:
-        await ctx.message.delete()
+        #await ctx.message.delete()
+        yy=5
     except Exception as e:
-        #print(e)
+        #print('nowp',e)
         yy=5
         pass
     yy=5
@@ -830,7 +1072,7 @@ async def change_volume( ctx, vol: float):
 
         player.volume = vol / 100
         await ctx.send(f'**`{ctx.author}`**: Set the volume to **{vol}%**',delete_after=10)
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
       #print(e)
       yy=5
@@ -839,10 +1081,11 @@ async def change_volume( ctx, vol: float):
 @commands.command(name='stop')
 async def stop_( ctx):
     vc = ctx.voice_client
-    global timeestamp
-    timeestamp=0.0
-    global sflag
-    sflag=0
+    global ctx_save
+    
+    ctx_save[int(ctx.guild.id)][0]=0.0
+    
+    ctx_save[int(ctx.guild.id)][1]=0
     if not vc or not vc.is_connected():
         return #await ctx.send('I am not currently playing anything!', delete_after=10)
     try:
@@ -851,7 +1094,7 @@ async def stop_( ctx):
         player.isautopaused=0
         await player.np.delete()
         await player.que.delete()
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
         #print("stop",e)
         pass
@@ -864,16 +1107,17 @@ async def stop_( ctx):
 
 @commands.command(name='seek')
 async def seek_( ctx, search: int):
-    global sflag
-    sflag=1
+    global ctx_save
+    
+    ctx_save[int(ctx.guild.id)][1]=1
     player=get_player(ctx)
     await player.seek(ctx)
     vc = ctx.voice_client
     player.startt=datetime.now().timestamp()
     player.elapsed=search
-    global timeestamp
+    
     #print(timeestamp)
-    timeestamp=search
+    ctx_save[int(ctx.guild.id)][0]=search
     #print(timeestamp)
     if not vc or not vc.is_connected():
         return #await ctx.send('I am not currently playing anything!', delete_after=10)
@@ -915,12 +1159,12 @@ async def time_( ctx):
     try:
       vc = ctx.voice_client
       player=get_player(ctx)
-      
+      await now_playing_(ctx)
       if not vc.is_playing():
         player.stopt=datetime.now().timestamp()
         
         player.startt=datetime.now().timestamp()
-        
+      
       else:
         player.stopt=datetime.now().timestamp()
         player.elapsed=player.elapsed+player.stopt-player.startt
@@ -928,7 +1172,7 @@ async def time_( ctx):
         player.startt=datetime.now().timestamp()
       
       await ctx.send(f'**`{ctx.author}`**: Elapsed Time is {player.elapsed}!',delete_after=10)
-      await ctx.message.delete()
+      #await ctx.message.delete()
     except Exception as e:
       #print(e)
       yy=5
@@ -979,7 +1223,7 @@ async def remove_( ctx,index:int):
         await player.showw(ctx)
         
         await ctx.send(f'**`{ctx.author}`**: Removed the song!',delete_after=40)
-        await ctx.message.delete()
+        #await ctx.message.delete()
     except Exception as e:
       #print(e)
       yy=5
@@ -1068,11 +1312,12 @@ async def autorestart():
       await time_(ctx)
       await asyncio.sleep(2)
       await seek_(ctx,player.elapsed)
-    print('restarted')
+    #print('restarted')
   except Exception as e:
-    print('can not restart',e)
+    #print('can not restart',e)
+    yy=5
 
-@tasks.loop(seconds = 10)
+@tasks.loop(seconds = 15)
 async def get_members():
   try:
     global players
@@ -1084,8 +1329,10 @@ async def get_members():
       else:
         channel = ctx.voice_client.channel
         member_ids = channel.voice_states.keys()
+        
         if ctx.voice_client.is_playing():
-          if(len(member_ids)==-1):
+          if(len(member_ids)==1):
+            #print(len(member_ids))
             await pause_(ctx,1)
         elif ctx.voice_client.is_paused():
           if(len(member_ids)>1):
@@ -1102,68 +1349,154 @@ async def get_members():
 #  global temp_ctx
 #  await save_(temp_ctx)
 ##################    load
+async def ping(ctx):
+     await ctx.send(f'Ping is {round(client.latency * 1000)} ms',delete_after=30)
 
 @client.event
 async def on_message(message):
-  ctx = await client.get_context(message)
-  msg=str(message.content)
-  if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
+  try:
+    ctx=None
+    msg=None
+    chanell=None
+    channel_id=None
+    try:
+      ctx = await client.get_context(message)
+      msg=str(message.content)
+      channell = discord.utils.get(ctx.guild.channels, name='d-songs')
+      channel_id = channell.id
+    except Exception as e:
+      #print(e)
+      yy=5
+    if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
 
-    second = msg.split(' ', 1)[1]
-    await play_(ctx,second)
+      second = msg.split(' ', 1)[1]
+      await play_(ctx,second)
 
-  elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
-    #second = msg.split(' ', 1)[1]
-    await ctx.invoke(connect_)
+    elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
+      #second = msg.split(' ', 1)[1]
+      await ctx.invoke(connect_)
 
-  elif message.content.lower().startswith(';resume') or message.content.lower().startswith(';resumee'):
-    #second = msg.split(' ', 1)[1]
-    await resume_(ctx)
+    elif message.content.lower().startswith(';resume') or message.content.lower().startswith(';resumee'):
+      #second = msg.split(' ', 1)[1]
+      await resume_(ctx)
 
-  elif message.content.lower().startswith(';skip'):
-    #second = msg.split(' ', 1)[1]
-    await skip_(ctx)
+    elif message.content.lower().startswith(';skip'):
+      #second = msg.split(' ', 1)[1]
+      await skip_(ctx)
 
-  elif message.content.lower().startswith(';np') or message.content.lower().startswith(';now_playing'):
-    #second = msg.split(' ', 1)[1]
-    await now_playing_(ctx)
+    elif message.content.lower().startswith(';np') or message.content.lower().startswith(';now_playing'):
+      #second = msg.split(' ', 1)[1]
+      await now_playing_(ctx)
 
-  elif message.content.lower().startswith(';vol') or message.content.lower().startswith(';volume'):
-    second = msg.split(' ', 1)[1]
-    second=flot(second)
-    await change_volume(ctx,second)
+    elif message.content.lower().startswith(';vol') or message.content.lower().startswith(';volume'):
+      second = msg.split(' ', 1)[1]
+      second=float(second)
+      await change_volume(ctx,second)
+    elif message.content.lower().startswith(';ping'):
+      await ping(ctx)
 
-  elif message.content.lower().startswith(';stop'):
-    #second = msg.split(' ', 1)[1]
-    await stop_(ctx)
+    elif message.content.lower().startswith(';stop'):
+      #second = msg.split(' ', 1)[1]
+      await stop_(ctx)
+    elif message.content.lower().startswith(';exit by daksh'):
+      #second = msg.split(' ', 1)[1]
+      if message.author.id==356012950298951690:
+        await ctx.send('System exit initiated',delete_after=10)
+        await exitt()
+      
+    elif message.content.lower().startswith(';seek'):
+      second = msg.split(' ', 1)[1]
+      second=int(second)
+      await seek_(ctx,second)
+      
+    elif message.content.lower().startswith(';help'):
+      #second = msg.split(' ', 1)[1]
+      msgg='@24/7 BOT\nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE, TO GET ALL BENEFITS OF THIS BOT\nDIRECTLY WRITE SONG NAME OR LINK IN THIS CHANNEL TO PLAY OR USE ;play songname\n to play song'
+      
+      msgg=msgg+'PLAYLISTS ARE ALSO SUPPORTED, ONLY 10 SONGS\nUSE REACTIONS EMOJI TO PLAY PAUSE SKIP OR STOP SONGS\n;rem 1 2 3, it will remove 1 2 and 3rd song from list\n;skip, to skip\n;pause, to pause\n;resume, or ;res to resume\n'
+      msgg=msgg+';stop, to stop\n;seek, to seek (in seconds)\n;ping, to check ping\n;vol or ;volume, to change volume 1-100\n;np, to check now play but it is automatic\n;ins songname position, to insert song at particular position\n;time to check elapsed time of current song\n'
+      await ctx.send(msgg)
+      
 
-  elif message.content.lower().startswith(';seek'):
-    second = msg.split(' ', 1)[1]
-    second=int(second)
-    await seek_(ctx,second)
+    elif message.content.lower().startswith(';pause'):
+      #second = msg.split(' ', 1)[1]
+      await pause_(ctx)
 
-  elif message.content.lower().startswith(';pause'):
-    #second = msg.split(' ', 1)[1]
-    await pause_(ctx)
+    elif message.content.lower().startswith(';insert') or message.content.lower().startswith(';ins'):
+      second = msg.split(' ', 1)[1]
+      third=second.split(' ', -1)[-1]
+      second=second.split(' ', -1)
+      second.pop()
+      second=" ".join(second)
+      #print(second)
+      third=int(third)
+      #print('third',third)
+      player=get_player(ctx)
+      if player.queue.qsize()==0 or third==0:
+        #print(player.queue.qsize())
+        await play_(ctx,second)
+      else:
+        await insert_(ctx=ctx,search=second,position=third)
+    elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
+      second = msg.split(' ', 1)[1]
+      second=second.split(' ')
+      #print(second)
+      i=0
+      for x in second:
+        x=int(x)
+        x=x-i
+        i=i+1
+        await remove_(ctx,x)
+    elif message.content.lower().startswith(';time'):
+      #second = msg.split(' ', 1)[1]
+      await time_(ctx)
+    elif message.content.lower().startswith(';save'):
+      #second = msg.split(' ', 1)[1]
+      await save_(ctx)
+    elif ctx.message.channel.id==channel_id:
+      if message.author != client.user:
+        await play_(ctx,str(message.content))
+  except Exception as e:
+    #print(e)
+    yy=5
 
-  elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
-    second = msg.split(' ', 1)[1]
-    second=int(second)
-    await remove_(ctx,second)
-  elif message.content.lower().startswith(';time'):
-    #second = msg.split(' ', 1)[1]
-    await time_(ctx)
-  elif message.content.lower().startswith(';save'):
-    #second = msg.split(' ', 1)[1]
-    await save_(ctx)
-  elif ctx.message.channel.id==826233359087960085:
-    if message.author != client.user:
-      await play_(ctx,str(message.content))
 
-  
+async def exitt():
+  sys.exit("Exit")
 
+@client.event
+async def on_reaction_add(reaction, user):
+  try:
+    
+    if user == client.user:
+      return
+    #print('rr')
+    ctx = await client.get_context(reaction.message)
+    channell = discord.utils.get(ctx.guild.channels, name='d-songs')
+    channel_id = channell.id
+    player=get_player(ctx)
+    if reaction.message.channel.id == channel_id:
+      #print(reaction.emoji)
+      if str(reaction.emoji) =='⏯️':
+        #print('play rr')
+        await resume_(ctx)
+        await player.showw(ctx)
+      elif str(reaction.emoji) =='⏸️':
+        #print('paused')
+        await pause_(ctx)
+        await player.showw(ctx)
+      elif reaction.emoji =='⏭️':
+        await skip_(ctx)
+        #await player.showw(ctx)
+      elif reaction.emoji =='⏹️':
+        await stop_(ctx)
+      elif reaction.emoji=='⌚':
+        await time_(ctx)
+  except Exception as e:
+    #e)
+     yy=5 
+  yy=5
 #client.load_extension('music')
-
 keep_alive()
 
 
