@@ -1162,8 +1162,8 @@ async def pause_( ctx,pflag=0):
     except Exception as e:
         #print(e)
         yy=5
-  except Exception a e:
-    print(e)
+  except Exception as e:
+    #print(e)
     yy=5
 @commands.command(name="time", aliases=["timee"])
 async def time_( ctx):
