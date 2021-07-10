@@ -1328,10 +1328,9 @@ async def get_members():
         yy=5
       else:
         channel = ctx.voice_client.channel
-        guild=client.get_guild(x)
         member_ids = channel.voice_states.keys()
         for key in channel.voice_states.keys():
-          member=guild.get_member(key)
+          member=ctx.guild.fetch_member(key)
           if member.user.bot:
             member_ids=member_ids-1
         
@@ -1423,7 +1422,7 @@ async def on_message(message):
       await ctx.send(msgg)
      
     elif message.content.lower().startswith(';invite'):
-      msgg='24/7 Bot ibvite link is https://discord.com/api/oauth2/authorize?client_id=827290129004494878&permissions=1609952369&scope=bot'
+      msgg='24/7 Bot invite link is https://discord.com/api/oauth2/authorize?client_id=827290129004494878&permissions=1609952369&scope=bot'
       await ctx.send(msgg)
 
     elif message.content.lower().startswith(';pause'):
