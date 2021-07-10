@@ -1135,7 +1135,7 @@ async def seek_( ctx, search: int):
 
 @commands.command(name="pause", aliases=["pausee"])
 async def pause_( ctx,pflag=0):
-try:
+  try:
     #vc = ctx.voice_client
     vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
     
