@@ -976,7 +976,8 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
 @commands.command(name='resume', aliases=['r','res'])
 async def resume_( ctx):
   try:
-      vc = ctx.voice_client
+      #vc = ctx.voice_client
+      vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
 
       if not vc or not vc.is_connected():
           return #await ctx.send('I am not currently playing anything!', delete_after=10)
@@ -1134,7 +1135,9 @@ async def seek_( ctx, search: int):
 
 @commands.command(name="pause", aliases=["pausee"])
 async def pause_( ctx,pflag=0):
-    vc = ctx.voice_client
+try:
+    #vc = ctx.voice_client
+    vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
     
     if not vc or not vc.is_playing():
         return #await ctx.send('I am not currently playing anything!', delete_after=10)
@@ -1159,6 +1162,8 @@ async def pause_( ctx,pflag=0):
     except Exception as e:
         #print(e)
         yy=5
+  except Exception a e:
+    print(e)
     yy=5
 @commands.command(name="time", aliases=["timee"])
 async def time_( ctx):
