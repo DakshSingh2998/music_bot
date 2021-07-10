@@ -20,6 +20,9 @@ async def on_ready():
   #await load()
   #sav.start()
   #autorestart.start()
+  global players
+  players={}
+  await asyncio.sleep(5)
   await get_members.start()
 
 #ctx_data={}
@@ -598,7 +601,9 @@ def get_player(ctx):
     #auto_now=auto_now-1
     try:
         player = players[ctx.guild.id]
+        #print('try',ctx.guild.id)
     except KeyError:
+        #print('except',ctx.guild.id)
         global ctx_save
         player = MusicPlayer(ctx)
         players[ctx.guild.id] = player
@@ -612,6 +617,7 @@ def get_player(ctx):
         ctx_save[int(ctx.guild.id)]=templist
         #print(ctx_save[int(ctx.guild.id)][0])
         yy=5
+        
         
     #auto_now=auto_now+1
 
@@ -760,6 +766,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
           await player.searchqueue.put(source['webpage_url'])
           await now_playing_(ctx)
         #await ctx.message.delete()
+        #print('ss')
     except Exception as e:
         #print('playyy',e)
         yy=5
@@ -1320,6 +1327,7 @@ async def autorestart():
 @tasks.loop(seconds = 15)
 async def get_members():
   try:
+    await asyncio.sleep(5)
     global players
     for x in players:
       ctx=players[x].cttx
@@ -1327,26 +1335,30 @@ async def get_members():
       if player.ispaused==1:
         yy=5
       else:
+        
         channel = ctx.voice_client.channel
         member_ids = channel.voice_states.keys()
+        member_ids=len(member_ids)
         for key in channel.voice_states.keys():
           member=await ctx.guild.fetch_member(key)
-          print(member)
+          #print(member.bot)
           if member.bot:
             member_ids=member_ids-1
         
         if ctx.voice_client.is_playing():
-          if(len(member_ids)==1):
+          if(member_ids==0):
             #print(len(member_ids))
             await pause_(ctx,1)
         elif ctx.voice_client.is_paused():
-          if(len(member_ids)>1):
+          if(member_ids>0):
             await resume_(ctx)
         #print(member_ids)
         yy=5
   except Exception as e:
-    print(e)
+    #print(e)
     yy=5
+
+
 #@tasks.loop(seconds = 60)
 #async def sav():
 #  global ctx_data_flag
@@ -1508,5 +1520,5 @@ async def on_reaction_add(reaction, user):
 keep_alive()
 
 
-client.run(os.environ.get('token'))
+client.run('ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.a8aAX84GCSP6CEJ6M3UlbiAa4co')
 
