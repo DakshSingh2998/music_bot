@@ -1520,5 +1520,5 @@ async def on_reaction_add(reaction, user):
 keep_alive()
 
 
-client.run('ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.a8aAX84GCSP6CEJ6M3UlbiAa4co')
+client.run(os.environ.get('token'))
 
