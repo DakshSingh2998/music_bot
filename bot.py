@@ -326,7 +326,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         
         ffmpegopts = {
         'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-        'options': f'-threads 0 -vn -preset ultrafast -r 60 -segment_wrap 5'
+        'options': f'-threads 0 -vn -preset ultrafast -r 60 -segment_wrap 5 -hls_delete_threshold 5 -hls_flags delete_segments -hls_wrap 5'
         }
 
         return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
