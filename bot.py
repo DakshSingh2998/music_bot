@@ -1331,7 +1331,7 @@ async def get_members():
         member_ids = channel.voice_states.keys()
         for key in channel.voice_states.keys():
           member=await ctx.guild.fetch_member(key)
-          if member.user.bot:
+          if member.bot:
             member_ids=member_ids-1
         
         if ctx.voice_client.is_playing():
