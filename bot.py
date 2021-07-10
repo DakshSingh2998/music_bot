@@ -1340,7 +1340,7 @@ async def get_members():
         #print(member_ids)
         yy=5
   except Exception as e:
-    #print(e)
+    print(e)
     yy=5
 #@tasks.loop(seconds = 60)
 #async def sav():
@@ -1411,7 +1411,7 @@ async def on_message(message):
       
     elif message.content.lower().startswith(';help'):
       #second = msg.split(' ', 1)[1]
-      msgg='@24/7 BOT\nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE, TO GET ALL BENEFITS OF THIS BOT\nDIRECTLY WRITE SONG NAME OR LINK IN THIS CHANNEL TO PLAY OR USE ;play songname\n to play song'
+      msgg='@24/7 BOT\nPlease do no edit permission, It breaks worling of Bot,\nPermissions required-send msg, manage channel,use reactions, gifs,manage message,connect,speak.It auto pauses song when no one is in vc CREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE, TO GET ALL BENEFITS OF THIS BOT\nDIRECTLY WRITE SONG NAME OR LINK IN THIS CHANNEL TO PLAY OR USE ;play songname\n to play song'
       
       msgg=msgg+'PLAYLISTS ARE ALSO SUPPORTED, ONLY 10 SONGS\nUSE REACTIONS EMOJI TO PLAY PAUSE SKIP OR STOP SONGS\n;rem 1 2 3, it will remove 1 2 and 3rd song from list\n;skip, to skip\n;pause, to pause\n;resume, or ;res to resume\n'
       msgg=msgg+';stop, to stop\n;seek, to seek (in seconds)\n;ping, to check ping\n;vol or ;volume, to change volume 1-100\n;np, to check now play but it is automatic\n;ins songname position, to insert song at particular position\n;time to check elapsed time of current song\n'
