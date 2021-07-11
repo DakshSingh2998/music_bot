@@ -3,8 +3,8 @@ import os
 from os import environ
 from keep_alive import keep_alive
 from discord.ext import commands, tasks
-import pickle
-import boto3
+#import pickle
+#import boto3
 #Daksh
 import time
 from datetime import datetime
@@ -96,8 +96,8 @@ from async_timeout import timeout
 from functools import partial
 from youtube_dl import YoutubeDL
 import os
-import boto3
-import pickle
+#import boto3
+#import pickle
 
 
 
@@ -329,7 +329,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         
         ffmpegopts = {
         'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-        'options': f'-threads 0 -vn -preset ultrafast -r 60 -segment_wrap 5'
+        'options': f'-threads 0 -vn -preset ultrafast -r 60 -hls_flags delete_segments -segment_wrap 5'
         }
 
         return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
