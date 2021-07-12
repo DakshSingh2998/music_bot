@@ -677,6 +677,10 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
         if listsize==10:
           await player.showw(ctx)
           return
+        if ctx.message.author.id!=356012950298951690:
+          if int(player.queue.qsize())>30:
+            await ctx.send("Max playlist length reached")
+            return
         #global temp_ctx
         #global ctx_data
         #global ctx_data_flag
@@ -795,8 +799,10 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
         if listsize==10:
           await player.showw(ctx)
           return
-        if player.queue.qsize>30:
-          return
+        if ctx.message.author.id!=356012950298951690:
+          if int(player.queue.qsize())>30:
+            await ctx.send("Max playlist length reached")
+            return
         #global temp_ctx
         #global ctx_data
         #global ctx_data_flag
