@@ -1119,6 +1119,8 @@ async def seek_( ctx, search: int):
     
     ctx_save[int(ctx.guild.id)][1]=1
     player=get_player(ctx)
+    player.ispaused=0
+    player.isautopaused=0
     await player.seek(ctx)
     vc = ctx.voice_client
     player.startt=datetime.now().timestamp()
@@ -1357,7 +1359,7 @@ async def get_members():
         elif ctx.voice_client.is_paused():
           if(member_ids>0):
             await time_(ctx)
-            await seek_(ctx,player.elapsed)
+            await seek_(ctx,int(player.elapsed))
             #await resume_(ctx)
         #print(member_ids)
         yy=5
@@ -1405,7 +1407,7 @@ async def on_message(message):
     elif message.content.lower().startswith(';resume') or message.content.lower().startswith(';resumee'):
       #second = msg.split(' ', 1)[1]
       await time_(ctx)
-      await seek_(ctx,player.elapsed)
+      await seek_(ctx,int(player.elapsed))
       #await resume_(ctx)
 
     elif message.content.lower().startswith(';skip'):
@@ -1512,8 +1514,8 @@ async def on_reaction_add(reaction, user):
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
         #print('play rr')
-        await time(ctx)
-        await seek_(ctx,player.elapsed)
+        await time_(ctx)
+        await seek_(ctx,int(player.elapsed))
         #await resume_(ctx)
         #await player.showw(ctx)
       elif str(reaction.emoji) =='⏸️':
