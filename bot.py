@@ -1356,7 +1356,9 @@ async def get_members():
             await pause_(ctx,1)
         elif ctx.voice_client.is_paused():
           if(member_ids>0):
-            await resume_(ctx)
+            await time_(ctx)
+            await seek_(ctx,player.elapsed)
+            #await resume_(ctx)
         #print(member_ids)
         yy=5
   except Exception as e:
@@ -1381,9 +1383,11 @@ async def on_message(message):
     msg=None
     chanell=None
     channel_id=None
+    player=None
     try:
       ctx = await client.get_context(message)
       msg=str(message.content)
+      player=get_player(ctx)
       channell = discord.utils.get(ctx.guild.channels, name='d-songs')
       channel_id = channell.id
     except Exception as e:
@@ -1400,7 +1404,9 @@ async def on_message(message):
 
     elif message.content.lower().startswith(';resume') or message.content.lower().startswith(';resumee'):
       #second = msg.split(' ', 1)[1]
-      await resume_(ctx)
+      await time_(ctx)
+      await seek_(ctx,player.elapsed)
+      #await resume_(ctx)
 
     elif message.content.lower().startswith(';skip'):
       #second = msg.split(' ', 1)[1]
@@ -1506,8 +1512,10 @@ async def on_reaction_add(reaction, user):
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
         #print('play rr')
-        await resume_(ctx)
-        await player.showw(ctx)
+        await time(ctx)
+        await seek_(ctx,player.elapsed)
+        #await resume_(ctx)
+        #await player.showw(ctx)
       elif str(reaction.emoji) =='⏸️':
         #print('paused')
         await pause_(ctx)
