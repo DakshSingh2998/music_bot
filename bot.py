@@ -1364,7 +1364,7 @@ async def get_members():
         #print(member_ids)
         yy=5
   except Exception as e:
-    #print(e)
+    print(e)
     yy=5
 
 
