@@ -12,7 +12,7 @@ ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
 client=commands.Bot(command_prefix=';')
-status="Live your Life your Way ~Daksh"
+status="Enjoy Life ~Daksh"
 @client.event
 async def on_ready():
   print("Ready Daksh. Hey ",client.user)
