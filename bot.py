@@ -1122,7 +1122,7 @@ async def seek_( ctx, search: int):
     player.ispaused=0
     player.isautopaused=0
     await player.seek(ctx)
-    vc = ctx.voice_client
+    vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
     player.startt=datetime.now().timestamp()
     player.elapsed=search
     
