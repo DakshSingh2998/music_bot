@@ -1342,8 +1342,8 @@ async def get_members():
       if player.ispaused==1:
         yy=5
       else:
-        
-        channel = ctx.voice_client.channel
+        vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
+        channel = vc.channel
         member_ids = channel.voice_states.keys()
         member_ids=len(member_ids)
         for key in channel.voice_states.keys():
@@ -1352,11 +1352,11 @@ async def get_members():
           if member.bot:
             member_ids=member_ids-1
         
-        if ctx.voice_client.is_playing():
+        if vc.is_playing():
           if(member_ids==0):
             #print(len(member_ids))
             await pause_(ctx,1)
-        elif ctx.voice_client.is_paused():
+        elif vc.is_paused():
           if(member_ids>0):
             await time_(ctx)
             await seek_(ctx,int(player.elapsed))
