@@ -1370,7 +1370,7 @@ async def autorestart():
 async def get_members():
   try:
     #print('bef',gc.get_count())
-    gc.collect()
+    #gc.collect()
     #print('aft',gc.get_count())
     process = psutil.Process(os.getpid())
     print('mem ',process.memory_info().rss/1024**2)
