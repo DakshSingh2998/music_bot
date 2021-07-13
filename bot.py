@@ -439,7 +439,8 @@ class MusicPlayer:
       vc = ctx.voice_client
       if not vc or not vc.is_connected():
         return #await ctx.send('I am not currently connected to voice!',delete_after=10)
-      ssource = await YTDLSource.create_source(ctx, self.nowp, loop=self.bot.loop, download=False)
+      nnp=self.nowp
+      ssource = await YTDLSource.create_source(ctx, nnp, loop=self.bot.loop, download=False)
       #print(ssource)
       tsize=0
       #print(self.queue)
@@ -459,8 +460,9 @@ class MusicPlayer:
       self.queue = asyncio.Queue()
       self.searchqueue=None
       self.searchqueue = asyncio.Queue()
-      await self.queue.put(ssource)
-      await self.searchqueue.put(self.nowp)
+      src=ssource
+      await self.queue.put(src)
+      await self.searchqueue.put(nnp)
       tsize=temp.qsize()
       while(tsize>0):
         t=await temp.get()
@@ -477,6 +479,8 @@ class MusicPlayer:
       del ssource
       del tsize
       del temp
+      del nnp
+      del src
       del temp2
       del t
       del t2
