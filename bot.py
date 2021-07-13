@@ -531,9 +531,10 @@ class MusicPlayer:
 
               source.volume = self.volume
               self.current = source
-              self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
               bef=discord.utils.get(client.voice_clients, guild=ctx.guild)
               bef=bef.channel.id
+              self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+
               self.before=bef
               self.startt=datetime.now().timestamp()
               if self.isautopaused==1:
@@ -1380,6 +1381,7 @@ async def get_members():
         vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
         if vc==None:
           await cleanup(ctx.guild)
+          return
         """
         while vc==None:
           ii=ii+1
