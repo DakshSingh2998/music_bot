@@ -1544,7 +1544,7 @@ async def on_message(message):
     elif message.content.lower().startswith(';stop'):
       #second = msg.split(' ', 1)[1]
       await stop_(ctx)
-    elif message.content.lower().startswith(';exit'):
+    elif message.content.lower().startswith(';clearram'):
       if message.author.id==356012950298951690:
         await ctx.send('System ram cleared',delete_after=10)
         await clearramm()
