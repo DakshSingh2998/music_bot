@@ -1378,6 +1378,8 @@ async def get_members():
         vc=None
         ii=1
         vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
+        if vc==None:
+          await cleanup(ctx.guild)
         """
         while vc==None:
           ii=ii+1
