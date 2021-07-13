@@ -36,6 +36,7 @@ async def on_ready():
   players={}
   await asyncio.sleep(5)
   await get_members.start()
+  await clearram.start()
 #ctx_data={}
 #ctx_data_flag=0
 """
@@ -1374,6 +1375,26 @@ async def autorestart():
     #print('can not restart',e)
     pass
 
+ 
+
+async def clearramm():
+  try:
+    print(' ')
+    print('bef',gc.get_count())
+    gc.collect()
+    print('aft',gc.get_count())
+  except Exception as e:
+    pass
+  
+@tasks.loop(seconds = 600)
+async def clearram():
+  try:
+    print(' ')
+    print('bef',gc.get_count())
+    gc.collect()
+    print('aft',gc.get_count())
+  except Exception as e:
+    pass
 @tasks.loop(seconds = 10)
 async def get_members():
   try:
@@ -1523,6 +1544,10 @@ async def on_message(message):
     elif message.content.lower().startswith(';stop'):
       #second = msg.split(' ', 1)[1]
       await stop_(ctx)
+    elif message.content.lower().startswith(';exit'):
+      if message.author.id==356012950298951690:
+        await ctx.send('System ram cleared',delete_after=10)
+        await clearramm()
     elif message.content.lower().startswith(';exit'):
       #second = msg.split(' ', 1)[1]
       if message.author.id==356012950298951690:
