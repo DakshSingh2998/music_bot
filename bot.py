@@ -6,6 +6,8 @@ from discord.ext import commands, tasks
 #import pickle
 #import boto3
 #Daksh
+import gc
+import psutil
 import time
 from datetime import datetime
 ctx_save={'d':'d'}
@@ -1364,6 +1366,11 @@ async def autorestart():
 @tasks.loop(seconds = 10)
 async def get_members():
   try:
+    print('bef',gc.get_count())
+    gc.collect()
+    print('aft',gc.get_count())
+    process = psutil.Process(os.getpid())
+    print('mem ',process.memory_info().rss/1024**2)
     #await asyncio.sleep(3)
     global players
     if players==None:
