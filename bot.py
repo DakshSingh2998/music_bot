@@ -585,6 +585,8 @@ async def cleanup(guild):
 
     try:
         global players
+        global ctx_save
+        del ctx_save[int(guild.id)]
         del players[guild.id]
     except KeyError:
         pass
@@ -1363,10 +1365,16 @@ async def get_members():
   try:
     #await asyncio.sleep(3)
     global players
+    if players==None:
+      return
     for x in players:
       try:
+        player=players[x]
+        if player==None:
+          continue
         ctx=players[x].cttx
-        player=get_player(ctx)
+        #player=get_player(ctx)
+        
         vc=None
         ii=1
         vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
@@ -1410,10 +1418,10 @@ async def get_members():
           #print(member_ids)
           yy=5
       except Exception as e:
-        #print(e)
+        print('inner ',e)
         yy=5
   except Exception as e:
-    #print(e)
+    print('outer ',e)
     yy=5
 
 
