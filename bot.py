@@ -1368,9 +1368,11 @@ async def get_members():
     global players
     if players==None:
       return
-    for x in players:
+    tempp=players.copy()
+    for x in tempp:
       try:
         player=players[x]
+        
         if player==None:
           continue
         ctx=players[x].cttx
@@ -1381,7 +1383,7 @@ async def get_members():
         vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
         if vc==None:
           await cleanup(ctx.guild)
-          return
+          continue
         """
         while vc==None:
           ii=ii+1
