@@ -304,7 +304,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     data = await loop.run_in_executor(None, to_run)
     ffmpegopts = {
     'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -fflags nobuffer -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-    'options': f'-threads 0 -vn -preset ultrafast -r 60 -hls_flags delete_segments -segment_wrap 5'
+    'options': f'-threads 0 -vn -r 60 -hls_flags delete_segments -segment_wrap 5'
     }
     try:
       del loop
