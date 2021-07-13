@@ -5,3 +5,4 @@ Flask
 PyNaCl
 youtube-dl
 ffmpeg
+psutil
