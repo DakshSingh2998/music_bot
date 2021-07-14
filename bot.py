@@ -406,7 +406,7 @@ class MusicPlayer:
         fmt=fmt+f'{ii}. {tt}\n'
         #print(temp)
         #print("##########")
-          
+      
       #self.embed = discord.Embed(title=f'Upcoming - Next {len(upcoming)}', description=fmt)
       #self.embed=await self._channel.send(f'Upcoming - Next {len(upcoming)}\n{fmt}')
       try:
