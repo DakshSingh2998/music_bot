@@ -1063,22 +1063,22 @@ async def queue_info( ctx):
 
 @commands.command(name='now_playing', aliases=['np', 'current', 'currentsong', 'playing'])
 async def now_playing_( ctx):
-  player = get_player(ctx)
-  if not player.current:
-    return #await ctx.send('I am not currently playing anything!',delete_after=10)
-  await player.showw(ctx)
   try:
-    #await ctx.message.delete()
+    player = get_player(ctx)
+    if not player.current:
+      return #await ctx.send('I am not currently playing anything!',delete_after=10)
+    await player.showw(ctx)
+    except Exception as e:
+      #print('nowp',e)
+      pass
+      pass
     pass
+    try:
+      del player
+    except Exception as e:
+      pass
   except Exception as e:
-    #print('nowp',e)
-    pass
-    pass
-  pass
-  try:
-    del player
-  except Exception as e:
-    pass
+    print(e)
 
 @commands.command(name='change_volume', aliases=['vol','volume'])
 async def change_volume( ctx, vol: float):
