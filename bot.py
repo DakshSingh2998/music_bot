@@ -1432,7 +1432,11 @@ async def get_members():
         ii=1
         vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
         if vc==None:
-          await cleanup(ctx.guild)
+          try:
+            del ctx_save[int(x)]
+            del players[x]
+          except Exception as e:
+            pass
           continue
         """
         while vc==None:
