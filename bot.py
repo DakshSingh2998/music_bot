@@ -461,10 +461,13 @@ class MusicPlayer:
         await temp2.put(t2)
         await temp.put(t)
         tsize=tsize-1
-      self.queue=None
-      self.queue = asyncio.Queue()
-      self.searchqueue=None
-      self.searchqueue = asyncio.Queue()
+      #self.queue=None
+      while(self.queue.qsize()>0):
+        self.queue.get()
+        self.searchqueue.get()
+      #self.queue = asyncio.Queue()
+      #self.searchqueue=None
+      #self.searchqueue = asyncio.Queue()
       src=ssource
       await self.queue.put(src)
       await self.searchqueue.put(nnp)
@@ -804,13 +807,12 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     if position-1>player.queue.qsize():
       return
     l=None
-    temp=None
+    temp=asyncio.Queue()
     source=None
     listt=None
     temp_list=None
-    temp=None
     tempp=None
-    temp2=None
+    temp2=asyncio.Queue()
     tsize=None
     t=None
     t2=None
@@ -867,8 +869,11 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           tempp['title']=source['entries'][0]["title"]
           ### insert code
           #print(source)
-          temp=asyncio.Queue()
-          temp2=asyncio.Queue()
+          while(temp.qsize()>0):
+            temp.get()
+            temp2.get()
+          #temp=asyncio.Queue()
+          #temp2=asyncio.Queue()
           tsize=player.queue.qsize()
           while(tsize>0):
             t=await player.queue.get()
@@ -877,8 +882,11 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
             await temp.put(t)
             tsize=tsize-1
           pos=0
-          player.queue=asyncio.Queue()
-          player.searchqueue=asyncio.Queue()
+          while(player.queue.qsize()>0):
+            player.queue.get()
+            player.searchqueue.get()
+          #player.queue=asyncio.Queue()
+          #player.searchqueue=asyncio.Queue()
           while(pos<position-1):
             t=await temp.get()
             await player.queue.put(t)
@@ -912,9 +920,12 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
         tempp['requester']=ctx.author
         tempp['title']=source["title"]
         #print(source)
-        temp=asyncio.Queue()
-        temp2=asyncio.Queue()
-        tsize=player.queue.qsize()
+        while(temp.qsize()>0):
+          temp.get()
+          temp2.get()
+        #temp=asyncio.Queue()
+        #temp2=asyncio.Queue()
+        #tsize=player.queue.qsize()
         while(tsize>0):
           t=await player.queue.get()
           t2=await player.searchqueue.get()
@@ -922,8 +933,11 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           await temp.put(t)
           tsize=tsize-1
         pos=0
-        player.queue=asyncio.Queue()
-        player.searchqueue=asyncio.Queue()
+        while(player.queue.qsize()>0):
+          player.queue.get()
+          player.searchqueue.get()
+        #player.queue=asyncio.Queue()
+        #player.searchqueue=asyncio.Queue()
         while(pos<position-1):
           t=await temp.get()
           await player.queue.put(t)
@@ -944,8 +958,11 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     else:
       source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
       #print(source)
-      temp=asyncio.Queue()
-      temp2=asyncio.Queue()
+      while(temp.qsize()>0):
+        temp.get()
+        temp2.get()
+      #temp=asyncio.Queue()
+      #temp2=asyncio.Queue()
       tsize=player.queue.qsize()
       while(tsize>0):
         t=await player.queue.get()
@@ -954,8 +971,11 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
         await temp.put(t)
         tsize=tsize-1
       pos=0
-      player.queue=asyncio.Queue()
-      player.searchqueue=asyncio.Queue()
+      while(player.queue.qsize()>0):
+        player.queue.get()
+        player.searchqueue.get()
+      #player.queue=asyncio.Queue()
+      #player.searchqueue=asyncio.Queue()
       while(pos<position-1):
         t=await temp.get()
         await player.queue.put(t)
