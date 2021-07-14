@@ -111,6 +111,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     self.requester = requester
     self.title = data.get('title')
     self.webpage_url = data.get('webpage_url')
+    self.duration=data.get('duration')
     # YTDL info dicts (data) have other useful information you might want
     # https://github.com/rg3/youtube-dl/blob/master/README.md
   def __getitem__(self, item: str):
@@ -209,7 +210,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         if 'entries' in data:
           # take first item from a playlist
           data = data['entries'][0]
-        return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
+        return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title'],'duration':data['duration']}
       else:
         return data
     #return cls(discord.FFmpegPCMAudio(source,**ffmpegopts), data=data, requester=ctx.author)
@@ -265,7 +266,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     if download:
         pass
     else:
-      return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
+      return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title'],'duration':data['duration']}
     #return cls(discord.FFmpegPCMAudio(source,**ffmpegopts), data=data, requester=ctx.author)
   @classmethod
   async def regather_stream(cls, data, *, loop,ctx):
@@ -413,8 +414,9 @@ class MusicPlayer:
       except Exception as e:
         #print("EEE",e)
         pass
+      dur=int(vc.source.duration)/1000
       self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
-      self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url}')
+      self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}]')
       #auto_now=0
       await self.np.add_reaction('⏯️')
       await self.np.add_reaction('⏸️')
@@ -426,6 +428,7 @@ class MusicPlayer:
       del ii
       del tt
       del temp
+      del dur
       del fmt
     except Exception as e:
       #print(e)
@@ -724,6 +727,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
           temp={}
           # take first item from a playlist
           temp['webpage_url']=source['entries'][0]["webpage_url"]
+          temp['duration']=source['entries'][0]["duration"]
           temp['requester']=ctx.author
           temp['title']=source['entries'][0]["title"]
           await player.queue.put(temp)
@@ -740,6 +744,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
         #print('ppppppppppppppppppppppppppppp')
         temp={}
         temp['webpage_url']=source["webpage_url"]
+        temp['duration']=source["duration"]
         temp['requester']=ctx.author
         temp['title']=source["title"]
         await player.queue.put(temp)
@@ -854,6 +859,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           tempp={}
           # take first item from a playlist
           tempp['webpage_url']=source['entries'][0]["webpage_url"]
+          tempp['duration']=source['entries'][0]["duration"]
           tempp['requester']=ctx.author
           tempp['title']=source['entries'][0]["title"]
           ### insert code
@@ -899,6 +905,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
         #print('ppppppppppppppppppppppppppppp')
         tempp={}
         tempp['webpage_url']=source["webpage_url"]
+        tempp['duration']=source["duration"]
         tempp['requester']=ctx.author
         tempp['title']=source["title"]
         #print(source)
