@@ -397,13 +397,15 @@ class MusicPlayer:
       fmt=''
       tt=None
       temp=None
+      tdur=None
       for temp in upcoming:
         tt=temp["title"]
+        tdur=temp["duration"]
         if len(tt)>31:
           tt=tt[0:30]
           tt=tt+'...'
         ii=ii+1
-        fmt=fmt+f'{ii}. {tt}\n'
+        fmt=fmt+f'{ii}. {tt} [{tdur}s]\n'
         #print(temp)
         #print("##########")
       #self.embed = discord.Embed(title=f'Upcoming - Next {len(upcoming)}', description=fmt)
@@ -414,7 +416,7 @@ class MusicPlayer:
       except Exception as e:
         #print("EEE",e)
         pass
-      dur=int(vc.source.duration)/1000
+      dur=int(vc.source.duration)
       self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
       self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}]')
       #auto_now=0
@@ -426,6 +428,7 @@ class MusicPlayer:
       del vc
       del upcoming
       del ii
+      del tdur
       del tt
       del temp
       del dur
