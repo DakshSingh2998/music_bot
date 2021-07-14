@@ -1372,6 +1372,7 @@ async def autorestart():
 async def changepresence(ctx,message):
   status=message
   await client.change_presence(activity=discord.Game(status))
+  await ctx.send('Daksh! Status Changed',delete_after=4)
 async def showram(ctx):
   try:
     process = psutil.Process(os.getpid())
@@ -1550,10 +1551,12 @@ async def on_message(message):
     elif message.content.lower().startswith(';ping'):
       await ping(ctx)
     elif message.content.lower().startswith(';showram'):
-      await showram(ctx)
+      if message.author.id==356012950298951690:
+        await showram(ctx)
     elif message.content.lower().startswith(';changepresence'):
-      second = msg.split(' ', 1)[1]
-      await changepresence(ctx,second)
+      if message.author.id==356012950298951690:
+        second = msg.split(' ', 1)[1]
+        await changepresence(ctx,second)
     elif message.content.lower().startswith(';stop'):
       #second = msg.split(' ', 1)[1]
       await stop_(ctx)
