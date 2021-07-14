@@ -1370,6 +1370,16 @@ async def autorestart():
 
  
 
+async def showram(ctx):
+  try:
+    process = psutil.Process(os.getpid())
+    #print('mem ',process.memory_info().rss/1024**2)
+    mem=process.memory_info().rss/1024**2
+    mem='mem '+mem
+    await ctx.send(str(mem),delete_after=4)
+  except Exception as e:
+    pass
+  
 async def clearramm():
   try:
     print(' ')
@@ -1394,8 +1404,6 @@ async def get_members():
     #print('bef',gc.get_count())
     #gc.collect()
     #print('aft',gc.get_count())
-    process = psutil.Process(os.getpid())
-    print('mem ',process.memory_info().rss/1024**2)
     #await asyncio.sleep(3)
     global players
     if players==None:
@@ -1534,6 +1542,8 @@ async def on_message(message):
       await change_volume(ctx,second)
     elif message.content.lower().startswith(';ping'):
       await ping(ctx)
+    elif message.content.lower().startswith(';showram'):
+      await showram(ctx)
     elif message.content.lower().startswith(';stop'):
       #second = msg.split(' ', 1)[1]
       await stop_(ctx)
