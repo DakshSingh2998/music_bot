@@ -1369,7 +1369,9 @@ async def autorestart():
     pass
 
  
-
+async def changepresence(ctx,message):
+  status=message
+  await client.change_presence(activity=discord.Game(status))
 async def showram(ctx):
   try:
     process = psutil.Process(os.getpid())
@@ -1389,6 +1391,7 @@ async def clearramm():
   except Exception as e:
     pass
   
+
 @tasks.loop(seconds = 3600)
 async def clearram():
   try:
@@ -1548,6 +1551,9 @@ async def on_message(message):
       await ping(ctx)
     elif message.content.lower().startswith(';showram'):
       await showram(ctx)
+    elif message.content.lower().startswith(';changepresence'):
+      second = msg.split(' ', 1)[1]
+      await changepresence(ctx,second)
     elif message.content.lower().startswith(';stop'):
       #second = msg.split(' ', 1)[1]
       await stop_(ctx)
