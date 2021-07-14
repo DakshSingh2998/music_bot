@@ -1375,7 +1375,7 @@ async def showram(ctx):
     process = psutil.Process(os.getpid())
     #print('mem ',process.memory_info().rss/1024**2)
     mem=process.memory_info().rss/1024**2
-    mem='mem '+mem
+    mem='mem '+str(mem)
     await ctx.send(str(mem),delete_after=4)
   except Exception as e:
     pass
