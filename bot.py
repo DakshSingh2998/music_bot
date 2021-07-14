@@ -1379,7 +1379,7 @@ async def clearramm():
   except Exception as e:
     pass
   
-@tasks.loop(seconds = 600)
+@tasks.loop(seconds = 3600)
 async def clearram():
   try:
     print(' ')
