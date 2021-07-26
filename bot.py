@@ -6,6 +6,7 @@ from discord.ext import commands, tasks
 #import pickle
 #import boto3
 #Daksh
+import tracemalloc
 import gc
 import psutil
 import time
@@ -444,8 +445,8 @@ class MusicPlayer:
       vc = ctx.voice_client
       if not vc or not vc.is_connected():
         return #await ctx.send('I am not currently connected to voice!',delete_after=10)
-      nnp=self.nowp
-      ssource = await YTDLSource.create_source(ctx, nnp, loop=self.bot.loop, download=False)
+      #nnp=self.nowp
+      ssource = await YTDLSource.create_source(ctx, self.nowp, loop=self.bot.loop, download=False)
       #print(ssource)
       tsize=0
       #print(self.queue)
@@ -470,7 +471,7 @@ class MusicPlayer:
       #self.searchqueue = asyncio.Queue()
       src=ssource
       await self.queue.put(src)
-      await self.searchqueue.put(nnp)
+      await self.searchqueue.put(self.nowp)
       tsize=temp.qsize()
       while(tsize>0):
         t=await temp.get()
@@ -487,8 +488,9 @@ class MusicPlayer:
       del ssource
       del tsize
       del temp
-      del nnp
+      #del nnp
       del src
+      #del nnp
       del temp2
       del t
       del t2
@@ -658,11 +660,13 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
     pass
 @commands.command(name='play', aliases=['sing','p'])
 async def play_( ctx, search,isplaylist=0,listsize=0):
+  #await showram(ctx)
   try:
     player = get_player(ctx)
     #print('success')
     if listsize==10:
       await player.showw(ctx)
+      del player
       return
     """
     if ctx.message.author.id!=356012950298951690:
@@ -777,6 +781,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
   except Exception as e:
     #print('playyy',e)
     pass
+  #await showram(ctx)
     
   
 
@@ -883,8 +888,8 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
             tsize=tsize-1
           pos=0
           while(player.queue.qsize()>0):
-            player.queue.get()
-            player.searchqueue.get()
+            await player.queue.get()
+            await player.searchqueue.get()
           #player.queue=asyncio.Queue()
           #player.searchqueue=asyncio.Queue()
           while(pos<position-1):
@@ -934,8 +939,8 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           tsize=tsize-1
         pos=0
         while(player.queue.qsize()>0):
-          player.queue.get()
-          player.searchqueue.get()
+          await player.queue.get()
+          await player.searchqueue.get()
         #player.queue=asyncio.Queue()
         #player.searchqueue=asyncio.Queue()
         while(pos<position-1):
@@ -972,8 +977,8 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
         tsize=tsize-1
       pos=0
       while(player.queue.qsize()>0):
-        player.queue.get()
-        player.searchqueue.get()
+        await player.queue.get()
+        await player.searchqueue.get()
       #player.queue=asyncio.Queue()
       #player.searchqueue=asyncio.Queue()
       while(pos<position-1):
@@ -1138,27 +1143,31 @@ async def stop_( ctx):
     player=get_player(ctx)
     player.ispaused=0
     player.isautopaused=0
-    await player.np.delete()
-    await player.que.delete()
+    tsize=player.queue.qsize()
+    while(tsize>0):
+      await player.queue.get()
+      await player.searchqueue.get()
+      tsize=tsize-1
     #await ctx.message.delete()
     #await player.reset(ctx)
-    player.queue = asyncio.Queue()
-    player.searchqueue = asyncio.Queue()
+    #player.queue = asyncio.Queue()
+    #player.searchqueue = asyncio.Queue()
     await skip_(ctx)
     await asyncio.sleep(2)
     ctx_save[int(ctx.guild.id)][2]=1
     #vc.stop()
+    await player.np.delete()
+    await player.que.delete()
   except Exception as e:
     #print("stop",e)
     pass
   try:
     del vc
+    del tsize
   except Exception as e:
     pass
   #await cleanup(ctx.guild)
-    
 
-    
 
 @commands.command(name='seek')
 async def seek_( ctx, search: int):
@@ -1182,9 +1191,9 @@ async def seek_( ctx, search: int):
       del vc
       del player
     except Exception as e:
-      pass
+      print(e)
   except Exception as e:
-    pass
+    print(e)
 
 
 @commands.command(name="pause", aliases=["pausee"])
@@ -1269,10 +1278,11 @@ async def remove_( ctx,index:int):
         await temp2.put(t2)
         await temp.put(t)
         tsize=tsize-1
-      player.queue=None
-      player.queue = asyncio.Queue()
-      player.searchqueue=None
-      player.searchqueue = asyncio.Queue()
+      tsize=player.queue.qsize()
+      while(tsize>0):
+        player.queue.get()
+        player.searchqueue.get()
+        tsize=tsize-1
       tsize=temp.qsize()
       tflag=1
       while(tsize>0):
@@ -1291,7 +1301,7 @@ async def remove_( ctx,index:int):
       #print(e)
       pass
     await player.showw(ctx)
-    await ctx.send(f'**`{ctx.author}`**: Removed the song!',delete_after=40)
+    await ctx.send(f'**`{ctx.author}`**: Removed the song!')
     #await ctx.message.delete()
     del vc
     del player
@@ -1409,7 +1419,7 @@ async def showram(ctx):
     #print('mem ',process.memory_info().rss/1024**2)
     mem=process.memory_info().rss/1024**2
     mem='mem '+str(mem)
-    await ctx.send(str(mem),delete_after=4)
+    await ctx.send(str(mem))
   except Exception as e:
     pass
   
@@ -1535,6 +1545,11 @@ async def get_members():
 #  global temp_ctx
 #  await save_(temp_ctx)
 ##################    load
+#from guppy import hpy
+
+async def memory(ctx):
+  pass
+
 async def ping(ctx):
     await ctx.send(f'Ping is {round(client.latency * 1000)} ms',delete_after=30)
 
@@ -1594,6 +1609,10 @@ async def on_message(message):
       if message.author.id==356012950298951690:
         await ctx.send('System ram cleared',delete_after=10)
         await clearramm()
+    elif message.content.lower().startswith(';memory'):
+      if message.author.id==356012950298951690:
+        await ctx.send('Ram',delete_after=10)
+        await memory(ctx)
     elif message.content.lower().startswith(';exit'):
       #second = msg.split(' ', 1)[1]
       if message.author.id==356012950298951690:
@@ -1711,4 +1730,4 @@ keep_alive()
 #client.run(str(my_secret))\
 
 client.run(os.environ.get('token'))
-#client.run()
+#client.run("")
