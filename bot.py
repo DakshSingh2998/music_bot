@@ -1423,8 +1423,12 @@ async def showram(ctx):
   except Exception as e:
     pass
   
+
+import ctypes
+
 async def clearramm():
   try:
+    ctypes.CDLL('libc.so.6').malloc_trim(0)
     print(' ')
     print('bef',gc.get_count())
     gc.collect()
