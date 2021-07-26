@@ -6,3 +6,4 @@ PyNaCl
 youtube-dl
 ffmpeg
 psutil
+ctypes-callable
