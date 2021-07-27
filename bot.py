@@ -6,6 +6,7 @@ from discord.ext import commands, tasks
 #import pickle
 #import boto3
 #Daksh
+import ctypes
 import tracemalloc
 import gc
 import psutil
@@ -1422,10 +1423,6 @@ async def showram(ctx):
     await ctx.send(str(mem))
   except Exception as e:
     pass
-  
-
-import ctypes
-
 async def clearramm():
   try:
     ctypes.CDLL('libc.so.6').malloc_trim(0)
