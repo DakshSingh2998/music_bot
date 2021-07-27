@@ -1423,6 +1423,7 @@ async def showram(ctx):
     await ctx.send(str(mem))
   except Exception as e:
     pass
+  
 async def clearramm():
   try:
     ctypes.CDLL('libc.so.6').malloc_trim(0)
