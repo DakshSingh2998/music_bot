@@ -419,9 +419,11 @@ class MusicPlayer:
         #print("EEE",e)
         pass
       dur=int(vc.source.duration)
-      self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
-      self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
+      #self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
+      #self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
       #auto_now=0
+      self.que=await ctx.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
+      self.np = await ctx.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
       await self.np.add_reaction('⏯️')
       await self.np.add_reaction('⏸️')
       await self.np.add_reaction('⏭️')
@@ -526,7 +528,7 @@ class MusicPlayer:
             try:
               source = await YTDLSource.regather_stream(source, loop=self.bot.loop,ctx=ctx)
             except Exception as e:
-              await self._channel.send(f'There was an error processing your song.\n'
+              #await self._channel.send(f'There was an error processing your song.\n'
                                         f'```css\n[{e}]\n```',delete_after=10)
               continue
           source.volume = self.volume
