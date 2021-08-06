@@ -528,7 +528,7 @@ class MusicPlayer:
             try:
               source = await YTDLSource.regather_stream(source, loop=self.bot.loop,ctx=ctx)
             except Exception as e:
-              #await self._channel.send(f'There was an error processing your song.\n'
+              await ctx.send(f'There was an error processing your song.\n'
                                         f'```css\n[{e}]\n```',delete_after=10)
               continue
           source.volume = self.volume
