@@ -1674,7 +1674,10 @@ async def on_message(message):
       pass
     elif ctx.message.channel.id==channel_id:
       if message.author != client.user:
+        player.cttx=ctx
         await play_(ctx,str(message.content))
+    if message.content.lower().startswith(';'):
+      player.cttx=ctx
     del ctx
     del msg
     del chanell
@@ -1701,6 +1704,7 @@ async def on_reaction_add(reaction, user):
     channel_id = channell.id
     player=get_player(ctx)
     if reaction.message.channel.id == channel_id:
+      player.cttx=ctx
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
         #print('play rr')
