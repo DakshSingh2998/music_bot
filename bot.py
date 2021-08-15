@@ -685,8 +685,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     await ctx.trigger_typing()
     vc = ctx.voice_client
     global ctx_save
-    if not vc:
-      await ctx.invoke(connect_)
+    await ctx.invoke(connect_)
     l=None
     temp=None
     source=None
@@ -809,8 +808,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     #global auto_now
     await ctx.trigger_typing()
     vc = ctx.voice_client
-    if not vc:
-        await ctx.invoke(connect_)
+    await ctx.invoke(connect_)
     #print(position)
     if position-1>player.queue.qsize():
       return
