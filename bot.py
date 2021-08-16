@@ -127,7 +127,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     if isplaylist==False:
       #print('\n\n')
       ytdlopts = {
-        'format': 'worstaudio/worst',
+        'format': 'betsaudio/best',
         'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'nocheckcertificate': True,
@@ -156,7 +156,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         }
     else:
       ytdlopts = {
-        'format': 'worstaudio/worst',
+        'format': 'bestaudio/best',
         'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
         'restrictfilenames': True,
         'playliststart':ctx_save[int(ctx.guild.id)][2],
@@ -275,7 +275,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     loop = loop or asyncio.get_event_loop()
     requester = data['requester']
     ytdlopts = {
-      'format': 'worstaudio/worst',
+      'format': 'bestaudio/best',
       'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
       'restrictfilenames': True,
       'yesplaylist': True,
@@ -291,7 +291,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
       'postprocessors': [{
           'key': 'FFmpegExtractAudio',
           'preferredcodec': 'mp3',
-          'preferredquality': '64',
+          #'preferredquality': '64',
       }],
       'skip_download':True,
       "simulate": True,
