@@ -422,8 +422,8 @@ class MusicPlayer:
       #self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
       #self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
       #auto_now=0
-      self.que=await ctx.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
-      self.np = await ctx.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
+      self.que=await self.cttx.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
+      self.np = await self.cttx.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
       await self.np.add_reaction('⏯️')
       await self.np.add_reaction('⏸️')
       await self.np.add_reaction('⏭️')
