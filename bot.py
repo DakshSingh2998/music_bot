@@ -1673,6 +1673,8 @@ async def on_message(message):
       #second = msg.split(' ', 1)[1]
       #await save_(ctx)
       pass
+    elif message.content.lower().startswith(';'):
+      pass
     elif ctx.message.channel.id==channel_id:
       if message.author != client.user:
         player.cttx=ctx
