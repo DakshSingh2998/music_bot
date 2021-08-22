@@ -1426,13 +1426,13 @@ async def showram(ctx):
   
 async def clearramm(ctx):
   try:
-    showram(ctx)
+    await showram(ctx)
     ctypes.CDLL('libc.so.6').malloc_trim(0)
     print(' ')
     print('bef',gc.get_count())
     gc.collect()
     print('aft',gc.get_count())
-    showram(ctx)
+    await showram(ctx)
   except Exception as e:
     pass
   
