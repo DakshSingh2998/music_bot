@@ -1424,20 +1424,23 @@ async def showram(ctx):
   except Exception as e:
     pass
   
-async def clearramm():
+async def clearramm(ctx):
   try:
+    showram(ctx)
     ctypes.CDLL('libc.so.6').malloc_trim(0)
     print(' ')
     print('bef',gc.get_count())
     gc.collect()
     print('aft',gc.get_count())
+    showram(ctx)
   except Exception as e:
     pass
   
 
-@tasks.loop(seconds = 3600)
+@tasks.loop(seconds = 1800)
 async def clearram():
   try:
+    ctypes.CDLL('libc.so.6').malloc_trim(0)
     print(' ')
     print('bef',gc.get_count())
     gc.collect()
@@ -1610,7 +1613,7 @@ async def on_message(message):
     elif message.content.lower().startswith(';clearram'):
       if message.author.id==356012950298951690:
         await ctx.send('System ram cleared',delete_after=10)
-        await clearramm()
+        await clearramm(ctx)
     elif message.content.lower().startswith(';memory'):
       if message.author.id==356012950298951690:
         await ctx.send('Ram',delete_after=10)
