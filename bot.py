@@ -307,8 +307,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
     to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
     data = await loop.run_in_executor(None, to_run)
     ffmpegopts = {
-    'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -flags low_delay -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-    'options': f'-vn -segment_list_flags +live -hls_flags delete_segments -segment_wrap 10'
+    'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
+    'options': f'-vn +live'
     }
     try:
       del loop
