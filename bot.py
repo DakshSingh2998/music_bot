@@ -275,7 +275,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     loop = loop or asyncio.get_event_loop()
     requester = data['requester']
     ytdlopts = {
-      'format': 'bestaudio/best',
+      'format': 'worstaudio/worst',
       'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
       'restrictfilenames': True,
       'yesplaylist': True,
@@ -529,7 +529,7 @@ class MusicPlayer:
               source = await YTDLSource.regather_stream(source, loop=self.bot.loop,ctx=ctx)
             except Exception as e:
               await ctx.send(f'There was an error processing your song.\n'
-                                        f'```css\n[{e}]\n```')
+                                        f'```css\n[{e}]\n```',delete_after=10)
               continue
           source.volume = self.volume
           self.current = source
@@ -597,12 +597,12 @@ async def __local_check(ctx):
 async def __error(ctx, error):
   if isinstance(error, commands.NoPrivateMessage):
     try:
-      return await ctx.send('This command can not be used in Private Messages.')
+      return await ctx.send('This command can not be used in Private Messages.',delete_after=10)
     except discord.HTTPException:
       pass
   elif isinstance(error, InvalidVoiceChannel):
     await ctx.send('Error connecting to Voice Channel. '
-                    'Please make sure you are in a valid channel or provide me with one')
+                    'Please make sure you are in a valid channel or provide me with one',delete_after=10)
   #print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
   traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
@@ -649,14 +649,14 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
       try:
         await vc.move_to(channel)
       except asyncio.TimeoutError:
-        raise VoiceConnectionError(f'Moving to channel: <{channel}> timed out.')
+        raise VoiceConnectionError(f'Moving to channel: <{channel}> timed out.',delete_after=10)
     else:
       try:
         await channel.connect()
       except asyncio.TimeoutError:
-        raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.')
+        raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.',delete_after=10)
     del vc
-    await ctx.send(f'Connected to: **{channel}**')
+    await ctx.send(f'Connected to: **{channel}**', delete_after=10)
     #await ctx.message.delete()
   except Exception as e:
     #print(e)
@@ -1034,13 +1034,12 @@ async def resume_( ctx):
       return #await ctx.send('I am not currently playing anything!', delete_after=10)
     elif not vc.is_paused():
       return
-    await ctx.send(f'**`{ctx.author}`**: Resumed the song!')
     player=get_player(ctx)
     player.ispaused=0
     player.isautopaused=0
     vc.resume()
     #player.ispaused=False
-    
+    await ctx.send(f'**`{ctx.author}`**: Resumed the song!',delete_after=10)
     try:
       player=get_player(ctx)
       player.startt=datetime.now().timestamp()
@@ -1080,7 +1079,7 @@ async def skip_( ctx):
     vc.stop()
     del vc
     del player
-    await ctx.send(f'**`{ctx.author}`**: Skipped the song!')
+    await ctx.send(f'**`{ctx.author}`**: Skipped the song!',delete_after=10)
   except Exception as e:
     #print(e)
     pass
@@ -1119,12 +1118,12 @@ async def change_volume( ctx, vol: float):
     if not vc or not vc.is_connected():
       return #await ctx.send('I am not currently connected to voice!', delete_after=10)
     if not 0 < vol < 101:
-      return await ctx.send('Please enter a value between 1 and 100.')
+      return await ctx.send('Please enter a value between 1 and 100.',delete_after=10)
     player = get_player(ctx)
     if vc.source:
       vc.source.volume = vol / 100
     player.volume = vol / 100
-    await ctx.send(f'**`{ctx.author}`**: Set the volume to **{vol}%**')
+    await ctx.send(f'**`{ctx.author}`**: Set the volume to **{vol}%**',delete_after=10)
     #await ctx.message.delete()
     del vc
     del player
@@ -1214,7 +1213,7 @@ async def pause_( ctx,pflag=0):
       player.ispaused=1
     player.isautopaused=1
     #player.ispaused=True
-    await ctx.send(f'**`{ctx.author}`**: Paused the song!')
+    await ctx.send(f'**`{ctx.author}`**: Paused the song!',delete_after=10)
     try:
       player=get_player(ctx)
       player.stopt=datetime.now().timestamp()
@@ -1246,7 +1245,7 @@ async def time_( ctx,sek=0):
       player.elapsed=player.elapsed+player.stopt-player.startt
       #print(player.elapsed)
       player.startt=datetime.now().timestamp()
-    await ctx.send(f'**`{ctx.author}`**: Elapsed Time is {player.elapsed}!')
+    await ctx.send(f'**`{ctx.author}`**: Elapsed Time is {player.elapsed}!',delete_after=10)
     #await ctx.message.delete()
     del vc
     del player
@@ -1414,7 +1413,7 @@ async def autorestart():
 async def changepresence(ctx,message):
   status=message
   await client.change_presence(activity=discord.Game(status))
-  await ctx.send('Daksh! Status Changed')
+  await ctx.send('Daksh! Status Changed',delete_after=4)
 async def showram(ctx):
   try:
     process = psutil.Process(os.getpid())
@@ -1557,7 +1556,7 @@ async def memory(ctx):
   pass
 
 async def ping(ctx):
-    await ctx.send(f'Ping is {round(client.latency * 1000)} ms')
+    await ctx.send(f'Ping is {round(client.latency * 1000)} ms',delete_after=30)
 
 @client.event
 async def on_message(message):
@@ -1613,16 +1612,16 @@ async def on_message(message):
       await stop_(ctx)
     elif message.content.lower().startswith(';clearram'):
       if message.author.id==356012950298951690:
-        await ctx.send('System ram cleared')
+        await ctx.send('System ram cleared',delete_after=10)
         await clearramm(ctx)
     elif message.content.lower().startswith(';memory'):
       if message.author.id==356012950298951690:
-        await ctx.send('Ram')
+        await ctx.send('Ram',delete_after=10)
         await memory(ctx)
     elif message.content.lower().startswith(';exit'):
       #second = msg.split(' ', 1)[1]
       if message.author.id==356012950298951690:
-        await ctx.send('System exit initiated')
+        await ctx.send('System exit initiated',delete_after=10)
         await exitt()
     elif message.content.lower().startswith(';seek'):
       second = msg.split(' ', 1)[1]
