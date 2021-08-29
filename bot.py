@@ -1412,7 +1412,7 @@ async def autorestart():
  
 async def changepresence(ctx,message):
   status=message
-  await client.change_presence(activity=discord.Game(status))
+  await client.change_presence(activity=discord.Streaming(name=status,url=https://www.youtube.com/watch?v=phcltUsSYbI))
   await ctx.send('Daksh! Status Changed',delete_after=4)
 async def showram(ctx):
   try:
@@ -1718,7 +1718,7 @@ async def on_reaction_add(reaction, user):
       elif str(reaction.emoji) =='⏸️':
         #print('paused')
         await pause_(ctx)
-        await player.showw(ctx)
+        #await player.showw(ctx)
       elif reaction.emoji =='⏭️':
         await skip_(ctx)
         #await player.showw(ctx)
