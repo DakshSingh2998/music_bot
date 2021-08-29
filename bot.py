@@ -1238,8 +1238,6 @@ async def time_( ctx,sek=0):
   try:
     vc = ctx.voice_client
     player=get_player(ctx)
-    if sek==0:
-      await now_playing_(ctx)
     if not vc.is_playing():
       player.stopt=datetime.now().timestamp()
       player.startt=datetime.now().timestamp()
@@ -1249,6 +1247,8 @@ async def time_( ctx,sek=0):
       #print(player.elapsed)
       player.startt=datetime.now().timestamp()
     await ctx.send(f'**`{ctx.author}`**: Elapsed Time is {player.elapsed}!',delete_after=10)
+    if sek==0:
+      await now_playing_(ctx)
     #await ctx.message.delete()
     del vc
     del player
@@ -1714,6 +1714,7 @@ async def on_reaction_add(reaction, user):
       await ctx.send(f'**`{user}`**: Reacted!')
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
+        await ctx.send(f'**`{user}`**: Resumed Song!')
         #print('play rr')
         await time_(ctx,1)
         await seek_(ctx,int(player.elapsed))
