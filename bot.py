@@ -1073,6 +1073,8 @@ async def skip_( ctx):
       global ctx_save
       ctx_save[int(ctx.guild.id)][0]=0
       player=get_player(ctx)
+      player.ispaused=0
+      player.isautopaused=0
       await player.np.delete()
       await player.que.delete()
       #await ctx.message.delete()
@@ -1710,7 +1712,7 @@ async def on_reaction_add(reaction, user):
     channel_id = channell.id
     player=get_player(ctx)
     if reaction.message.channel.id == channel_id:
-      #player.cttx=ctx
+      player.cttx=ctx
       await ctx.send(f'**`{user}`**: Reacted!')
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
