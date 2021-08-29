@@ -17,12 +17,13 @@ ctx_save={'d':'d'}
 #auto_now=0
 client=commands.Bot(command_prefix=';')
 status=""
+daksh_yt="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"
 @client.event
 async def on_ready():
   global status
   status=str(len(client.guilds))+" servers"
   print("Ready Daksh. Hey ",client.user)
-  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"))
+  await client.change_presence(activity=discord.Streaming(name=status, url="https://www.youtube.com/watch?v=KbSWQBRceCo"))
   try:
     for x in client.voice_clients:
       try:
@@ -1414,7 +1415,7 @@ async def autorestart():
  
 async def changepresence(ctx,message):
   status=message
-  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"))
+  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/watch?v=KbSWQBRceCo"))
   await ctx.send('Daksh! Status Changed')
 async def showram(ctx):
   try:
