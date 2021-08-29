@@ -16,7 +16,7 @@ ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
 client=commands.Bot(command_prefix=';')
-status="Enjoy Life ~Daksh"
+status="Its all about Enjoying Life ~Daksh"
 @client.event
 async def on_ready():
   print("Ready Daksh. Hey ",client.user)
@@ -275,7 +275,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     loop = loop or asyncio.get_event_loop()
     requester = data['requester']
     ytdlopts = {
-      'format': 'worstaudio/worst',
+      'format': 'bestaudio/best',
       'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
       'restrictfilenames': True,
       'yesplaylist': True,
@@ -1210,10 +1210,6 @@ async def pause_( ctx,pflag=0):
     if pflag==0:
       player.ispaused=1
     player.isautopaused=1
-    vc.pause()
-    await time_(ctx)
-    #player.ispaused=True
-    await ctx.send(f'**`{ctx.author}`**: Paused the song!',delete_after=10)
     try:
       player=get_player(ctx)
       player.stopt=datetime.now().timestamp()
@@ -1223,6 +1219,10 @@ async def pause_( ctx,pflag=0):
     except Exception as e:
       #print(e)
       pass
+    vc.pause()
+    await time_(ctx)
+    #player.ispaused=True
+    await ctx.send(f'**`{ctx.author}`**: Paused the song!',delete_after=10)
     del vc
     del player
   except Exception as e:
