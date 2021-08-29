@@ -1711,6 +1711,7 @@ async def on_reaction_add(reaction, user):
     player=get_player(ctx)
     if reaction.message.channel.id == channel_id:
       player.cttx=ctx
+      await ctx.send(f'**`{user}`**: Reacted!')
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
         #print('play rr')
