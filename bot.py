@@ -16,11 +16,11 @@ ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
 client=commands.Bot(command_prefix=';')
-status="Its all about Enjoying Life ~Daksh"
+status=f"{len(client.guilds) servers}"
 @client.event
 async def on_ready():
   print("Ready Daksh. Hey ",client.user)
-  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/watch?v=phcltUsSYbI"))
+  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"))
   try:
     for x in client.voice_clients:
       try:
@@ -1076,10 +1076,10 @@ async def skip_( ctx):
     except Exception as e:
       #print("skip",e)
       pass
+    await ctx.send(f'**`{ctx.author}`**: Skipped the song!',)
     vc.stop()
     del vc
     del player
-    await ctx.send(f'**`{ctx.author}`**: Skipped the song!',delete_after=10)
   except Exception as e:
     #print(e)
     pass
@@ -1412,7 +1412,7 @@ async def autorestart():
  
 async def changepresence(ctx,message):
   status=message
-  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/watch?v=phcltUsSYbI"))
+  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"))
   await ctx.send('Daksh! Status Changed')
 async def showram(ctx):
   try:
