@@ -1206,12 +1206,12 @@ async def pause_( ctx,pflag=0):
       return #await ctx.send('I am not currently playing anything!', delete_after=10)
     elif vc.is_paused():
       return
+    player=get_player(ctx)
     if pflag==0:
       player.ispaused=1
     player.isautopaused=1
     vc.pause()
     await time_(ctx)
-    player=get_player(ctx)
     #player.ispaused=True
     await ctx.send(f'**`{ctx.author}`**: Paused the song!',delete_after=10)
     try:
