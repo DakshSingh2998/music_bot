@@ -1207,6 +1207,7 @@ async def pause_( ctx,pflag=0):
     elif vc.is_paused():
       return
     player=get_player(ctx)
+    await ctx.send(f'**`{ctx.author}`**: Paused the song!')
     if pflag==0:
       player.ispaused=1
     player.isautopaused=1
@@ -1222,7 +1223,6 @@ async def pause_( ctx,pflag=0):
     vc.pause()
     await time_(ctx)
     #player.ispaused=True
-    await ctx.send(f'**`{ctx.author}`**: Paused the song!',delete_after=10)
     del vc
     del player
   except Exception as e:
