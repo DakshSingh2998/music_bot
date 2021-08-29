@@ -20,7 +20,7 @@ status="Its all about Enjoying Life ~Daksh"
 @client.event
 async def on_ready():
   print("Ready Daksh. Hey ",client.user)
-  await client.change_presence(activity=discord.Game(status))
+  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/watch?v=phcltUsSYbI"))
   try:
     for x in client.voice_clients:
       try:
@@ -1412,8 +1412,8 @@ async def autorestart():
  
 async def changepresence(ctx,message):
   status=message
-  await client.change_presence(activity=discord.Streaming(name=status,url=https://www.youtube.com/watch?v=phcltUsSYbI))
-  await ctx.send('Daksh! Status Changed',delete_after=4)
+  await client.change_presence(activity=discord.Streaming(name=status,url="https://www.youtube.com/watch?v=phcltUsSYbI"))
+  await ctx.send('Daksh! Status Changed')
 async def showram(ctx):
   try:
     process = psutil.Process(os.getpid())
