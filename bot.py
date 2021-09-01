@@ -278,7 +278,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     loop = loop or asyncio.get_event_loop()
     requester = data['requester']
     ytdlopts = {
-      'format': 'bestaudio/best',
+      'format': 'worstaudio/worst',
       'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
       'restrictfilenames': True,
       'yesplaylist': True,
