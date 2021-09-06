@@ -1578,7 +1578,7 @@ async def on_message(message):
     try:
       ctx = await client.get_context(message)
       if message.content.lower().startswith(';') or message.channel.id==channel_id:
-        message.author == client.user:
+        if message.author == client.user:
           return
         try:
           if message.author.id!=356012950298951690:
