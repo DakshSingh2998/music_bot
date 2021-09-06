@@ -1573,10 +1573,11 @@ async def on_message(message):
     player=None
     second=None
     third=None
+    ctx = await client.get_context(message)
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
     try:
-      ctx = await client.get_context(message)
+      
       if message.content.lower().startswith(';') or message.channel.id==channel_id:
         if message.author == client.user:
           print("here")
