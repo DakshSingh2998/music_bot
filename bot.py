@@ -659,7 +659,7 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
       except asyncio.TimeoutError:
         raise VoiceConnectionError(f'Connecting to channel: <{channel}> timed out.',delete_after=10)
     del vc
-    await ctx.send(f'Connected to: **{channel}**', delete_after=10)
+    await ctx.send(f'Connected to: **{channel}**')
     #await ctx.message.delete()
   except Exception as e:
     #print(e)
@@ -1575,6 +1575,14 @@ async def on_message(message):
     third=None
     try:
       ctx = await client.get_context(message)
+      try:
+        if message.author.id!=356012950298951690:
+          channel = ctx.author.voice.channel
+          if channel.id!=ctx.voice_client.channel.id:
+            await ctx.send("You must be in same vc to interact")
+            return
+      except Exception as e:
+        pass
       msg=str(message.content)
       player=get_player(ctx)
       channell = discord.utils.get(ctx.guild.channels, name='d-songs')
@@ -1706,8 +1714,18 @@ async def on_reaction_add(reaction, user):
   try:
     if user == client.user:
       return
-    #print('rr')
     ctx = await client.get_context(reaction.message)
+    #print('rr')
+    try:
+      if user.id!=356012950298951690:
+        channel = user.voice.channel
+        if channel.id!=ctx.voice_client.channel.id:
+          await ctx.send("You must be in same vc to interact")
+          del ctx
+          return
+    except Exception as e:
+      pass
+    
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
     player=get_player(ctx)
