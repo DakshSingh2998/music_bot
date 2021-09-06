@@ -1600,7 +1600,7 @@ async def on_message(message):
       resflag=1
       pass
     print(resflag)
-    if resflag!=0:
+    if resflag==0:
       try:
         if message.content.lower().startswith(';') or message.channel.id==channel_id:
           if message.author == client.user:
