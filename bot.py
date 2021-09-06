@@ -1576,28 +1576,51 @@ async def on_message(message):
     ctx = await client.get_context(message)
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
+    resflag=0
     try:
-      if message.content.lower().startswith(';') or message.channel.id==channel_id:
-        if message.author == client.user:
-          #print("here")
-          return
-        try:
-          if message.author.id!=356012950298951690:
-            try:
-              channel = ctx.author.voice.channel
-            except Exception as e:
-              await ctx.send("You must be in same vc to interact")
-              return
-            if channel.id!=ctx.voice_client.channel.id:
-              await ctx.send("You must be in same vc to interact")
-              return
-        except Exception as e:
-          pass
-      msg=str(message.content)
-      player=get_player(ctx)
+      vc=None
+      try:
+        vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
+      except Exception as e:
+        resflag=1
+      if vc==None:
+        resflag=1
+      if resflag!=1:
+        channel = vc.channel
+        member_ids = channel.voice_states.keys()
+        member_ids=len(member_ids)
+        for key in channel.voice_states.keys():
+          member=await ctx.guild.fetch_member(key)
+          if member.bot:
+            member_ids=member_ids-1
+        if(member_ids==0):
+          resflag=1
+      del vc
     except Exception as e:
-      #print(e)
       pass
+    if resflag!=1:
+      try:
+        if message.content.lower().startswith(';') or message.channel.id==channel_id:
+          if message.author == client.user:
+            #print("here")
+            return
+          try:
+            if message.author.id!=356012950298951690:
+              try:
+                channel = ctx.author.voice.channel
+              except Exception as e:
+                await ctx.send("You must be in same vc to interact")
+                return
+              if channel.id!=ctx.voice_client.channel.id:
+                await ctx.send("You must be in same vc to interact")
+                return
+          except Exception as e:
+            pass
+        msg=str(message.content)
+        player=get_player(ctx)
+      except Exception as e:
+        #print(e)
+        pass
     if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
       second = msg.split(' ', 1)[1]
       await play_(ctx,second)
@@ -1709,6 +1732,7 @@ async def on_message(message):
     del player
     del second
     del third
+    del resflag
   except Exception as e:
     #print(e)
     pass
