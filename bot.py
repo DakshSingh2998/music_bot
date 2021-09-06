@@ -1577,7 +1577,10 @@ async def on_message(message):
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
     resflag=0
+    
     try:
+      if message.author == client.user:
+        return
       vc=None
       vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
       if vc==None:
@@ -1596,7 +1599,8 @@ async def on_message(message):
     except Exception as e:
       resflag=1
       pass
-    if resflag!=1:
+    print(resflag)
+    if resflag!=0:
       try:
         if message.content.lower().startswith(';') or message.channel.id==channel_id:
           if message.author == client.user:
