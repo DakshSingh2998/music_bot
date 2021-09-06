@@ -1580,6 +1580,7 @@ async def on_message(message):
           try:
             channel = ctx.author.voice.channel
           except Exception as e:
+            await ctx.send("You must be in same vc to interact")
             return
           if channel.id!=ctx.voice_client.channel.id:
             await ctx.send("You must be in same vc to interact")
@@ -1721,7 +1722,11 @@ async def on_reaction_add(reaction, user):
     #print('rr')
     try:
       if user.id!=356012950298951690:
-        channel = user.voice.channel
+        try:
+          channel = user.voice.channel
+        except Exception as e:
+          await ctx.send("You must be in same vc to interact")
+          return
         if channel.id!=ctx.voice_client.channel.id:
           await ctx.send("You must be in same vc to interact")
           del ctx
