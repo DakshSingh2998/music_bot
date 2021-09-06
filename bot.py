@@ -1573,24 +1573,28 @@ async def on_message(message):
     player=None
     second=None
     third=None
+    channell = discord.utils.get(ctx.guild.channels, name='d-songs')
+    channel_id = channell.id
     try:
       ctx = await client.get_context(message)
-      try:
-        if message.author.id!=356012950298951690:
-          try:
-            channel = ctx.author.voice.channel
-          except Exception as e:
-            await ctx.send("You must be in same vc to interact")
-            return
-          if channel.id!=ctx.voice_client.channel.id:
-            await ctx.send("You must be in same vc to interact")
-            return
-      except Exception as e:
-        pass
+      if message.content.lower().startswith(';') or message.channel.id==channel_id:
+        message.author == client.user:
+          return
+        try:
+          if message.author.id!=356012950298951690:
+            try:
+              channel = ctx.author.voice.channel
+            except Exception as e:
+              await ctx.send("You must be in same vc to interact")
+              return
+            if channel.id!=ctx.voice_client.channel.id:
+              await ctx.send("You must be in same vc to interact")
+              return
+        except Exception as e:
+          pass
       msg=str(message.content)
       player=get_player(ctx)
-      channell = discord.utils.get(ctx.guild.channels, name='d-songs')
-      channel_id = channell.id
+
     except Exception as e:
       #print(e)
       pass
