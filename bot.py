@@ -6,7 +6,6 @@ from discord.ext import commands, tasks
 #import pickle
 #import boto3
 #Daksh
-#Daksh
 import ctypes
 import tracemalloc
 import gc
@@ -1578,7 +1577,10 @@ async def on_message(message):
       ctx = await client.get_context(message)
       try:
         if message.author.id!=356012950298951690:
-          channel = ctx.author.voice.channel
+          try:
+            channel = ctx.author.voice.channel
+          except Exception as e:
+            return
           if channel.id!=ctx.voice_client.channel.id:
             await ctx.send("You must be in same vc to interact")
             return
