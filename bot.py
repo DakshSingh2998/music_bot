@@ -1579,10 +1579,7 @@ async def on_message(message):
     resflag=0
     try:
       vc=None
-      try:
-        vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
-      except Exception as e:
-        resflag=1
+      vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
       if vc==None:
         resflag=1
       if resflag!=1:
@@ -1597,6 +1594,7 @@ async def on_message(message):
           resflag=1
       del vc
     except Exception as e:
+      resflag=1
       pass
     if resflag!=1:
       try:
