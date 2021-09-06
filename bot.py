@@ -1586,20 +1586,19 @@ async def on_message(message):
       if vc==None:
         resflag=1
       if resflag!=1:
-        channel = vc.channel
-        member_ids = channel.voice_states.keys()
+        channelll = vc.channel
+        member_ids = channelll.voice_states.keys()
         member_ids=len(member_ids)
-        for key in channel.voice_states.keys():
+        for key in channelll.voice_states.keys():
           member=await ctx.guild.fetch_member(key)
           if member.bot:
             member_ids=member_ids-1
         if(member_ids==0):
           resflag=1
-      del vc
+      #del vc
     except Exception as e:
       resflag=1
       pass
-    print(resflag)
     if resflag==0:
       try:
         if message.content.lower().startswith(';') or message.channel.id==channel_id:
@@ -1618,11 +1617,12 @@ async def on_message(message):
                 return
           except Exception as e:
             pass
-        msg=str(message.content)
-        player=get_player(ctx)
       except Exception as e:
         #print(e)
         pass
+    #print(resflag)
+    msg=str(message.content)
+    player=get_player(ctx)
     if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
       second = msg.split(' ', 1)[1]
       await play_(ctx,second)
@@ -1724,6 +1724,7 @@ async def on_message(message):
     elif ctx.message.channel.id==channel_id:
       if message.author != client.user:
         player.cttx=ctx
+        #print('a')
         await play_(ctx,str(message.content))
     if message.content.lower().startswith(';'):
       player.cttx=ctx
@@ -1736,7 +1737,7 @@ async def on_message(message):
     del third
     del resflag
   except Exception as e:
-    #print(e)
+    print(e)
     pass
 
 
