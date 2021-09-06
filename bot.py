@@ -1723,6 +1723,8 @@ async def on_reaction_add(reaction, user):
     if user == client.user:
       return
     ctx = await client.get_context(reaction.message)
+    if ctx.author!=client.user:
+      return
     #print('rr')
     try:
       if user.id!=356012950298951690:
