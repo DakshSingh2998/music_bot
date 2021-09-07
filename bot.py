@@ -1221,7 +1221,7 @@ async def pause_( ctx,pflag=0):
       player.stopt=datetime.now().timestamp()
       player.elapsed=player.elapsed+player.stopt-player.startt
       player.startt=datetime.now().timestamp()
-      await ctx.message.delete()
+      #await ctx.message.delete()
     except Exception as e:
       #print(e)
       pass
