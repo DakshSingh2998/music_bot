@@ -1641,112 +1641,117 @@ async def on_message(message):
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     #################
     #
-    if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
-      second = msg.split(' ', 1)[1]
-      await play_(ctx,second)
-    elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
-      #second = msg.split(' ', 1)[1]
-      await ctx.invoke(connect_)
-    elif message.content.lower().startswith(';resume') or message.content.lower().startswith(';resumee'):
-      #second = msg.split(' ', 1)[1]
-      await time_(ctx,1)
-      await seek_(ctx,int(player.elapsed))
-      #await resume_(ctx)
-    elif message.content.lower().startswith(';skip'):
-      #second = msg.split(' ', 1)[1]
-      await skip_(ctx)
-    elif message.content.lower().startswith(';np') or message.content.lower().startswith(';now_playing'):
-      #second = msg.split(' ', 1)[1]
-      await now_playing_(ctx)
-    elif message.content.lower().startswith(';vol') or message.content.lower().startswith(';volume'):
-      second = msg.split(' ', 1)[1]
-      second=float(second)
-      await change_volume(ctx,second)
-    elif message.content.lower().startswith(';ping'):
-      await ping(ctx)
-    elif message.content.lower().startswith(';showram'):
-      if message.author.id==356012950298951690:
-        await showram(ctx)
-    elif message.content.lower().startswith(';changepresence'):
-      if message.author.id==356012950298951690:
+    try:
+      if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
         second = msg.split(' ', 1)[1]
-        await changepresence(ctx,second)
-    elif message.content.lower().startswith(';stop'):
-      #second = msg.split(' ', 1)[1]
-      await stop_(ctx)
-    elif message.content.lower().startswith(';clearram'):
-      if message.author.id==356012950298951690:
-        await ctx.send('System ram cleared',delete_after=10)
-        await clearramm(ctx)
-    elif message.content.lower().startswith(';memory'):
-      if message.author.id==356012950298951690:
-        await ctx.send('Ram',delete_after=10)
-        await memory(ctx)
-    elif message.content.lower().startswith(';exit'):
-      #second = msg.split(' ', 1)[1]
-      if message.author.id==356012950298951690:
-        await ctx.send('System exit initiated',delete_after=10)
-        await exitt()
-    elif message.content.lower().startswith(';seek'):
-      second = msg.split(' ', 1)[1]
-      second=int(second)
-      await seek_(ctx,second)
-    elif message.content.lower().startswith(';help'):
-      #second = msg.split(' ', 1)[1]
-      msgg='@24/7 BOT \nIT AUTOMATICALLY PAUSES SONG WHEN VC IS EMPTY AND RESUMES IT WHEN SOMEONE JOINS \nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE (IMPORTANT STEP),\n NO NEED TO WRITE ;PLAY IN d-songs CHANNEL, WRITE NAME OR LINK DIRECTLY, \nPlease do no edit permission, It breaks working of Bot, \nPermissions required-send msg, manage channel,use reactions, gifs,manage message,connect,speak. \n'
-      msgg=msgg+' PLAYLISTS ARE ALSO SUPPORTED, ONLY 10 SONGS \nUSE REACTIONS EMOJI TO PLAY PAUSE SKIP OR STOP SONGS \n;rem 1 2 3, it will remove 1 2 and 3rd song from list\n;skip, to skip\n;pause, to pause\n;resume, or ;res to resume\n'
-      msgg=msgg+';stop, to stop\n;invite to see bot invite link\n;seek, to seek (in seconds)\n;ping, to check ping\n;vol or ;volume, to change volume 1-100\n;np, to check now play but it is automatic\n;ins songname position, to insert song at particular position\n;time to check elapsed time of current song\n'
-      msgg=msgg+'\n\n IF YOU HAVE ANY DOUBT OR ANY FUNCTIONS IS NOT WORKING PROPERLY, CONTACT ME ON INSTA- daksh2998'
-      await ctx.send(msgg)
-      await ctx.send('My discord server invite link: https://discord.gg/tPDUcFs9Et')
-    elif message.content.lower().startswith(';invite'):
-      msgg='24/7 Bot invite link is https://discord.com/api/oauth2/authorize?client_id=827290129004494878&permissions=1609952369&scope=bot'
-      await ctx.send(msgg)
-    elif message.content.lower().startswith(';pause'):
-      #second = msg.split(' ', 1)[1]
-      await pause_(ctx)
-    elif message.content.lower().startswith(';insert') or message.content.lower().startswith(';ins'):
-      second = msg.split(' ', 1)[1]
-      third=second.split(' ', -1)[-1]
-      second=second.split(' ', -1)
-      second.pop()
-      second=" ".join(second)
-      #print(second)
-      third=int(third)
-      #print('third',third)
-      player=get_player(ctx)
-      if player.queue.qsize()==0 or third==0:
-        #print(player.queue.qsize())
         await play_(ctx,second)
-      else:
-        await insert_(ctx=ctx,search=second,position=third)
-    elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
-      second = msg.split(' ', 1)[1]
-      second=second.split(' ')
-      #print(second)
-      i=0
-      for x in second:
-        x=int(x)
-        x=x-i
-        i=i+1
-        await remove_(ctx,x)
-    elif message.content.lower().startswith(';time'):
-      #second = msg.split(' ', 1)[1]
-      await time_(ctx)
-    elif message.content.lower().startswith(';save'):
-      #second = msg.split(' ', 1)[1]
-      #await save_(ctx)
-      pass
-    elif message.content.lower().startswith(';'):
-      pass
-    elif ctx.message.channel.id==channel_id:
-      if message.author != client.user:
+      elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
+        #second = msg.split(' ', 1)[1]
+        await ctx.invoke(connect_)
+      elif message.content.lower().startswith(';resume') or message.content.lower().startswith(';resumee'):
+        #second = msg.split(' ', 1)[1]
+        await time_(ctx,1)
+        await seek_(ctx,int(player.elapsed))
+        #await resume_(ctx)
+      elif message.content.lower().startswith(';skip'):
+        #second = msg.split(' ', 1)[1]
+        await skip_(ctx)
+      elif message.content.lower().startswith(';np') or message.content.lower().startswith(';now_playing'):
+        #second = msg.split(' ', 1)[1]
+        await now_playing_(ctx)
+      elif message.content.lower().startswith(';vol') or message.content.lower().startswith(';volume'):
+        second = msg.split(' ', 1)[1]
+        second=float(second)
+        await change_volume(ctx,second)
+      elif message.content.lower().startswith(';ping'):
+        await ping(ctx)
+      elif message.content.lower().startswith(';showram'):
+        if message.author.id==356012950298951690:
+          await showram(ctx)
+      elif message.content.lower().startswith(';changepresence'):
+        if message.author.id==356012950298951690:
+          second = msg.split(' ', 1)[1]
+          await changepresence(ctx,second)
+      elif message.content.lower().startswith(';stop'):
+        #second = msg.split(' ', 1)[1]
+        await stop_(ctx)
+      elif message.content.lower().startswith(';clearram'):
+        if message.author.id==356012950298951690:
+          await ctx.send('System ram cleared',delete_after=10)
+          await clearramm(ctx)
+      elif message.content.lower().startswith(';memory'):
+        if message.author.id==356012950298951690:
+          await ctx.send('Ram',delete_after=10)
+          await memory(ctx)
+      elif message.content.lower().startswith(';exit'):
+        #second = msg.split(' ', 1)[1]
+        if message.author.id==356012950298951690:
+          await ctx.send('System exit initiated',delete_after=10)
+          await exitt()
+      elif message.content.lower().startswith(';seek'):
+        second = msg.split(' ', 1)[1]
+        second=int(second)
+        await seek_(ctx,second)
+      elif message.content.lower().startswith(';help'):
+        #second = msg.split(' ', 1)[1]
+        msgg='@24/7 BOT \nIT AUTOMATICALLY PAUSES SONG WHEN VC IS EMPTY AND RESUMES IT WHEN SOMEONE JOINS \nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE (IMPORTANT STEP),\n NO NEED TO WRITE ;PLAY IN d-songs CHANNEL, WRITE NAME OR LINK DIRECTLY, \nPlease do no edit permission, It breaks working of Bot, \nPermissions required-send msg, manage channel,use reactions, gifs,manage message,connect,speak. \n'
+        msgg=msgg+' PLAYLISTS ARE ALSO SUPPORTED, ONLY 10 SONGS \nUSE REACTIONS EMOJI TO PLAY PAUSE SKIP OR STOP SONGS \n;rem 1 2 3, it will remove 1 2 and 3rd song from list\n;skip, to skip\n;pause, to pause\n;resume, or ;res to resume\n'
+        msgg=msgg+';stop, to stop\n;invite to see bot invite link\n;seek, to seek (in seconds)\n;ping, to check ping\n;vol or ;volume, to change volume 1-100\n;np, to check now play but it is automatic\n;ins songname position, to insert song at particular position\n;time to check elapsed time of current song\n'
+        msgg=msgg+'\n\n IF YOU HAVE ANY DOUBT OR ANY FUNCTIONS IS NOT WORKING PROPERLY, CONTACT ME ON INSTA- daksh2998'
+        await ctx.send(msgg)
+        await ctx.send('My discord server invite link: https://discord.gg/tPDUcFs9Et')
+      elif message.content.lower().startswith(';invite'):
+        msgg='24/7 Bot invite link is https://discord.com/api/oauth2/authorize?client_id=827290129004494878&permissions=1609952369&scope=bot'
+        await ctx.send(msgg)
+      elif message.content.lower().startswith(';pause'):
+        #second = msg.split(' ', 1)[1]
+        await pause_(ctx)
+      elif message.content.lower().startswith(';insert') or message.content.lower().startswith(';ins'):
+        second = msg.split(' ', 1)[1]
+        third=second.split(' ', -1)[-1]
+        second=second.split(' ', -1)
+        second.pop()
+        second=" ".join(second)
+        #print(second)
+        third=int(third)
+        #print('third',third)
+        player=get_player(ctx)
+        if player.queue.qsize()==0 or third==0:
+          #print(player.queue.qsize())
+          await play_(ctx,second)
+        else:
+          await insert_(ctx=ctx,search=second,position=third)
+      elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
+        second = msg.split(' ', 1)[1]
+        second=second.split(' ')
+        #print(second)
+        i=0
+        for x in second:
+          x=int(x)
+          x=x-i
+          i=i+1
+          await remove_(ctx,x)
+      elif message.content.lower().startswith(';time'):
+        #second = msg.split(' ', 1)[1]
+        await time_(ctx)
+      elif message.content.lower().startswith(';save'):
+        #second = msg.split(' ', 1)[1]
+        #await save_(ctx)
+        pass
+      elif message.content.lower().startswith(';'):
+        pass
+      elif ctx.message.channel.id==channel_id:
+        if message.author != client.user:
+          player.cttx=ctx
+          #print('a')
+          await play_(ctx,str(message.content))
+      if message.content.lower().startswith(';'):
         player.cttx=ctx
-        #print('a')
-        await play_(ctx,str(message.content))
-    if message.content.lower().startswith(';'):
-      player.cttx=ctx
-    #del ctx
+      #del ctx
+    except Exception as e:
+      pass
+    finally:
+      ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     del msg
     del chanell
     del channel_id
@@ -1758,7 +1763,7 @@ async def on_message(message):
     print(e)
     pass
   finally:
-    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+    #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
       del counterr
       del ctx
@@ -1822,27 +1827,33 @@ async def on_reaction_add(reaction, user):
         counterr=counterr+1
         if(counterr==10):
           tio=10/0
-      ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
-      ####
-      #print(reaction.emoji)
-      if str(reaction.emoji) =='⏯️':
-        await ctx.send(f'**`{user}`**: Resumed Song!')
-        #print('play rr')
-        await time_(ctx,1)
-        await seek_(ctx,int(player.elapsed))
-        #await resume_(ctx)
-        #await player.showw(ctx)
-      elif str(reaction.emoji) =='⏸️':
-        #print('paused')
-        await pause_(ctx)
-        #await player.showw(ctx)
-      elif reaction.emoji =='⏭️':
-        await skip_(ctx)
-        #await player.showw(ctx)
-      elif reaction.emoji =='⏹️':
-        await stop_(ctx)
-      elif reaction.emoji=='⌚':
-        await time_(ctx)
+        pass
+      try:
+        ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+        ####
+        #print(reaction.emoji)
+        if str(reaction.emoji) =='⏯️':
+          await ctx.send(f'**`{user}`**: Resumed Song!')
+          #print('play rr')
+          await time_(ctx,1)
+          await seek_(ctx,int(player.elapsed))
+          #await resume_(ctx)
+          #await player.showw(ctx)
+        elif str(reaction.emoji) =='⏸️':
+          #print('paused')
+          await pause_(ctx)
+          #await player.showw(ctx)
+        elif reaction.emoji =='⏭️':
+          await skip_(ctx)
+          #await player.showw(ctx)
+        elif reaction.emoji =='⏹️':
+          await stop_(ctx)
+        elif reaction.emoji=='⌚':
+          await time_(ctx)
+      except Exception as e:
+        pass
+      finally:
+        ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     #del ctx
     del channell
     del channel_id
@@ -1851,7 +1862,7 @@ async def on_reaction_add(reaction, user):
     #e)
      pass 
   finally:
-    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+    #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
       del counterr
       del ctx
