@@ -1763,11 +1763,12 @@ async def exitt():
 
 @client.event
 async def on_reaction_add(reaction, user):
+  global ctx_save
   try:
     #############critical
     player=get_player(ctx)
     ctx = await client.get_context(reaction.message)
-    global ctx_save
+    
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
