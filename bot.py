@@ -1628,12 +1628,13 @@ async def on_message(message):
         pass
     #print(resflag)
     msg=str(message.content)
+    
     ##############critical
     counterr=0
     while(ctx_save[int(ctx.guild.id)][4]!=0):
-      await asyncio.sleep(5)
+      await asyncio.sleep(10)
       counterr=counterr+1
-      if(counterr==3):
+      if(counterr==10):
         tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     #################
@@ -1813,9 +1814,9 @@ async def on_reaction_add(reaction, user):
       
       counterr=0
       while(ctx_save[int(ctx.guild.id)][4]!=0):
-        await asyncio.sleep(5)
+        await asyncio.sleep(10)
         counterr=counterr+1
-        if(counterr==3):
+        if(counterr==10):
           tio=10/0
       ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
       ####
