@@ -1567,6 +1567,7 @@ async def ping(ctx):
 async def on_message(message):
   try:
     ########### critical
+    ctx = await client.get_context(message)
     player=get_player(ctx)
     global ctx_save
     while(ctx_save[int(ctx.guild.id)][4]!=0):
@@ -1582,7 +1583,7 @@ async def on_message(message):
     player=None
     second=None
     third=None
-    ctx = await client.get_context(message)
+    
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
     resflag=0
@@ -1750,6 +1751,12 @@ async def on_message(message):
     pass
   finally:
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+    try:
+      del player
+      del ctx
+    except Exception as e:
+      pass
+    
 
 async def exitt():
   sys.exit("Exit")
@@ -1759,6 +1766,7 @@ async def on_reaction_add(reaction, user):
   try:
     #############critical
     player=get_player(ctx)
+    ctx = await client.get_context(reaction.message)
     global ctx_save
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
@@ -1766,7 +1774,7 @@ async def on_reaction_add(reaction, user):
     ###################
     if user == client.user:
       return
-    ctx = await client.get_context(reaction.message)
+    
     if ctx.author!=client.user:
       return
     #print('rr')
@@ -1820,6 +1828,7 @@ async def on_reaction_add(reaction, user):
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
       del player
+      del ctx
     except Exception as e:
       pass
     
