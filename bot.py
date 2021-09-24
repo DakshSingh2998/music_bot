@@ -628,7 +628,7 @@ def get_player(ctx):
     #ctx_save[int(ctx.guild.id)].append(0)
     #ctx_save[int(ctx.guild.id)].append(0)
     #ctx_save[int(ctx.guild.id)].append(1)
-    templist=[0.0,0,1,1]
+    templist=[0.0,0,1,1,0]#####time,,4-critical
     ctx_save[int(ctx.guild.id)]=templist
     #print(ctx_save[int(ctx.guild.id)][0])
     pass
@@ -1566,6 +1566,15 @@ async def ping(ctx):
 @client.event
 async def on_message(message):
   try:
+    ########### critical
+    player=get_player(ctx)
+    global ctx_save
+    while(ctx_save[int(ctx.guild.id)][4]!=0):
+      await asyncio.sleep(1)
+    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+    
+    await asyncio.sleep(1)
+    ############
     ctx=None
     msg=None
     chanell=None
@@ -1622,7 +1631,7 @@ async def on_message(message):
         pass
     #print(resflag)
     msg=str(message.content)
-    player=get_player(ctx)
+    
     if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
       second = msg.split(' ', 1)[1]
       await play_(ctx,second)
@@ -1739,7 +1748,8 @@ async def on_message(message):
   except Exception as e:
     print(e)
     pass
-
+  finally:
+    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
 
 async def exitt():
   sys.exit("Exit")
@@ -1747,6 +1757,13 @@ async def exitt():
 @client.event
 async def on_reaction_add(reaction, user):
   try:
+    #############critical
+    player=get_player(ctx)
+    global ctx_save
+    while(ctx_save[int(ctx.guild.id)][4]!=0):
+      await asyncio.sleep(1)
+    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+    ###################
     if user == client.user:
       return
     ctx = await client.get_context(reaction.message)
@@ -1769,7 +1786,7 @@ async def on_reaction_add(reaction, user):
     
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
-    player=get_player(ctx)
+    #player=get_player(ctx)
     if reaction.message.channel.id == channel_id:
       player.cttx=ctx
       await ctx.send(f'**`{user}`**: Reacted!')
@@ -1799,7 +1816,13 @@ async def on_reaction_add(reaction, user):
   except Exception as e:
     #e)
      pass 
-  pass
+  finally:
+    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+    try:
+      del player
+    except Exception as e:
+      pass
+    
 #client.load_extension('music')
 keep_alive()
 
