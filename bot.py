@@ -1565,10 +1565,11 @@ async def ping(ctx):
 
 @client.event
 async def on_message(message):
+  ctx = await client.get_context(message)
   player=get_player(ctx)
   try:
     ########### critical
-    ctx = await client.get_context(message)
+    
     global ctx_save
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
@@ -1766,8 +1767,9 @@ async def on_reaction_add(reaction, user):
   global ctx_save
   try:
     #############critical
-    player=get_player(ctx)
     ctx = await client.get_context(reaction.message)
+    player=get_player(ctx)
+    
     
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
