@@ -1571,15 +1571,6 @@ async def on_message(message):
     ########### critical
     
     global ctx_save
-    counterr=0
-    while(ctx_save[int(ctx.guild.id)][4]!=0):
-      await asyncio.sleep(10)
-      counterr=counterr+1
-      if(counterr==100):
-        tio=10/0
-    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
-    
-    await asyncio.sleep(1)
     ############
     #ctx=None
     msg=None
@@ -1637,6 +1628,15 @@ async def on_message(message):
         pass
     #print(resflag)
     msg=str(message.content)
+    ##############critical
+    counterr=0
+    while(ctx_save[int(ctx.guild.id)][4]!=0):
+      await asyncio.sleep(5)
+      counterr=counterr+1
+      if(counterr==3):
+        tio=10/0
+    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+    #################
     
     if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
       second = msg.split(' ', 1)[1]
@@ -1760,6 +1760,14 @@ async def on_message(message):
       del counterr
       del ctx
       del player
+      #
+      del msg
+      del chanell
+      del channel_id
+      del player
+      del second
+      del third
+      del resflag
     except Exception as e:
       pass
     
@@ -1774,14 +1782,6 @@ async def on_reaction_add(reaction, user):
     #############critical
     ctx = await client.get_context(reaction.message)
     player=get_player(ctx)
-    
-    counterr=0
-    while(ctx_save[int(ctx.guild.id)][4]!=0):
-      await asyncio.sleep(10)
-      counterr=counterr+1
-      if(counterr==100):
-        tio=10/0
-    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     ###################
     if user == client.user:
       return
@@ -1807,8 +1807,18 @@ async def on_reaction_add(reaction, user):
     channel_id = channell.id
     #player=get_player(ctx)
     if reaction.message.channel.id == channel_id:
+      #critical
       player.cttx=ctx
       await ctx.send(f'**`{user}`**: Reacted!')
+      
+      counterr=0
+      while(ctx_save[int(ctx.guild.id)][4]!=0):
+        await asyncio.sleep(5)
+        counterr=counterr+1
+        if(counterr==3):
+          tio=10/0
+      ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+      ####
       #print(reaction.emoji)
       if str(reaction.emoji) =='⏯️':
         await ctx.send(f'**`{user}`**: Resumed Song!')
