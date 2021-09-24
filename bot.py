@@ -1569,7 +1569,7 @@ async def on_message(message):
   player=get_player(ctx)
   try:
     ########### critical
-    
+    #
     global ctx_save
     ############
     #ctx=None
@@ -1579,11 +1579,11 @@ async def on_message(message):
     #player=None
     second=None
     third=None
-    
+    #
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
     resflag=0
-    
+    #
     try:
       if message.author == client.user:
         return
@@ -1628,7 +1628,7 @@ async def on_message(message):
         pass
     #print(resflag)
     msg=str(message.content)
-    
+    #
     ##############critical
     counterr=0
     while(ctx_save[int(ctx.guild.id)][4]!=0):
@@ -1638,7 +1638,7 @@ async def on_message(message):
         tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     #################
-    
+    #
     if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
       second = msg.split(' ', 1)[1]
       await play_(ctx,second)
@@ -1771,7 +1771,9 @@ async def on_message(message):
       del resflag
     except Exception as e:
       pass
-    
+    pass
+  pass
+
 
 async def exitt():
   sys.exit("Exit")
@@ -1786,7 +1788,7 @@ async def on_reaction_add(reaction, user):
     ###################
     if user == client.user:
       return
-    
+    #
     if ctx.author!=client.user:
       return
     #print('rr')
@@ -1803,7 +1805,7 @@ async def on_reaction_add(reaction, user):
           return
     except Exception as e:
       pass
-    
+    #
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
     #player=get_player(ctx)
@@ -1811,7 +1813,7 @@ async def on_reaction_add(reaction, user):
       #critical
       player.cttx=ctx
       await ctx.send(f'**`{user}`**: Reacted!')
-      
+      #
       counterr=0
       while(ctx_save[int(ctx.guild.id)][4]!=0):
         await asyncio.sleep(10)
@@ -1854,7 +1856,8 @@ async def on_reaction_add(reaction, user):
       del player
     except Exception as e:
       pass
-    
+    pass
+  pass
 #client.load_extension('music')
 keep_alive()
 
