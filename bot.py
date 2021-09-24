@@ -1577,11 +1577,11 @@ async def on_message(message):
     
     await asyncio.sleep(1)
     ############
-    ctx=None
+    #ctx=None
     msg=None
     chanell=None
     channel_id=None
-    player=None
+    #player=None
     second=None
     third=None
     
