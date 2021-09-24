@@ -1510,7 +1510,6 @@ async def get_members():
         if player.ispaused==1:
           pass
         else:
-          
           channel = vc.channel
           member_ids = channel.voice_states.keys()
           member_ids=len(member_ids)
@@ -1546,6 +1545,7 @@ async def get_members():
   except Exception as e:
     print('outer ',e)
     pass
+  pass
 
 
 #@tasks.loop(seconds = 60)
@@ -1561,7 +1561,7 @@ async def memory(ctx):
   pass
 
 async def ping(ctx):
-    await ctx.send(f'Ping is {round(client.latency * 1000)} ms',delete_after=30)
+    await ctx.send(f'Ping is {round(client.latency * 1000)} ms')
 
 @client.event
 async def on_message(message):
