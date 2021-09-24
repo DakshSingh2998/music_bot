@@ -1635,6 +1635,7 @@ async def on_message(message):
       while(ctx_save[int(ctx.guild.id)][4]!=0):
         await asyncio.sleep(10)
         counterr=counterr+1
+        print(ctx_save[int(ctx.guild.id)][4])
         if(counterr==10):
           tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
