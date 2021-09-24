@@ -1631,12 +1631,12 @@ async def on_message(message):
     #
     ##############critical
     if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id or message.author != client.user:
-    counterr=0
-    while(ctx_save[int(ctx.guild.id)][4]!=0):
-      await asyncio.sleep(10)
-      counterr=counterr+1
-      if(counterr==10):
-        tio=10/0
+      counterr=0
+      while(ctx_save[int(ctx.guild.id)][4]!=0):
+        await asyncio.sleep(10)
+        counterr=counterr+1
+        if(counterr==10):
+          tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     #################
     #
