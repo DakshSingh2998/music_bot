@@ -1571,8 +1571,12 @@ async def on_message(message):
     ########### critical
     
     global ctx_save
+    counterr=0
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
+      counterr=counterr+1
+      if(counterr==10):
+        tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     
     await asyncio.sleep(1)
@@ -1753,6 +1757,7 @@ async def on_message(message):
   finally:
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
+      del counterr
       del ctx
       del player
     except Exception as e:
@@ -1770,9 +1775,12 @@ async def on_reaction_add(reaction, user):
     ctx = await client.get_context(reaction.message)
     player=get_player(ctx)
     
-    
+    counterr=0
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
+      counterr=counterr+1
+      if(counterr==10):
+        tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     ###################
     if user == client.user:
@@ -1830,6 +1838,7 @@ async def on_reaction_add(reaction, user):
   finally:
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
+      del counterr
       del ctx
       del player
     except Exception as e:
