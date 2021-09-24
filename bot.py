@@ -1565,10 +1565,10 @@ async def ping(ctx):
 
 @client.event
 async def on_message(message):
+  player=get_player(ctx)
   try:
     ########### critical
     ctx = await client.get_context(message)
-    player=get_player(ctx)
     global ctx_save
     while(ctx_save[int(ctx.guild.id)][4]!=0):
       await asyncio.sleep(1)
@@ -1738,7 +1738,7 @@ async def on_message(message):
         await play_(ctx,str(message.content))
     if message.content.lower().startswith(';'):
       player.cttx=ctx
-    del ctx
+    #del ctx
     del msg
     del chanell
     del channel_id
@@ -1752,8 +1752,8 @@ async def on_message(message):
   finally:
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
-      del player
       del ctx
+      del player
     except Exception as e:
       pass
     
@@ -1817,7 +1817,7 @@ async def on_reaction_add(reaction, user):
         await stop_(ctx)
       elif reaction.emoji=='⌚':
         await time_(ctx)
-    del ctx
+    #del ctx
     del channell
     del channel_id
     del player
@@ -1827,8 +1827,8 @@ async def on_reaction_add(reaction, user):
   finally:
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
-      del player
       del ctx
+      del player
     except Exception as e:
       pass
     
