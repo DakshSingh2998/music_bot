@@ -1565,9 +1565,9 @@ async def ping(ctx):
 
 @client.event
 async def on_message(message):
-  ctx = await client.get_context(message)
-  player=get_player(ctx)
   try:
+    ctx = await client.get_context(message)
+    player=get_player(ctx)
     ########### critical
     #
     global ctx_save
@@ -1752,20 +1752,25 @@ async def on_message(message):
       pass
     finally:
       ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
-    #del msg
-    #del chanell
-    #del channel_id
-    #del player
-    #del second
-    #del third
-    #del resflag
+    del msg
+    del chanell
+    del channel_id
+    del player
+    del second
+    del third
+    del resflag
+    del counterr
+    del tio
+    del ctx
+    del player
   except Exception as e:
     print(e)
     pass
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
-      del counterr
+      pass
+      """
       del ctx
       del player
       del tio
@@ -1776,6 +1781,8 @@ async def on_message(message):
       del second
       del third
       del resflag
+      """
+      pass
     except Exception as e:
       pass
     pass
@@ -1808,7 +1815,7 @@ async def on_reaction_add(reaction, user):
           return
         if channel.id!=ctx.voice_client.channel.id:
           await ctx.send("You must be in same vc to interact")
-          del ctx
+          #del ctx
           return
     except Exception as e:
       pass
@@ -1854,22 +1861,25 @@ async def on_reaction_add(reaction, user):
         pass
       finally:
         ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
-    #del ctx
-    #del channell
-    #del channel_id
-    #del player
+    del ctx
+    del channell
+    del channel_id
+    del player
+    del counterr
+    del tio
   except Exception as e:
     #e)
-     pass 
+    pass 
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
-      del counterr
-      del ctx
-      del tio
-      del player
-      del channell
-      del channel_id
+      #del counterr
+      #del ctx
+      #del tio
+      #del player
+      #del channell
+      #del channel_id
+      pass
     except Exception as e:
       pass
     pass
