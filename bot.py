@@ -1637,6 +1637,7 @@ async def on_message(message):
         counterr=counterr+1
         print(ctx_save[int(ctx.guild.id)][4])
         if(counterr==10):
+          tio=None
           tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     #################
@@ -1833,6 +1834,7 @@ async def on_reaction_add(reaction, user):
         await asyncio.sleep(10)
         counterr=counterr+1
         if(counterr==10):
+          tio=None
           tio=10/0
         pass
       try:
