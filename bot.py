@@ -1718,7 +1718,7 @@ async def on_message(message):
         #print(second)
         third=int(third)
         #print('third',third)
-        player=get_player(ctx)
+        #player=get_player(ctx)
         if player.queue.qsize()==0 or third==0:
           #print(player.queue.qsize())
           await play_(ctx,second)
@@ -1765,7 +1765,7 @@ async def on_message(message):
     del counterr
     del tio
     del ctx
-    del player
+    #del player
   except Exception as e:
     print(e)
     pass
