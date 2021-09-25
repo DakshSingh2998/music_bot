@@ -1752,13 +1752,13 @@ async def on_message(message):
       pass
     finally:
       ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
-    del msg
-    del chanell
-    del channel_id
-    del player
-    del second
-    del third
-    del resflag
+    #del msg
+    #del chanell
+    #del channel_id
+    #del player
+    #del second
+    #del third
+    #del resflag
   except Exception as e:
     print(e)
     pass
@@ -1768,7 +1768,7 @@ async def on_message(message):
       del counterr
       del ctx
       del player
-      #
+      del tio
       del msg
       del chanell
       del channel_id
@@ -1855,9 +1855,9 @@ async def on_reaction_add(reaction, user):
       finally:
         ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     #del ctx
-    del channell
-    del channel_id
-    del player
+    #del channell
+    #del channel_id
+    #del player
   except Exception as e:
     #e)
      pass 
@@ -1866,7 +1866,10 @@ async def on_reaction_add(reaction, user):
     try:
       del counterr
       del ctx
+      del tio
       del player
+      del channell
+      del channel_id
     except Exception as e:
       pass
     pass
