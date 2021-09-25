@@ -1616,10 +1616,10 @@ async def on_message(message):
               try:
                 channel = ctx.author.voice.channel
               except Exception as e:
-                await ctx.send("You must be in same vc to interact")
+                await ctx.send("Someone is already listening songs")
                 return
               if channel.id!=ctx.voice_client.channel.id:
-                await ctx.send("You must be in same vc to interact")
+                await ctx.send("Someone is already listening songs")
                 return
           except Exception as e:
             pass
@@ -1637,7 +1637,7 @@ async def on_message(message):
         counterr=counterr+1
         print(ctx_save[int(ctx.guild.id)][4])
         if(counterr==10):
-          tio=None
+          tio=4
           tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
     #################
@@ -1812,10 +1812,10 @@ async def on_reaction_add(reaction, user):
         try:
           channel = user.voice.channel
         except Exception as e:
-          await ctx.send("You must be in same vc to interact")
+          await ctx.send("Someone is already listening songs")
           return
         if channel.id!=ctx.voice_client.channel.id:
-          await ctx.send("You must be in same vc to interact")
+          await ctx.send("Someone is already listening songs")
           #del ctx
           return
     except Exception as e:
@@ -1834,7 +1834,7 @@ async def on_reaction_add(reaction, user):
         await asyncio.sleep(10)
         counterr=counterr+1
         if(counterr==10):
-          tio=None
+          tio=4
           tio=10/0
         pass
       try:
