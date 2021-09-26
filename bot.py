@@ -1581,6 +1581,8 @@ async def on_message(message):
     #player=None
     second=None
     third=None
+    multiline=[]
+    tmultiline=""
     #
     channell = discord.utils.get(ctx.guild.channels, name='d-songs')
     channel_id = channell.id
@@ -1746,8 +1748,10 @@ async def on_message(message):
       elif ctx.message.channel.id==channel_id:
         if message.author != client.user:
           player.cttx=ctx
-          #print('a')
-          await play_(ctx,str(message.content))
+          #print('a')\
+          multiline=msg.splitlines()
+          for tmultiline in multiline:
+            await play_(ctx,str(tmultiline))
       if message.content.lower().startswith(';'):
         player.cttx=ctx
       #del ctx
@@ -1765,6 +1769,8 @@ async def on_message(message):
     del counterr
     del tio
     del ctx
+    del multiline
+    del tmultiline
     #del player
   except Exception as e:
     print(e)
