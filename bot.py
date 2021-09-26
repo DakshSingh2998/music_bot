@@ -671,7 +671,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     player = get_player(ctx)
     #print('success')
     if listsize==10:
-      await player.showw(ctx)
+      #await player.showw(ctx)
       del player
       return
     """
