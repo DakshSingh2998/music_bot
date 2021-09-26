@@ -920,6 +920,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           #print('ssssssssssssssssssssssss',serr)
           await insert_(ctx=ctx,search=serr,isplaylist=1,position=position+1,listsize=listsize+1)
         except Exception as e:
+          pass
           #await now_playing_(ctx)
         #await asyncio.sleep(2)
       else:
