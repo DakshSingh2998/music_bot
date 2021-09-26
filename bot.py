@@ -753,7 +753,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
           
           await play_(ctx,serr,1,listsize+1)
         except Exception as e:
-          await now_playing_(ctx)
+          #await now_playing_(ctx)
         #await asyncio.sleep(2)
       else:
         #print('ppppppppppppppppppppppppppppp')
@@ -764,13 +764,13 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
         temp['title']=source["title"]
         await player.queue.put(temp)
         await player.searchqueue.put(source["webpage_url"])
-        await now_playing_(ctx)
+        ####await now_playing_(ctx)
     else:
       source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
       #print(ctx_save)
       await player.queue.put(source)
       await player.searchqueue.put(source['webpage_url'])
-      await now_playing_(ctx)
+      ####await now_playing_(ctx)
     #await ctx.message.delete()
     #print('ss')
     del player
@@ -919,7 +919,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           #print('ssssssssssssssssssssssss',serr)
           await insert_(ctx=ctx,search=serr,isplaylist=1,position=position+1,listsize=listsize+1)
         except Exception as e:
-          await now_playing_(ctx)
+          #await now_playing_(ctx)
         #await asyncio.sleep(2)
       else:
         #print('ppppppppppppppppppppppppppppp')
@@ -963,7 +963,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
           t2=await temp2.get()
           await player.searchqueue.put(t2)
           pos=pos+1
-        await now_playing_(ctx)
+        #await now_playing_(ctx)
     else:
       source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
       #print(source)
@@ -1001,7 +1001,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
         t2=await temp2.get()
         await player.searchqueue.put(t2)
         pos=pos+1
-      await now_playing_(ctx)
+      #await now_playing_(ctx)
     #await ctx.message.delete()
     del player
     del vc
@@ -1306,7 +1306,7 @@ async def remove_( ctx,index:int):
     except Exception as e:
       #print(e)
       pass
-    await player.showw(ctx)
+    #await player.showw(ctx)
     await ctx.send(f'**`{ctx.author}`**: Removed the song!')
     #await ctx.message.delete()
     del vc
@@ -1650,6 +1650,7 @@ async def on_message(message):
       if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
         second = msg.split(' ', 1)[1]
         await play_(ctx,second)
+        await now_playing_(ctx)
       elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
         #second = msg.split(' ', 1)[1]
         await ctx.invoke(connect_)
@@ -1726,6 +1727,7 @@ async def on_message(message):
           await play_(ctx,second)
         else:
           await insert_(ctx=ctx,search=second,position=third)
+        await now_playing_(ctx)
       elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
         second = msg.split(' ', 1)[1]
         second=second.split(' ')
@@ -1736,6 +1738,7 @@ async def on_message(message):
           x=x-i
           i=i+1
           await remove_(ctx,x)
+        await player.showw(ctx)
       elif message.content.lower().startswith(';time'):
         #second = msg.split(' ', 1)[1]
         await time_(ctx)
@@ -1753,6 +1756,7 @@ async def on_message(message):
           print(multiline)
           for tmultiline in multiline:
             await play_(ctx,str(tmultiline))
+          await now_playing_(ctx)
       if message.content.lower().startswith(';'):
         player.cttx=ctx
       #del ctx
@@ -1905,4 +1909,3 @@ keep_alive()
 
 client.run(os.environ.get('token'))
 #client.run("")
-#Daksh
