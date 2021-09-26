@@ -40,7 +40,7 @@ async def on_ready():
   global players
   players={}
   await asyncio.sleep(5)
-  await get_members.start()
+  await get_membersss()
   await clearram.start()
 #ctx_data={}
 #ctx_data_flag=0
@@ -1454,7 +1454,21 @@ async def clearram():
     print('aft',gc.get_count())
   except Exception as e:
     pass
-@tasks.loop(seconds = 10)
+#@tasks.loop(seconds = 10)
+async def get_membersss():
+  try:
+    while True:
+      try:
+        await get_members()
+        await asyncio.sleep(1)
+      except Exception as e:
+        pass
+      pass
+    pass
+  except Exception as e:
+    pass
+      
+      
 async def get_members():
   try:
     #print('bef',gc.get_count())
