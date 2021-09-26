@@ -753,6 +753,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
           
           await play_(ctx,serr,1,listsize+1)
         except Exception as e:
+          pass
           #await now_playing_(ctx)
         #await asyncio.sleep(2)
       else:
