@@ -1582,8 +1582,8 @@ async def ping(ctx):
 @client.event
 async def on_message(message):
   try:
-    counterr=0
-    tio=4
+    #counterr=0
+    #tio=4
     ctx = await client.get_context(message)
     player=get_player(ctx)
     ########### critical
@@ -1649,6 +1649,7 @@ async def on_message(message):
     #print(resflag)
     msg=str(message.content)
     #
+    """
     ##############critical
     if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id or message.author != client.user:
       counterr=0
@@ -1660,6 +1661,7 @@ async def on_message(message):
           tio=4
           tio=10/0
     ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+    """
     #################
     #
     try:
@@ -1779,7 +1781,8 @@ async def on_message(message):
     except Exception as e:
       pass
     finally:
-      ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+      #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+      pass
     del msg
     del chanell
     del channel_id
@@ -1787,8 +1790,8 @@ async def on_message(message):
     del second
     del third
     del resflag
-    del counterr
-    del tio
+    #del counterr
+    #del tio
     del ctx
     del multiline
     del tmultiline
@@ -1826,8 +1829,8 @@ async def exitt():
 async def on_reaction_add(reaction, user):
   global ctx_save
   try:
-    counterr=0
-    tio=4
+    #counterr=0
+    #tio=4
     #############critical
     ctx = await client.get_context(reaction.message)
     player=get_player(ctx)
@@ -1860,7 +1863,9 @@ async def on_reaction_add(reaction, user):
       player.cttx=ctx
       await ctx.send(f'**`{user}`**: Reacted!')
       #
-      counterr=0
+      #counterr=0
+      ############critical
+      """
       while(ctx_save[int(ctx.guild.id)][4]!=0):
         await asyncio.sleep(10)
         counterr=counterr+1
@@ -1868,8 +1873,9 @@ async def on_reaction_add(reaction, user):
           tio=4
           tio=10/0
         pass
+      """
       try:
-        ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+        #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
         ####
         #print(reaction.emoji)
         if str(reaction.emoji) =='⏯️':
@@ -1893,13 +1899,14 @@ async def on_reaction_add(reaction, user):
       except Exception as e:
         pass
       finally:
-        ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+        #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+        pass
     del ctx
     del channell
     del channel_id
     del player
-    del counterr
-    del tio
+    #del counterr
+    #del tio
   except Exception as e:
     #e)
     pass 
