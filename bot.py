@@ -404,7 +404,7 @@ class MusicPlayer:
     await ctx_save[int(ctx.guild.id)][4].acquire()
     try:
       # Grab up to 5 entries from the queue...
-      vc = ctx.voice_client
+      vc = self.cttx.voice_client
       if not vc or not vc.is_connected():
         return #await ctx.send('I am not currently connected to voice!',delete_after=10)
       upcoming = list(itertools.islice(self.queue._queue, 0, 999999))
