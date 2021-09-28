@@ -1226,8 +1226,6 @@ async def seek_( ctx, search: int):
   pass
 @commands.command(name="pause", aliases=["pausee"])
 async def pause_( ctx,pflag=0):
-  global ctx_save
-  await ctx_save[int(ctx.guild.id)][5].acquire()
   try:
     #vc = ctx.voice_client
     vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
@@ -1257,8 +1255,6 @@ async def pause_( ctx,pflag=0):
   except Exception as e:
     #print(e)
     pass
-  finally:
-    ctx_save[int(ctx.guild.id)][5].release()
   pass
 
 @commands.command(name="time", aliases=["timee"])
@@ -1485,17 +1481,13 @@ async def clearram():
     pass
 #@tasks.loop(seconds = 10)
 async def get_membersss():
-  global ctx_save
   try:
     while True:
-      await ctx_save[int(ctx.guild.id)][5].acquire()
       try:
         await get_members()
         await asyncio.sleep(1)
       except Exception as e:
         pass
-      finally:
-        ctx_save[int(ctx.guild.id)][5].release()
       pass
     pass
   except Exception as e:
