@@ -121,6 +121,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     # https://github.com/rg3/youtube-dl/blob/master/README.md
   def __getitem__(self, item: str):
     return self.__getattribute__(item)
+  
   @classmethod
   async def create_source(cls, ctx, search: str, *, loop, download=False,isplaylist=True):
     loop = loop or asyncio.get_event_loop()
@@ -219,6 +220,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
       else:
         return data
     #return cls(discord.FFmpegPCMAudio(source,**ffmpegopts), data=data, requester=ctx.author)
+    pass
+  
   async def create_source2(cls, ctx, search: str, *, loop, download=False):
     ytdlopts = {
       'format': 'worstaudio/worst',
@@ -273,6 +276,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
     else:
       return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title'],'duration':data['duration']}
     #return cls(discord.FFmpegPCMAudio(source,**ffmpegopts), data=data, requester=ctx.author)
+    pass
+  
   @classmethod
   async def regather_stream(cls, data, *, loop,ctx):
     loop = loop or asyncio.get_event_loop()
@@ -324,6 +329,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
     except Exception as e:
       pass
     return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
+  pass
+
 class MusicPlayer:
   __slots__ = ('bot', '_guild','before', '_channel','isautopaused','isplaylist','_cog','ispaused','idd', 'queue','startt','stopt', 'next', 'current', 'np', 'volume','que','embed','nowp','searchqueue','cttx','elapsed')
   def __init__(self, ctx):
@@ -354,6 +361,8 @@ class MusicPlayer:
       ctx.bot.loop.create_task(self.player_loop(ctx))
     except Exception as e:
       pass
+    pass
+  
   """
   async def reset(self,ctx):
     self.startt=None
@@ -448,6 +457,9 @@ class MusicPlayer:
       pass
     finally:
       ctx_save[int(ctx.guild.id)][4].release()
+      pass
+    pass
+  
   async def seek(self,ctx):
     #print(self.nowp)
     try:
@@ -506,6 +518,8 @@ class MusicPlayer:
       del t2
     except Exception as e:
       pass
+    pass
+  
   async def player_loop(self,ctx):
     try:
       await self.bot.wait_until_ready()
@@ -580,6 +594,8 @@ class MusicPlayer:
       pass
   def destroy(self, guild):
     return self.bot.loop.create_task(self._cog.cleanup(guild))
+  pass
+
 players = {}
 async def cleanup(guild):
   try:
@@ -640,7 +656,6 @@ def get_player(ctx):
   #auto_now=auto_now+1
   return player
 
-
 @commands.command(name='connect', aliases=['join'])
 async def connect_(ctx, *, channel: discord.VoiceChannel=None):
   try:
@@ -669,6 +684,8 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
   except Exception as e:
     #print(e)
     pass
+  pass
+
 @commands.command(name='play', aliases=['sing','p'])
 async def play_( ctx, search,isplaylist=0,listsize=0):
   #await showram(ctx)
@@ -793,9 +810,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     #print('playyy',e)
     pass
   #await showram(ctx)
-    
-  
-
+  pass
 
 @commands.command(name='insert', aliases=['ins'])
 async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
@@ -1028,12 +1043,9 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
   except Exception as e:
     #print('playyy',e)
     pass
-
-
+  pass
 
 #########################################
-
-
 
 @commands.command(name='resume', aliases=['r','res'])
 async def resume_( ctx):
@@ -1062,7 +1074,7 @@ async def resume_( ctx):
   except Exception as e:
     #print(e)
     pass
-
+  pass
 
 @commands.command(name='skip')
 async def skip_( ctx):
@@ -1095,7 +1107,7 @@ async def skip_( ctx):
   except Exception as e:
     #print(e)
     pass
-
+  pass
 
 @commands.command(name='queue_info', aliases=['q', 'playlist','queue'])
 async def queue_info( ctx):
@@ -1107,7 +1119,7 @@ async def queue_info( ctx):
   except Exception as e:
     #print(e)
     pass
-
+  pass
 
 @commands.command(name='now_playing', aliases=['np', 'current', 'currentsong', 'playing'])
 async def now_playing_( ctx):
@@ -1122,6 +1134,8 @@ async def now_playing_( ctx):
       pass
   except Exception as e:
     print(e)
+    pass
+  pass
 
 @commands.command(name='change_volume', aliases=['vol','volume'])
 async def change_volume( ctx, vol: float):
@@ -1142,7 +1156,7 @@ async def change_volume( ctx, vol: float):
   except Exception as e:
     #print(e)
     pass
-
+  pass
 
 @commands.command(name='stop')
 async def stop_( ctx):
@@ -1180,7 +1194,7 @@ async def stop_( ctx):
   except Exception as e:
     pass
   #await cleanup(ctx.guild)
-
+  pass
 
 @commands.command(name='seek')
 async def seek_( ctx, search: int):
@@ -1207,8 +1221,8 @@ async def seek_( ctx, search: int):
       print(e)
   except Exception as e:
     print(e)
-
-
+    pass
+  pass
 @commands.command(name="pause", aliases=["pausee"])
 async def pause_( ctx,pflag=0):
   try:
@@ -1240,7 +1254,7 @@ async def pause_( ctx,pflag=0):
   except Exception as e:
     #print(e)
     pass
-  
+  pass
 
 @commands.command(name="time", aliases=["timee"])
 async def time_( ctx,sek=0):
@@ -1327,7 +1341,7 @@ async def remove_( ctx,index:int):
   except Exception as e:
     #print(e)
     pass
-
+  pass
 
 """
 #####################################   save
@@ -1420,8 +1434,8 @@ async def autorestart():
   except Exception as e:
     #print('can not restart',e)
     pass
+  pass
 
- 
 async def changepresence(ctx,message):
   status=message
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=KbSWQBRceCo"))
@@ -1437,7 +1451,9 @@ async def showram(ctx):
     await ctx.send(str(mem))
   except Exception as e:
     pass
-  
+  pass
+
+
 async def clearramm(ctx):
   try:
     await showram(ctx)
@@ -1449,7 +1465,8 @@ async def clearramm(ctx):
     await showram(ctx)
   except Exception as e:
     pass
-  
+  pass
+
 
 @tasks.loop(seconds = 1800)
 async def clearram():
@@ -1474,8 +1491,7 @@ async def get_membersss():
     pass
   except Exception as e:
     pass
-      
-      
+  pass
 async def get_members():
   try:
     #print('bef',gc.get_count())
