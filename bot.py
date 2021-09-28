@@ -281,8 +281,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
   @classmethod
   async def regather_stream(cls, data, *, loop,ctx):
     loop = loop or asyncio.get_event_loop()
-    requester=ctx.author
-    #requester = data['requester']
+    requester = data['requester']
     ytdlopts = {
       'format': 'bestaudio/best',
       'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
