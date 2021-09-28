@@ -391,6 +391,8 @@ class MusicPlayer:
     return state
   """
   async def showw(self,ctx):
+    global ctx_save
+    ctx_save[int(ctx.guild.id)][4].acquire()
     try:
       # Grab up to 5 entries from the queue...
       vc = ctx.voice_client
@@ -444,6 +446,8 @@ class MusicPlayer:
       #print(e)
       #await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
       pass
+    finally:
+      ctx_save[int(ctx.guild.id)][4].release()
   async def seek(self,ctx):
     #print(self.nowp)
     try:
@@ -628,7 +632,8 @@ def get_player(ctx):
     #ctx_save[int(ctx.guild.id)].append(0)
     #ctx_save[int(ctx.guild.id)].append(0)
     #ctx_save[int(ctx.guild.id)].append(1)
-    templist=[0.0,0,1,1,0]#####time,,4-critical
+    lock=asyncio.Lock()
+    templist=[0.0,0,1,1,lock]#####time,,4-critical
     ctx_save[int(ctx.guild.id)]=templist
     #print(ctx_save[int(ctx.guild.id)][0])
     pass
