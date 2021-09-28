@@ -316,7 +316,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
     data = await loop.run_in_executor(None, to_run)
     ffmpegopts = {
     'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-    'options': f'-vn bass=g=20'
+    'options': f'-vn -af bass=g=20'
     }
     try:
       del loop
