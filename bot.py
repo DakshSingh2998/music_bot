@@ -281,11 +281,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
   @classmethod
   async def regather_stream(cls, data, *, loop,ctx):
     loop = loop or asyncio.get_event_loop()
-    requester=None
-    if ctx.author.bot:
-      requester=player.cttx.author
-    else:
-      requester=ctx.author
+    requester=ctx.author
     #requester = data['requester']
     ytdlopts = {
       'format': 'bestaudio/best',
@@ -1869,6 +1865,7 @@ async def on_reaction_add(reaction, user):
     #
     if ctx.author!=client.user:
       return
+    ctx.author=user
     #print('rr')
     try:
       if user.id!=356012950298951690:
