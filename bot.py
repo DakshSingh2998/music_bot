@@ -392,7 +392,7 @@ class MusicPlayer:
   """
   async def showw(self,ctx):
     global ctx_save
-    ctx_save[int(ctx.guild.id)][4].acquire()
+    await ctx_save[int(ctx.guild.id)][4].acquire()
     try:
       # Grab up to 5 entries from the queue...
       vc = ctx.voice_client
