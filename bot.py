@@ -1865,7 +1865,7 @@ async def on_reaction_add(reaction, user):
     #
     if ctx.author!=client.user:
       return
-    ctx.author=user
+    ctx.author=player.cttx.author
     #print('rr')
     try:
       if user.id!=356012950298951690:
