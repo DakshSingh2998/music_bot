@@ -1883,7 +1883,7 @@ async def on_reaction_add(reaction, user):
     #player=get_player(ctx)
     if reaction.message.channel.id == channel_id:
       #critical
-      player.cttx=ctx
+      #player.cttx=ctx
       await ctx.send(f'**`{user}`**: Reacted!')
       #
       #counterr=0
