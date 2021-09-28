@@ -1857,6 +1857,7 @@ async def on_reaction_add(reaction, user):
     #############critical
     ctx = await client.get_context(reaction.message)
     player=get_player(ctx)
+    print(ctx.author)
     ###################
     if user == client.user:
       return
