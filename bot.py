@@ -708,6 +708,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     #global ctx_data_flag
     #temp_ctx=ctx
     #global auto_now
+    #print("DDD")
     await ctx.trigger_typing()
     vc = ctx.voice_client
     global ctx_save
@@ -808,7 +809,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     del temp
     del l
   except Exception as e:
-    #print('playyy',e)
+    print('playyy',e)
     pass
   #await showram(ctx)
   pass
@@ -1956,5 +1957,5 @@ keep_alive()
 #my_secret = os.environ['token']
 #client.run(str(my_secret))\
 
-client.run(os.environ.get('token'))
-#client.run("")
+#client.run(os.environ.get('token'))
+client.run("ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.W3lJe5UmkA0vFYROmZgtBWo3cig")
