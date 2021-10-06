@@ -1235,10 +1235,10 @@ async def pause_( ctx,pflag=0):
     elif vc.is_paused():
       return
     player=get_player(ctx)
-    await ctx.send(f'**`{ctx.author}`**: Paused the song!')
     if pflag==0:
       player.ispaused=1
     player.isautopaused=1
+    await ctx.send(f'**`{ctx.author}`**: Paused the song!')
     try:
       player=get_player(ctx)
       player.stopt=datetime.now().timestamp()
@@ -1547,7 +1547,7 @@ async def get_members():
           await time_(ctx,1)
           await seek_(ctx,int(player.elapsed))
           player.before=vc
-          await asyncio.sleep(5)
+          #await asyncio.sleep(5)
         if player.ispaused==1:
           pass
         else:
@@ -1566,6 +1566,8 @@ async def get_members():
               await pause_(ctx,1)
           elif vc.is_paused():
             if(member_ids>0):
+              if player.ispaused==1:
+                continue
               await time_(ctx,1)
               await seek_(ctx,int(player.elapsed))
               #await resume_(ctx)
