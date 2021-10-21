@@ -1748,7 +1748,7 @@ async def on_message(message):
         msgg='@24/7 BOT \nIT AUTOMATICALLY PAUSES SONG WHEN VC IS EMPTY AND RESUMES IT WHEN SOMEONE JOINS \nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE (IMPORTANT STEP),\n NO NEED TO WRITE ;PLAY IN d-songs CHANNEL, WRITE NAME OR LINK DIRECTLY, \nPlease do no edit permission, It breaks working of Bot, \nPermissions required-send msg, manage channel,use reactions, gifs,manage message,connect,speak. \n'
         msgg=msgg+' PLAYLISTS ARE ALSO SUPPORTED, ONLY 10 SONGS \nUSE REACTIONS EMOJI TO PLAY PAUSE SKIP OR STOP SONGS \n;rem 1 2 3, it will remove 1 2 and 3rd song from list\n;skip, to skip\n;pause, to pause\n;resume, or ;res to resume\n'
         msgg=msgg+';stop, to stop\n;invite to see bot invite link\n;seek, to seek (in seconds)\n;ping, to check ping\n;vol or ;volume, to change volume 1-100\n;np, to check now play but it is automatic\n;ins songname position, to insert song at particular position\n;time to check elapsed time of current song\n'
-        msgg=msgg+'\n\n IF YOU HAVE ANY DOUBT OR ANY FUNCTIONS IS NOT WORKING PROPERLY, CONTACT ME ON INSTA- daksh2998'
+        msgg=msgg+'\n\n IF YOU HAVE ANY DOUBT OR ANY FUNCTION IS NOT WORKING PROPERLY, CONTACT ME ON INSTA- daksh2998'
         await ctx.send(msgg)
         await ctx.send('My discord server invite link: https://discord.gg/tPDUcFs9Et')
       elif message.content.lower().startswith(';invite'):
