@@ -402,6 +402,7 @@ class MusicPlayer:
   async def showw(self,ctx):
     global ctx_save
     try:
+      await ctx_save[int(ctx.guild.id)][6].acquire()
       # Grab up to 5 entries from the queue...
       vc = self.cttx.voice_client
       if not vc or not vc.is_connected():
@@ -455,13 +456,14 @@ class MusicPlayer:
       #await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
       pass
     finally:
-      #ctx_save[int(ctx.guild.id)][4].release()
+      ctx_save[int(ctx.guild.id)][6].release()
       pass
     pass
   
   async def seek(self,ctx):
     #print(self.nowp)
     try:
+      await ctx_save[int(ctx.guild.id)][7].acquire()
       # Grab up to 5 entries from the queue...
       vc = ctx.voice_client
       if not vc or not vc.is_connected():
@@ -517,6 +519,8 @@ class MusicPlayer:
       del t2
     except Exception as e:
       pass
+    finally:
+      ctx_save[int(ctx.guild.id)][7].release()
     pass
   
   async def player_loop(self,ctx):
@@ -649,7 +653,9 @@ def get_player(ctx):
     #ctx_save[int(ctx.guild.id)].append(1)
     lock=asyncio.Lock()
     lockp=asyncio.Lock()
-    templist=[0.0,0,1,1,lock,lockp]#####time,,4-show lock, 5 pause lock
+    lockshow=asyncio.Lock()
+    lockseek=asyncio.Lock()
+    templist=[0.0,0,1,1,lock,lockp,lockshow,lockseek]#####time,,4-show lock, 5 pause lock
     ctx_save[int(ctx.guild.id)]=templist
     #print(ctx_save[int(ctx.guild.id)][0])
     pass
