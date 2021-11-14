@@ -1616,7 +1616,6 @@ async def on_message(message):
     ########### critical
     #
     global ctx_save
-    await ctx_save[int(ctx.guild.id)][4].acquire()
     ############
     #ctx=None
     msg=None
@@ -1677,19 +1676,11 @@ async def on_message(message):
     #print(resflag)
     msg=str(message.content)
     #
-    """
+    
     ##############critical
-    if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id or message.author != client.user:
-      counterr=0
-      while(ctx_save[int(ctx.guild.id)][4]!=0):
-        await asyncio.sleep(10)
-        counterr=counterr+1
-        print(ctx_save[int(ctx.guild.id)][4])
-        if(counterr==10):
-          tio=4
-          tio=10/0
-    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
-    """
+    if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id:
+      await ctx_save[int(ctx.guild.id)][4].acquire()
+    
     #################
     #
     try:
@@ -1830,7 +1821,8 @@ async def on_message(message):
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
-      await ctx_save[int(ctx.guild.id)][4].release()
+      if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id:
+        await ctx_save[int(ctx.guild.id)][4].acquire()
       pass
       """
       del ctx
