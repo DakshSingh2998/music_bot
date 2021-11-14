@@ -1822,7 +1822,7 @@ async def on_message(message):
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
       if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id:
-        await ctx_save[int(ctx.guild.id)][4].acquire()
+        ctx_save[int(ctx.guild.id)][4].release()
       pass
       """
       del ctx
@@ -1897,6 +1897,7 @@ async def on_reaction_add(reaction, user):
           tio=10/0
         pass
       """
+      await ctx_save[int(ctx.guild.id)][4].acquire()
       try:
         #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
         ####
@@ -1935,6 +1936,7 @@ async def on_reaction_add(reaction, user):
     pass 
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
+    ctx_save[int(ctx.guild.id)][4].release()
     try:
       #del counterr
       #del ctx
