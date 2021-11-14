@@ -401,8 +401,8 @@ class MusicPlayer:
   """
   async def showw(self,ctx):
     global ctx_save
-    await ctx_save[int(ctx.guild.id)][4].acquire()
     try:
+      await ctx_save[int(ctx.guild.id)][4].acquire()
       # Grab up to 5 entries from the queue...
       vc = self.cttx.voice_client
       if not vc or not vc.is_connected():
@@ -461,8 +461,10 @@ class MusicPlayer:
     pass
   
   async def seek(self,ctx):
+    global ctx_save
     #print(self.nowp)
     try:
+      await ctx_save[int(ctx.guild.id)][5].acquire()
       # Grab up to 5 entries from the queue...
       vc = ctx.voice_client
       if not vc or not vc.is_connected():
@@ -486,8 +488,8 @@ class MusicPlayer:
         tsize=tsize-1
       #self.queue=None
       while(self.queue.qsize()>0):
-        self.queue.get()
-        self.searchqueue.get()
+        await self.queue.get()
+        await self.searchqueue.get()
       #self.queue = asyncio.Queue()
       #self.searchqueue=None
       #self.searchqueue = asyncio.Queue()
@@ -518,6 +520,8 @@ class MusicPlayer:
       del t2
     except Exception as e:
       pass
+    finally:
+      ctx_save[int(ctx.guild.id)][5].release()
     pass
   
   async def player_loop(self,ctx):
@@ -690,8 +694,10 @@ async def connect_(ctx, *, channel: discord.VoiceChannel=None):
 @commands.command(name='play', aliases=['sing','p'])
 async def play_( ctx, search,isplaylist=0,listsize=0):
   #await showram(ctx)
+  global ctx_save
   try:
     player = get_player(ctx)
+    await ctx_save[int(ctx.guild.id)][5].acquire()
     #print('success')
     if listsize==10:
       #await player.showw(ctx)
@@ -711,7 +717,6 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     #print("DDD")
     await ctx.trigger_typing()
     vc = ctx.voice_client
-    global ctx_save
     await ctx.invoke(connect_)
     l=None
     temp=None
@@ -811,13 +816,17 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
   except Exception as e:
     print('playyy',e)
     pass
+  finally:
+    ctx_save[int(ctx.guild.id)][5].release()
   #await showram(ctx)
   pass
 
 @commands.command(name='insert', aliases=['ins'])
 async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
+  global ctx_save
   try:
     player = get_player(ctx)
+    await ctx_save[int(ctx.guild.id)][5].acquire()
     if listsize==10:
       await player.showw(ctx)
       return
@@ -1045,12 +1054,14 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
   except Exception as e:
     #print('playyy',e)
     pass
+  finally:
+    ctx_save[int(ctx.guild.id)][5].release()
   pass
 
 #########################################
 
 @commands.command(name='resume', aliases=['r','res'])
-async def resume_( ctx):
+async def resume_(ctx):
   try:
     #vc = ctx.voice_client
     vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
@@ -1204,9 +1215,9 @@ async def seek_( ctx, search: int):
     global ctx_save
     ctx_save[int(ctx.guild.id)][1]=1
     player=get_player(ctx)
+    await player.seek(ctx)
     player.ispaused=0
     player.isautopaused=0
-    await player.seek(ctx)
     vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
     player.startt=datetime.now().timestamp()
     player.elapsed=search
@@ -1283,7 +1294,9 @@ async def time_( ctx,sek=0):
   pass
 @commands.command(name='remove', aliases=['rem'])
 async def remove_( ctx,index:int):
+  global ctx_save
   try:
+    await ctx_save[int(ctx.guild.id)][5].acquire()
     vc = ctx.voice_client
     if not vc or not vc.is_playing():
       return #await ctx.send('I am not currently playing anything!', delete_after=10)
@@ -1343,6 +1356,8 @@ async def remove_( ctx,index:int):
   except Exception as e:
     #print(e)
     pass
+  finally:
+    ctx_save[int(ctx.guild.id)][5].release()
   pass
 
 """
@@ -1486,8 +1501,10 @@ async def get_membersss():
     while True:
       try:
         await get_members()
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
       except Exception as e:
+        pass
+      finally:
         pass
       pass
     pass
@@ -1501,6 +1518,7 @@ async def get_members():
     #print('aft',gc.get_count())
     #await asyncio.sleep(3)
     global players
+    global ctx_save
     if players==None:
       return
     tempp=players.copy()
@@ -1521,6 +1539,7 @@ async def get_members():
         if player==None:
           continue
         ctx=players[x].cttx
+        
         #player=get_player(ctx)
         
         vc=None
@@ -1855,11 +1874,13 @@ async def exitt():
 @client.event
 async def on_reaction_add(reaction, user):
   global ctx_save
+  ctx = await client.get_context(reaction.message)
   try:
+    await ctx_save[int(ctx.guild.id)][5].acquire()
     #counterr=0
     #tio=4
     #############critical
-    ctx = await client.get_context(reaction.message)
+    
     player=get_player(ctx)
     #print(ctx.author)
     ###################
@@ -1930,7 +1951,7 @@ async def on_reaction_add(reaction, user):
       finally:
         #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
         pass
-    del ctx
+    #del ctx
     del channell
     del channel_id
     del player
@@ -1940,6 +1961,7 @@ async def on_reaction_add(reaction, user):
     #e)
     pass 
   finally:
+    ctx_save[int(ctx.guild.id)][5].release()
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
       #del counterr
