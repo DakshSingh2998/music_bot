@@ -481,15 +481,15 @@ class MusicPlayer:
       t=None
       t2=None
       while(tsize>0):
-        t=await self.queue.get()
-        t2=await self.searchqueue.get()
+        t=self.queue.get_nowait()
+        t2=self.searchqueue.get_nowait()
         await temp2.put(t2)
         await temp.put(t)
         tsize=tsize-1
       #self.queue=None
       while(self.queue.qsize()>0):
-        self.queue.get()
-        self.searchqueue.get()
+        self.queue.get_nowait()
+        self.searchqueue.get_nowait()
       #self.queue = asyncio.Queue()
       #self.searchqueue=None
       #self.searchqueue = asyncio.Queue()
@@ -498,8 +498,8 @@ class MusicPlayer:
       await self.searchqueue.put(self.nowp)
       tsize=temp.qsize()
       while(tsize>0):
-        t=await temp.get()
-        t2=await temp2.get()
+        t=temp.get_nowait()
+        t2=temp2.get_nowait()
         await self.searchqueue.put(t2)
         await self.queue.put(t)
         tsize=tsize-1
@@ -1578,9 +1578,9 @@ async def get_members():
               await pause_(ctx,1)
           elif vc.is_paused():
             if(member_ids>0):
-              try:
-                if player.ispaused==1:
+              if player.ispaused==1:
                   continue
+              try:
                 await ctx_save[int(ctx.guild.id)][4].acquire()
                 await time_(ctx,1)
                 await seek_(ctx,int(player.elapsed))
