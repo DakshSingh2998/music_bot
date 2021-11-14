@@ -401,7 +401,6 @@ class MusicPlayer:
   """
   async def showw(self,ctx):
     global ctx_save
-    await ctx_save[int(ctx.guild.id)][4].acquire()
     try:
       # Grab up to 5 entries from the queue...
       vc = self.cttx.voice_client
@@ -456,7 +455,7 @@ class MusicPlayer:
       #await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
       pass
     finally:
-      ctx_save[int(ctx.guild.id)][4].release()
+      #ctx_save[int(ctx.guild.id)][4].release()
       pass
     pass
   
@@ -1609,6 +1608,7 @@ async def ping(ctx):
 @client.event
 async def on_message(message):
   try:
+    
     #counterr=0
     #tio=4
     ctx = await client.get_context(message)
@@ -1616,6 +1616,7 @@ async def on_message(message):
     ########### critical
     #
     global ctx_save
+    await ctx_save[int(ctx.guild.id)][4].acquire()
     ############
     #ctx=None
     msg=None
@@ -1829,6 +1830,7 @@ async def on_message(message):
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
+      await ctx_save[int(ctx.guild.id)][4].release()
       pass
       """
       del ctx
