@@ -697,7 +697,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
   global ctx_save
   try:
     player = get_player(ctx)
-    await ctx_save[int(ctx.guild.id)][5].acquire()
+    #await ctx_save[int(ctx.guild.id)][5].acquire()
     #print('success')
     if listsize==10:
       #await player.showw(ctx)
@@ -817,7 +817,8 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     print('playyy',e)
     pass
   finally:
-    ctx_save[int(ctx.guild.id)][5].release()
+    pass
+    #ctx_save[int(ctx.guild.id)][5].release()
   #await showram(ctx)
   pass
 
