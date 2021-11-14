@@ -488,8 +488,8 @@ class MusicPlayer:
         tsize=tsize-1
       #self.queue=None
       while(self.queue.qsize()>0):
-        self.queue.get()
-        self.searchqueue.get()
+        await self.queue.get()
+        await self.searchqueue.get()
       #self.queue = asyncio.Queue()
       #self.searchqueue=None
       #self.searchqueue = asyncio.Queue()
@@ -1323,8 +1323,8 @@ async def remove_( ctx,index:int):
         tsize=tsize-1
       tsize=player.queue.qsize()
       while(tsize>0):
-        player.queue.get()
-        player.searchqueue.get()
+        await player.queue.get()
+        await player.searchqueue.get()
         tsize=tsize-1
       tsize=temp.qsize()
       tflag=1
