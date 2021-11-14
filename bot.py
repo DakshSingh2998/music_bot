@@ -1876,7 +1876,7 @@ async def on_reaction_add(reaction, user):
   global ctx_save
   ctx = await client.get_context(reaction.message)
   try:
-    await ctx_save[int(ctx.guild.id)][5].acquire()
+    #await ctx_save[int(ctx.guild.id)][5].acquire()
     #counterr=0
     #tio=4
     #############critical
@@ -1961,7 +1961,7 @@ async def on_reaction_add(reaction, user):
     #e)
     pass 
   finally:
-    ctx_save[int(ctx.guild.id)][5].release()
+    #ctx_save[int(ctx.guild.id)][5].release()
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
       #del counterr
