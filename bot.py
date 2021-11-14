@@ -555,6 +555,7 @@ class MusicPlayer:
             except Exception as e:
               await ctx.send(f'There was an error processing your song.\n'
                                         f'```css\n[{e}]\n```',delete_after=10)
+              print(source)
               continue
           source.volume = self.volume
           self.current = source
