@@ -1897,8 +1897,9 @@ async def on_reaction_add(reaction, user):
           tio=10/0
         pass
       """
-      await ctx_save[int(ctx.guild.id)][4].acquire()
+      
       try:
+        await ctx_save[int(ctx.guild.id)][4].acquire()
         #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
         ####
         #print(reaction.emoji)
@@ -1923,6 +1924,7 @@ async def on_reaction_add(reaction, user):
       except Exception as e:
         pass
       finally:
+        ctx_save[int(ctx.guild.id)][4].release()
         #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
         pass
     del ctx
@@ -1936,7 +1938,6 @@ async def on_reaction_add(reaction, user):
     pass 
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
-    ctx_save[int(ctx.guild.id)][4].release()
     try:
       #del counterr
       #del ctx
