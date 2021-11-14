@@ -401,8 +401,8 @@ class MusicPlayer:
   """
   async def showw(self,ctx):
     global ctx_save
+    await ctx_save[int(ctx.guild.id)][4].acquire()
     try:
-      await ctx_save[int(ctx.guild.id)][6].acquire()
       # Grab up to 5 entries from the queue...
       vc = self.cttx.voice_client
       if not vc or not vc.is_connected():
@@ -456,15 +456,13 @@ class MusicPlayer:
       #await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
       pass
     finally:
-      ctx_save[int(ctx.guild.id)][6].release()
+      ctx_save[int(ctx.guild.id)][4].release()
       pass
     pass
   
   async def seek(self,ctx):
     #print(self.nowp)
-    global ctx_save
     try:
-      await ctx_save[int(ctx.guild.id)][7].acquire()
       # Grab up to 5 entries from the queue...
       vc = ctx.voice_client
       if not vc or not vc.is_connected():
@@ -481,15 +479,15 @@ class MusicPlayer:
       t=None
       t2=None
       while(tsize>0):
-        t=self.queue.get_nowait()
-        t2=self.searchqueue.get_nowait()
+        t=await self.queue.get()
+        t2=await self.searchqueue.get()
         await temp2.put(t2)
         await temp.put(t)
         tsize=tsize-1
       #self.queue=None
       while(self.queue.qsize()>0):
-        self.queue.get_nowait()
-        self.searchqueue.get_nowait()
+        self.queue.get()
+        self.searchqueue.get()
       #self.queue = asyncio.Queue()
       #self.searchqueue=None
       #self.searchqueue = asyncio.Queue()
@@ -498,8 +496,8 @@ class MusicPlayer:
       await self.searchqueue.put(self.nowp)
       tsize=temp.qsize()
       while(tsize>0):
-        t=temp.get_nowait()
-        t2=temp2.get_nowait()
+        t=await temp.get()
+        t2=await temp2.get()
         await self.searchqueue.put(t2)
         await self.queue.put(t)
         tsize=tsize-1
@@ -520,8 +518,6 @@ class MusicPlayer:
       del t2
     except Exception as e:
       pass
-    finally:
-      ctx_save[int(ctx.guild.id)][7].release()
     pass
   
   async def player_loop(self,ctx):
@@ -654,9 +650,7 @@ def get_player(ctx):
     #ctx_save[int(ctx.guild.id)].append(1)
     lock=asyncio.Lock()
     lockp=asyncio.Lock()
-    lockshow=asyncio.Lock()
-    lockseek=asyncio.Lock()
-    templist=[0.0,0,1,1,lock,lockp,lockshow,lockseek]#####time,,4-show lock, 5 pause lock
+    templist=[0.0,0,1,1,lock,lockp]#####time,,4-show lock, 5 pause lock
     ctx_save[int(ctx.guild.id)]=templist
     #print(ctx_save[int(ctx.guild.id)][0])
     pass
@@ -1234,8 +1228,6 @@ async def seek_( ctx, search: int):
 @commands.command(name="pause", aliases=["pausee"])
 async def pause_( ctx,pflag=0):
   try:
-    global ctx_save
-    #await ctx_save[int(ctx.guild.id)][5].acquire()
     #vc = ctx.voice_client
     vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
     if not vc or not vc.is_playing():
@@ -1263,9 +1255,6 @@ async def pause_( ctx,pflag=0):
     del player
   except Exception as e:
     #print(e)
-    pass
-  finally:
-    #ctx_save[int(ctx.guild.id)][5].release()
     pass
   pass
 
@@ -1512,7 +1501,6 @@ async def get_members():
     #print('aft',gc.get_count())
     #await asyncio.sleep(3)
     global players
-    global ctx_save
     if players==None:
       return
     tempp=players.copy()
@@ -1579,16 +1567,9 @@ async def get_members():
           elif vc.is_paused():
             if(member_ids>0):
               if player.ispaused==1:
-                  continue
-              try:
-                await ctx_save[int(ctx.guild.id)][4].acquire()
-                await time_(ctx,1)
-                await seek_(ctx,int(player.elapsed))
-              except Exception as e:
-                pass
-              finally:
-                ctx_save[int(ctx.guild.id)][4].release()
-                pass
+                continue
+              await time_(ctx,1)
+              await seek_(ctx,int(player.elapsed))
               #await resume_(ctx)
           #print(member_ids)
           pass
@@ -1628,7 +1609,6 @@ async def ping(ctx):
 @client.event
 async def on_message(message):
   try:
-    
     #counterr=0
     #tio=4
     ctx = await client.get_context(message)
@@ -1696,11 +1676,19 @@ async def on_message(message):
     #print(resflag)
     msg=str(message.content)
     #
-    
+    """
     ##############critical
-    if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id:
-      await ctx_save[int(ctx.guild.id)][4].acquire()
-    
+    if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id or message.author != client.user:
+      counterr=0
+      while(ctx_save[int(ctx.guild.id)][4]!=0):
+        await asyncio.sleep(10)
+        counterr=counterr+1
+        print(ctx_save[int(ctx.guild.id)][4])
+        if(counterr==10):
+          tio=4
+          tio=10/0
+    ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
+    """
     #################
     #
     try:
@@ -1841,8 +1829,6 @@ async def on_message(message):
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
     try:
-      if message.content.lower().startswith(';') or ctx.message.channel.id==channel_id:
-        ctx_save[int(ctx.guild.id)][4].release()
       pass
       """
       del ctx
@@ -1917,9 +1903,7 @@ async def on_reaction_add(reaction, user):
           tio=10/0
         pass
       """
-      
       try:
-        await ctx_save[int(ctx.guild.id)][4].acquire()
         #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]+1
         ####
         #print(reaction.emoji)
@@ -1944,7 +1928,6 @@ async def on_reaction_add(reaction, user):
       except Exception as e:
         pass
       finally:
-        ctx_save[int(ctx.guild.id)][4].release()
         #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
         pass
     del ctx
