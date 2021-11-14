@@ -1234,6 +1234,8 @@ async def seek_( ctx, search: int):
 @commands.command(name="pause", aliases=["pausee"])
 async def pause_( ctx,pflag=0):
   try:
+    global ctx_save
+    await ctx_save[int(ctx.guild.id)][5].acquire()
     #vc = ctx.voice_client
     vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
     if not vc or not vc.is_playing():
@@ -1262,6 +1264,8 @@ async def pause_( ctx,pflag=0):
   except Exception as e:
     #print(e)
     pass
+  finally:
+    ctx_save[int(ctx.guild.id)][5].release()
   pass
 
 @commands.command(name="time", aliases=["timee"])
@@ -1507,6 +1511,7 @@ async def get_members():
     #print('aft',gc.get_count())
     #await asyncio.sleep(3)
     global players
+    global ctx_save
     if players==None:
       return
     tempp=players.copy()
@@ -1572,10 +1577,16 @@ async def get_members():
               await pause_(ctx,1)
           elif vc.is_paused():
             if(member_ids>0):
-              if player.ispaused==1:
-                continue
-              await time_(ctx,1)
-              await seek_(ctx,int(player.elapsed))
+              try:
+                await ctx_save[int(ctx.guild.id)][5].acquire()
+                if player.ispaused==1:
+                  continue
+                await time_(ctx,1)
+                await seek_(ctx,int(player.elapsed))
+              except Exception as e:
+                pass
+              finally:
+                ctx_save[int(ctx.guild.id)][5].release()
               #await resume_(ctx)
           #print(member_ids)
           pass
