@@ -462,6 +462,7 @@ class MusicPlayer:
   
   async def seek(self,ctx):
     #print(self.nowp)
+    global ctx_save
     try:
       await ctx_save[int(ctx.guild.id)][7].acquire()
       # Grab up to 5 entries from the queue...
