@@ -1055,6 +1055,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     #print('playyy',e)
     pass
   finally:
+    pass
     #ctx_save[int(ctx.guild.id)][5].release()
   pass
 
