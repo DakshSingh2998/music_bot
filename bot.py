@@ -826,7 +826,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
   global ctx_save
   try:
     player = get_player(ctx)
-    await ctx_save[int(ctx.guild.id)][5].acquire()
+    #await ctx_save[int(ctx.guild.id)][5].acquire()
     if listsize==10:
       await player.showw(ctx)
       return
@@ -1055,7 +1055,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     #print('playyy',e)
     pass
   finally:
-    ctx_save[int(ctx.guild.id)][5].release()
+    #ctx_save[int(ctx.guild.id)][5].release()
   pass
 
 #########################################
