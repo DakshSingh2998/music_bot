@@ -23,7 +23,7 @@ async def on_ready():
   global status
   status=str(len(client.guilds))+" servers"
   print("Ready Daksh. Hey ",client.user)
-  await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=KbSWQBRceCo"))
+  await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   try:
     for x in client.voice_clients:
       try:
