@@ -1457,7 +1457,7 @@ async def autorestart():
 
 async def changepresence(ctx,message):
   status=message
-  await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=KbSWQBRceCo"))
+  await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   await ctx.send('Daksh! Status Changed')
 async def showram(ctx):
   try:
