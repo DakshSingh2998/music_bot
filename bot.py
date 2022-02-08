@@ -565,7 +565,19 @@ class MusicPlayer:
               continue
           source.volume = self.volume
           self.current = source
-          self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+          try:
+            self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+            pass
+          except Exception as e:
+            try:
+              self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+              pass
+            except Exception as e:
+              try:
+                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+                pass
+              except Exception as e:
+                pass
           bef=discord.utils.get(client.voice_clients, guild=ctx.guild)
           bef=bef.channel.id
           self.before=bef
@@ -771,7 +783,21 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
       #  player.startt=ctx_data[ctx.guild.id][4]
       #  player.stopt=ctx_data[ctx.guild.id][5]
       #  player.ispaused=ctx_data[ctx.guild.id][6]
-      source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
+      try:
+        source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
+        pass
+      except Exception as e:
+        try:
+          source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
+          pass
+        except Exception as e:
+          try:
+            source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
+            pass
+          except Exception as e:
+            return
+          pass
+        pass
       l=0
       if 'entries' in source:
         try:
@@ -803,7 +829,19 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
         await player.searchqueue.put(source["webpage_url"])
         ####await now_playing_(ctx)
     else:
-      source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
+      try:
+        source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
+        pass
+      except Exception as e:
+        try:
+          source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
+          pass
+        except Exception as e:
+          try:
+            source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
+            pass
+          except Exception as e:
+            return
       #print(ctx_save)
       await player.queue.put(source)
       await player.searchqueue.put(source['webpage_url'])
@@ -1155,7 +1193,7 @@ async def now_playing_( ctx):
     except Exception as e:
       pass
   except Exception as e:
-    print('now_playing',e)
+    print(e)
     pass
   pass
 
@@ -1722,20 +1760,8 @@ async def on_message(message):
     try:
       if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
         second = msg.split(' ', 1)[1]
-        try:
-          await play_(ctx,second)
-          await now_playing_(ctx)
-          pass
-        except Exception as e:
-          print(e)
-          try:
-            await play_(ctx,second)
-            await now_playing_(ctx)
-          except Exception as e:
-            await play_(ctx,second)
-            await now_playing_(ctx)
-            pass
-          pass
+        await play_(ctx,second)
+        await now_playing_(ctx)
       elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
         #second = msg.split(' ', 1)[1]
         await ctx.invoke(connect_)
@@ -1782,16 +1808,7 @@ async def on_message(message):
       elif message.content.lower().startswith(';seek'):
         second = msg.split(' ', 1)[1]
         second=int(second)
-        try:
-          await seek_(ctx,second)
-          pass
-        except Exception as e:
-          try:
-            await seek_(ctx,second)
-            pass
-          except Excetion as e:
-            await seek_(ctx,second)
-          pass
+        await seek_(ctx,second)
       elif message.content.lower().startswith(';help'):
         #second = msg.split(' ', 1)[1]
         msgg='@24/7 BOT \nIT AUTOMATICALLY PAUSES SONG WHEN VC IS EMPTY AND RESUMES IT WHEN SOMEONE JOINS \nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE (IMPORTANT STEP),\n NO NEED TO WRITE ;PLAY IN d-songs CHANNEL, WRITE NAME OR LINK DIRECTLY, \nPlease do no edit permission, It breaks working of Bot, \nPermissions required-send msg, manage channel,use reactions, gifs,manage message,connect,speak. \n'
@@ -1818,27 +1835,9 @@ async def on_message(message):
         #player=get_player(ctx)
         if player.queue.qsize()==0 or third==0:
           #print(player.queue.qsize())
-          try:
-            await play_(ctx,second)
-            pass
-          except Exception as e:
-            try:
-              await play_(ctx,second)
-              pass
-            except Exception as e:
-              await play_(ctx,second)
-              pass
+          await play_(ctx,second)
         else:
-          try:
-            await insert_(ctx=ctx,search=second,position=third)
-            pass
-          except Exception as e:
-            try:
-              await insert_(ctx=ctx,search=second,position=third)
-              pass
-            except Exception as e:
-              await insert_(ctx=ctx,search=second,position=third)
-              pass
+          await insert_(ctx=ctx,search=second,position=third)
         await now_playing_(ctx)
       elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
         second = msg.split(' ', 1)[1]
@@ -1865,19 +1864,9 @@ async def on_message(message):
           player.cttx=ctx
           #print('a')\
           multiline=message.content.splitlines()
-          print(ctx.message.guild.name,multiline)
+          print(multiline)
           for tmultiline in multiline:
-            try:
-              await play_(ctx,str(tmultiline))
-              pass
-            except Exception as e:
-              try:
-                await play_(ctx,str(tmultiline))
-                pass
-              except Exception as e:
-                await play_(ctx,str(tmultiline))
-                pass
-              pass
+            await play_(ctx,str(tmultiline))
           await now_playing_(ctx)
       if message.content.lower().startswith(';'):
         player.cttx=ctx
