@@ -156,6 +156,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         #'agelimit':30,
         'keepvideo': False,
         'flatplaylist':True,
+        
+        'cachedir': False,
         'cookies':'cookies.txt',
         }
     else:
@@ -187,6 +189,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
         #'agelimit':30,
         'keepvideo': False,
         'flatplaylist':True,
+        'cachedir': False,
+        
         'cookies':'cookies.txt',
       }
     ytdl = YoutubeDL(ytdlopts)
@@ -247,6 +251,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'keepvideo': False,
         #'agelimit':30,
         'flatplaylist':True,
+      'cachedir': False,
         'cookies':'cookies.txt',
     }
     ytdl = YoutubeDL(ytdlopts)
@@ -306,6 +311,8 @@ class YTDLSource(discord.PCMVolumeTransformer):
       "nooverwrites": True,
       "keepvideo": False,
       "flat_playlist":True,
+      'cachedir': False,
+      
       'cookies':'cookies.txt',
       #'agelimit':30,
       #"playlist_start":f'{ctx_save[int(ctx.guild.id)][2]}',
