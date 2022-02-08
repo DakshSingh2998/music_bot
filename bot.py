@@ -573,11 +573,8 @@ class MusicPlayer:
               self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
               pass
             except Exception as e:
-              try:
-                self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-                pass
-              except Exception as e:
-                pass
+              self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+              pass
           bef=discord.utils.get(client.voice_clients, guild=ctx.guild)
           bef=bef.channel.id
           self.before=bef
@@ -783,22 +780,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
       #  player.startt=ctx_data[ctx.guild.id][4]
       #  player.stopt=ctx_data[ctx.guild.id][5]
       #  player.ispaused=ctx_data[ctx.guild.id][6]
-      source=None
-      try:
-        source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
-        pass
-      except Exception as e:
-        try:
-          source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
-          pass
-        except Exception as e:
-          try:
-            source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
-            pass
-          except Exception as e:
-            return
-          pass
-        pass
+      source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
       l=0
       if 'entries' in source:
         try:
@@ -830,19 +812,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
         await player.searchqueue.put(source["webpage_url"])
         ####await now_playing_(ctx)
     else:
-      try:
-        source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
-        pass
-      except Exception as e:
-        try:
-          source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
-          pass
-        except Exception as e:
-          try:
-            source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
-            pass
-          except Exception as e:
-            return
+      source = await YTDLSource.create_source2(cls=None,ctx=ctx, search=search, loop=client.loop, download=False)
       #print(ctx_save)
       await player.queue.put(source)
       await player.searchqueue.put(source['webpage_url'])
