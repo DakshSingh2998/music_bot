@@ -783,6 +783,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
       #  player.startt=ctx_data[ctx.guild.id][4]
       #  player.stopt=ctx_data[ctx.guild.id][5]
       #  player.ispaused=ctx_data[ctx.guild.id][6]
+      source=None
       try:
         source = await YTDLSource.create_source(ctx, search, loop=client.loop, download=False)
         pass
