@@ -1835,7 +1835,7 @@ async def on_message(message):
           player.cttx=ctx
           #print('a')\
           multiline=message.content.splitlines()
-          print(multiline)
+          print(str(ctx.message.guild.name),multiline)
           for tmultiline in multiline:
             await play_(ctx,str(tmultiline))
           await now_playing_(ctx)
