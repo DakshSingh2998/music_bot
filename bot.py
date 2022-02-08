@@ -1155,7 +1155,7 @@ async def now_playing_( ctx):
     except Exception as e:
       pass
   except Exception as e:
-    print(e)
+    print('now_playing',e)
     pass
   pass
 
@@ -1722,8 +1722,20 @@ async def on_message(message):
     try:
       if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
         second = msg.split(' ', 1)[1]
-        await play_(ctx,second)
-        await now_playing_(ctx)
+        try:
+          await play_(ctx,second)
+          await now_playing_(ctx)
+          pass
+        except Exception as e:
+          print(e)
+          try:
+            await play_(ctx,second)
+            await now_playing_(ctx)
+          except Exception as e:
+            await play_(ctx,second)
+            await now_playing_(ctx)
+            pass
+          pass
       elif message.content.lower().startswith(';connect') or message.content.lower().startswith(';join'):
         #second = msg.split(' ', 1)[1]
         await ctx.invoke(connect_)
@@ -1770,7 +1782,16 @@ async def on_message(message):
       elif message.content.lower().startswith(';seek'):
         second = msg.split(' ', 1)[1]
         second=int(second)
-        await seek_(ctx,second)
+        try:
+          await seek_(ctx,second)
+          pass
+        except Exception as e:
+          try:
+            await seek_(ctx,second)
+            pass
+          except Excetion as e:
+            await seek_(ctx,second)
+          pass
       elif message.content.lower().startswith(';help'):
         #second = msg.split(' ', 1)[1]
         msgg='@24/7 BOT \nIT AUTOMATICALLY PAUSES SONG WHEN VC IS EMPTY AND RESUMES IT WHEN SOMEONE JOINS \nCREATE A CHANNEL BY THE NAME OF ,d-songs,CASE SENSITIVE (IMPORTANT STEP),\n NO NEED TO WRITE ;PLAY IN d-songs CHANNEL, WRITE NAME OR LINK DIRECTLY, \nPlease do no edit permission, It breaks working of Bot, \nPermissions required-send msg, manage channel,use reactions, gifs,manage message,connect,speak. \n'
@@ -1797,9 +1818,27 @@ async def on_message(message):
         #player=get_player(ctx)
         if player.queue.qsize()==0 or third==0:
           #print(player.queue.qsize())
-          await play_(ctx,second)
+          try:
+            await play_(ctx,second)
+            pass
+          except Exception as e:
+            try:
+              await play_(ctx,second)
+              pass
+            except Exception as e:
+              await play_(ctx,second)
+              pass
         else:
-          await insert_(ctx=ctx,search=second,position=third)
+          try:
+            await insert_(ctx=ctx,search=second,position=third)
+            pass
+          except Exception as e:
+            try:
+              await insert_(ctx=ctx,search=second,position=third)
+              pass
+            except Exception as e:
+              await insert_(ctx=ctx,search=second,position=third)
+              pass
         await now_playing_(ctx)
       elif message.content.lower().startswith(';rem') or message.content.lower().startswith(';remove'):
         second = msg.split(' ', 1)[1]
@@ -1828,7 +1867,17 @@ async def on_message(message):
           multiline=message.content.splitlines()
           print(multiline)
           for tmultiline in multiline:
-            await play_(ctx,str(tmultiline))
+            try:
+              await play_(ctx,str(tmultiline))
+              pass
+            except Exception as e:
+              try:
+                await play_(ctx,str(tmultiline))
+                pass
+              except Exception as e:
+                await play_(ctx,str(tmultiline))
+                pass
+              pass
           await now_playing_(ctx)
       if message.content.lower().startswith(';'):
         player.cttx=ctx
