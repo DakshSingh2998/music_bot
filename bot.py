@@ -312,7 +312,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
       "keepvideo": False,
       "flat_playlist":True,
       'cachedir': False,
-      
+      'continue':True,
       'cookies':'cookies.txt',
       #'agelimit':30,
       #"playlist_start":f'{ctx_save[int(ctx.guild.id)][2]}',
