@@ -1164,7 +1164,7 @@ async def now_playing_( ctx):
     except Exception as e:
       pass
   except Exception as e:
-    print(e)
+    print('np', e)
     pass
   pass
 
@@ -1249,9 +1249,9 @@ async def seek_( ctx, search: int):
       del vc
       del player
     except Exception as e:
-      print(e)
+      print('seek', e)
   except Exception as e:
-    print(e)
+    print('seek2 ', e)
     pass
   pass
 @commands.command(name="pause", aliases=["pausee"])
@@ -1861,7 +1861,7 @@ async def on_message(message):
     del tmultiline
     #del player
   except Exception as e:
-    print(e)
+    print('msg ', e)
     pass
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
