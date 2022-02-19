@@ -285,56 +285,60 @@ class YTDLSource(discord.PCMVolumeTransformer):
   
   @classmethod
   async def regather_stream(cls, data, *, loop,ctx):
-    loop = loop or asyncio.get_event_loop()
-    requester = data['requester']
-    ytdlopts = {
-      'format': 'worstaudio/worst',
-      'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
-      'restrictfilenames': True,
-      'yesplaylist': True,
-      'nocheckcertificate': True,
-      'ignoreerrors': True,
-      'logtostderr': False,
-      'quiet': True,
-      'no_warnings': True,
-      'default_search': 'ytsearch',
-      'extract_audio':True,
-      'source_address': '0.0.0.0',# ipv6 addresses cause issues sometimes
-      
-      'postprocessors': [{
-          'key': 'FFmpegExtractAudio',
-          'preferredcodec': 'mp3',
-          #'preferredquality': '64',
-      }],
-      'skip_download':True,
-      "simulate": True,
-      "nooverwrites": True,
-      "keepvideo": False,
-      "flat_playlist":True,
-      'cachedir': False,
-      'continue':True,
-      'cookies':'cookies.txt',
-      #'agelimit':30,
-      #"playlist_start":f'{ctx_save[int(ctx.guild.id)][2]}',
-    }
-    ytdl = YoutubeDL(ytdlopts)
-    global ctx_save
-    to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
-    data = await loop.run_in_executor(None, to_run)
-    ffmpegopts = {
-    'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
-    'options': f'-vn'
-    }
     try:
-      del loop
-      #del requester
-      del ytdlopts
-      del ytdl
-      del to_run
-      #del data
-      #del ffmpegopts
-    except Exception as e:
+      loop = loop or asyncio.get_event_loop()
+      requester = data['requester']
+      ytdlopts = {
+        'format': 'worstaudio/worst',
+        'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
+        'restrictfilenames': True,
+        'yesplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': True,
+        'logtostderr': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'ytsearch',
+        'extract_audio':True,
+        'source_address': '0.0.0.0',# ipv6 addresses cause issues sometimes
+
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            #'preferredquality': '64',
+        }],
+        'skip_download':True,
+        "simulate": True,
+        "nooverwrites": True,
+        "keepvideo": False,
+        "flat_playlist":True,
+        'cachedir': False,
+        'continue':True,
+        'cookies':'cookies.txt',
+        #'agelimit':30,
+        #"playlist_start":f'{ctx_save[int(ctx.guild.id)][2]}',
+      }
+      ytdl = YoutubeDL(ytdlopts)
+      global ctx_save
+      to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
+      data = await loop.run_in_executor(None, to_run)
+      ffmpegopts = {
+      'before_options': f'-nostdin -ss {ctx_save[int(ctx.guild.id)][0]} -reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 10',
+      'options': f'-vn'
+      }
+      try:
+        del loop
+        #del requester
+        del ytdlopts
+        del ytdl
+        del to_run
+        #del data
+        #del ffmpegopts
+      except Exception as e:
+        pass
       pass
+    except Exception as e:
+      print('regather ', e)
     return cls(discord.FFmpegPCMAudio(data['url'],**ffmpegopts), data=data, requester=requester)
   pass
 
