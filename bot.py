@@ -574,7 +574,7 @@ class MusicPlayer:
               pass
             except Exception as e:
               self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
-              pass
+              print('player_loop in .play ', e)
           bef=discord.utils.get(client.voice_clients, guild=ctx.guild)
           bef=bef.channel.id
           self.before=bef
