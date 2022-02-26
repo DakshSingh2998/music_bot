@@ -1673,7 +1673,7 @@ async def on_message(message):
     resflag=0
     #
     try:
-      if message.author == client.user:
+      if message.author.bot:
         return
       vc=None
       vc=discord.utils.get(client.voice_clients, guild=ctx.guild)
