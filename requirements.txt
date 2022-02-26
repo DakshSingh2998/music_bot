@@ -6,4 +6,4 @@ PyNaCl
 ffmpeg
 psutil
 ctypes-callable
-youtube-dl
+git+git://github.com/ytdl-org/youtube-dl.git
