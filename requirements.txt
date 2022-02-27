@@ -3,7 +3,6 @@ async_timeout
 discord
 Flask
 PyNaCl
-git+git://github.com/FFmpeg/FFmpeg.git
 psutil
 ctypes-callable
 git+git://github.com/ytdl-org/youtube-dl.git
