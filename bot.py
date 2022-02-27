@@ -1705,6 +1705,8 @@ async def on_message(message):
             if message.author.id!=356012950298951690:
               try:
                 channel = ctx.author.voice.channel
+                if channel.id==None:
+                  return
               except Exception as e:
                 await ctx.send("Someone is already listening songs")
                 return
