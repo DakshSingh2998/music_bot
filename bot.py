@@ -316,6 +316,7 @@ class YTDLSource(discord.PCMVolumeTransformer):
         'continue':True,
         'cookies':'cookies.txt',
         'verbose':True,
+        'ignore_errors':True,
         #'agelimit':30,
         #"playlist_start":f'{ctx_save[int(ctx.guild.id)][2]}',
       }
