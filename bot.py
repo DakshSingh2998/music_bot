@@ -737,7 +737,8 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     #temp_ctx=ctx
     #global auto_now
     #print("DDD")
-    await ctx.trigger_typing()
+    
+    #await ctx.trigger_typing()
     vc = ctx.voice_client
     await ctx.invoke(connect_)
     l=None
@@ -864,7 +865,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     #global ctx_data_flag
     #temp_ctx=ctx
     #global auto_now
-    await ctx.trigger_typing()
+    #await ctx.trigger_typing()
     vc = ctx.voice_client
     await ctx.invoke(connect_)
     #print(position)
