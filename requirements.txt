@@ -1,10 +1,6 @@
-requests
 async_timeout
 discord
-Flask
-PyNaCl
 psutil
-ctypes-callable
 git+http://github.com/ytdl-org/youtube-dl.git
 opencv-python
 tensorflow-cpu
