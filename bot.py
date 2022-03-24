@@ -18,7 +18,6 @@ import cv2
 import tensorflow as tf
 import numpy as np
 from tensorflow import keras
-import urllib.request
 batch_size = 32
 img_size = 100
 
@@ -1749,9 +1748,7 @@ async def ping(ctx):
 
 async def bw(ctx):
   try:
-    img_url=ctx.message.attachments[0].url
-    print(img_url)
-    urllib.request.urlretrieve(str(img_url), "./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
+    await ctx.message.attachments[0].attachment.save("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
     x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
     y = generator( x[0 : ] ).numpy()
     y=y*255
