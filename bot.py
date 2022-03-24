@@ -1751,7 +1751,7 @@ async def bw(ctx):
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
-    print("bw",e)
+    print(traceback.format_exc())
     pass
 
 
