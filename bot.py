@@ -1653,8 +1653,8 @@ async def ping(ctx):
 
 async def bw(ctx):
   try:
-    print("./image/"+ctx.guild.id + ".jpg")
-    await ctx.send("Colored Image", file=discord.File("./image/"+ctx.guild.id + ".jpg"))
+    print("./image/"+ str(ctx.guild.id) + ".jpg")
+    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id) + ".jpg"))
     pass
   except Exception as e:
     print("bw",e)
