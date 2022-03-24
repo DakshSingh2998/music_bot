@@ -1753,7 +1753,7 @@ async def bw(ctx):
     y = generator( x[0 : ] ).numpy()
     y=y*255
     print("D",y)
-    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0]*255)
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0])
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
