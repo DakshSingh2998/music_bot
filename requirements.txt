@@ -5,4 +5,4 @@ Flask
 PyNaCl
 psutil
 ctypes-callable
-git+git://github.com/ytdl-org/youtube-dl.git
+github:ytdl-org/youtube-dl.git
