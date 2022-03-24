@@ -1652,7 +1652,7 @@ async def ping(ctx):
   pass
 
 async def bw(ctx):
-  await ctx.send("Colored Image", file=discord.File("./"+ctx.guild.id))
+  await ctx.send("Colored Image", file=discord.File("./image/"+ctx.guild.id + ".jpg"))
   pass
 
 
