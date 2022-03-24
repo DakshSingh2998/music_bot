@@ -110,6 +110,7 @@ daksh_yt="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"
 @client.event
 async def on_ready():
   global status
+  global generator
   status=str(len(client.guilds))+" servers"
   print("Ready Daksh. Hey ",client.user)
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
