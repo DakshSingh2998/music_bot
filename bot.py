@@ -1748,7 +1748,7 @@ async def ping(ctx):
 
 async def bw(ctx):
   try:
-    await ctx.message.attachments[0].save("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
+    await ctx.message.attachments[0].save("./image/"+ str(ctx.guild.id) + ".jpg")
     x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
     y = generator( x[0 : ] ).numpy()
     y=y*255
