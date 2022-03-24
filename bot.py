@@ -100,7 +100,6 @@ async def numpyimage(ctx):
     img=img/255
     x.append(img)
     x=np.array(x)
-    print(x)
     return x
 
 generator=None
@@ -1751,11 +1750,11 @@ async def ping(ctx):
 async def bw(ctx):
   try:
     img_url=ctx.message.attachments[0].url
+    print(img_url)
     urllib.request.urlretrieve(str(img_url), "./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
     x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
     y = generator( x[0 : ] ).numpy()
     y=y*255
-    print("D",y)
     cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0])
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
