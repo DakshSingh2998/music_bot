@@ -94,10 +94,11 @@ async def numpyimage(ctx):
     x=[]
     global img_size
     img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 1)
-    img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img=cv2.resize(img, (img_size, img_size))
+    img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img=img/255
     x.append(img)
+    x=np.array(x)
     return x
 
 generator=None
@@ -1750,7 +1751,7 @@ async def bw(ctx):
     x=await numpyimage(ctx)
     y = generator( x[0 : ] ).numpy()
     y=y*255
-    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0])
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0]*255)
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
