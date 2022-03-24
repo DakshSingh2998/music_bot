@@ -99,6 +99,7 @@ async def numpyimage(ctx):
     img=img/255
     x.append(img)
     x=np.array(x)
+    print(x)
     return x
 
 generator=None
@@ -1751,6 +1752,7 @@ async def bw(ctx):
     x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
     y = generator( x[0 : ] ).numpy()
     y=y*255
+    print("D",y)
     cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0]*255)
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
