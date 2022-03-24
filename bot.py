@@ -115,6 +115,7 @@ async def on_ready():
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   try:
     generator = keras.models.load_model('./generator')
+    print("gen",generator)
     for x in client.voice_clients:
       try:
         await x.disconnect()
