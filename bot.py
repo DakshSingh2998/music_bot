@@ -1648,7 +1648,14 @@ async def memory(ctx):
   pass
 
 async def ping(ctx):
-    await ctx.send(f'Ping is {round(client.latency * 1000)} ms')
+  await ctx.send(f'Ping is {round(client.latency * 1000)} ms')
+  pass
+
+async def bw(ctx):
+  await ctx.send("Colored Image", file=discord.File("./"+ctx.guild.id))
+  pass
+
+
 
 @client.event
 async def on_message(message):
@@ -1738,6 +1745,8 @@ async def on_message(message):
     #################
     #
     try:
+      if message.content.lower().startswith(';bw'):
+        await bw(ctx)
       if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
         second = msg.split(' ', 1)[1]
         await play_(ctx,second)
