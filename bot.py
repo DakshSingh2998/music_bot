@@ -12,6 +12,99 @@ import gc
 import psutil
 import time
 from datetime import datetime
+######################## bw
+import os
+import cv2
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
+batch_size = 32
+img_size = 100
+
+
+async def get_generator_model():
+
+    inputs = tf.keras.layers.Input( shape=( img_size , img_size , 1 ) )
+
+    conv1 = tf.keras.layers.Conv2D( 16 , kernel_size=( 5 , 5 ) , strides=1 )( inputs )
+    conv1 = tf.keras.layers.LeakyReLU()( conv1 )
+    conv1 = tf.keras.layers.Conv2D( 32 , kernel_size=( 3 , 3 ) , strides=1)( conv1 )
+    conv1 = tf.keras.layers.LeakyReLU()( conv1 )
+    conv1 = tf.keras.layers.Conv2D( 32 , kernel_size=( 3 , 3 ) , strides=1)( conv1 )
+    conv1 = tf.keras.layers.LeakyReLU()( conv1 )
+
+    conv2 = tf.keras.layers.Conv2D( 32 , kernel_size=( 5 , 5 ) , strides=1)( conv1 )
+    conv2 = tf.keras.layers.LeakyReLU()( conv2 )
+    conv2 = tf.keras.layers.Conv2D( 64 , kernel_size=( 3 , 3 ) , strides=1 )( conv2 )
+    conv2 = tf.keras.layers.LeakyReLU()( conv2 )
+    conv2 = tf.keras.layers.Conv2D( 64 , kernel_size=( 3 , 3 ) , strides=1 )( conv2 )
+    conv2 = tf.keras.layers.LeakyReLU()( conv2 )
+
+    conv3 = tf.keras.layers.Conv2D( 64 , kernel_size=( 5 , 5 ) , strides=1 )( conv2 )
+    conv3 = tf.keras.layers.LeakyReLU()( conv3 )
+    conv3 = tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1 )( conv3 )
+    conv3 = tf.keras.layers.LeakyReLU()( conv3 )
+    conv3 = tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1 )( conv3 )
+    conv3 = tf.keras.layers.LeakyReLU()( conv3 )
+
+    bottleneck = tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1 , activation='tanh' , padding='same' )( conv3 )
+
+    concat_1 = tf.keras.layers.Concatenate()( [ bottleneck , conv3 ] )
+    conv_up_3 = tf.keras.layers.Conv2DTranspose( 128 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( concat_1 )
+    conv_up_3 = tf.keras.layers.Conv2DTranspose( 128 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( conv_up_3 )
+    conv_up_3 = tf.keras.layers.Conv2DTranspose( 64 , kernel_size=( 5 , 5 ) , strides=1 , activation='relu' )( conv_up_3 )
+
+    concat_2 = tf.keras.layers.Concatenate()( [ conv_up_3 , conv2 ] )
+    conv_up_2 = tf.keras.layers.Conv2DTranspose( 64 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( concat_2 )
+    conv_up_2 = tf.keras.layers.Conv2DTranspose( 64 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( conv_up_2 )
+    conv_up_2 = tf.keras.layers.Conv2DTranspose( 32 , kernel_size=( 5 , 5 ) , strides=1 , activation='relu' )( conv_up_2 )
+
+    concat_3 = tf.keras.layers.Concatenate()( [ conv_up_2 , conv1 ] )
+    conv_up_1 = tf.keras.layers.Conv2DTranspose( 32 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu')( concat_3 )
+    conv_up_1 = tf.keras.layers.Conv2DTranspose( 32 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu')( conv_up_1 )
+    conv_up_1 = tf.keras.layers.Conv2DTranspose( 3 , kernel_size=( 5 , 5 ) , strides=1 , activation='relu')( conv_up_1 )
+
+    model = tf.keras.models.Model( inputs , conv_up_1 )
+    return model
+  pass
+
+
+async def get_discriminator_model():
+    layers = [
+        tf.keras.layers.Conv2D( 32 , kernel_size=( 7 , 7 ) , strides=1 , activation='relu' , input_shape=( img_size , img_size , 3 ) ),
+        tf.keras.layers.Conv2D( 32 , kernel_size=( 7, 7 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D( 64 , kernel_size=( 5 , 5 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.Conv2D( 64 , kernel_size=( 5 , 5 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D( 256 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.Conv2D( 256 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense( 512, activation='relu'  )  ,
+        tf.keras.layers.Dense( 128 , activation='relu' ) ,
+        tf.keras.layers.Dense( 16 , activation='relu' ) ,
+        tf.keras.layers.Dense( 1 , activation='sigmoid' ) 
+    ]
+    model = tf.keras.models.Sequential( layers )
+    return model
+  pass
+
+async def numpyimage(ctx):
+    x=[]
+    img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 1)
+    img=cv2.resize(img, (img_size, img_size))
+    img=img/255
+    x.append(img)
+    return x
+  pass
+
+generator=None
+discriminator=None
+
 ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
@@ -25,6 +118,7 @@ async def on_ready():
   print("Ready Daksh. Hey ",client.user)
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   try:
+    generator = keras.models.load_model('./generator')
     for x in client.voice_clients:
       try:
         await x.disconnect()
@@ -1654,7 +1748,11 @@ async def ping(ctx):
 async def bw(ctx):
   try:
     print("./image/"+ str(ctx.guild.id) + ".jpg")
-    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id) + ".jpg"))
+    x=numpyimage(ctx)
+    y = generator( x[0 : ] ).numpy()
+    y=y*255
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
+    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
     print("bw",e)
