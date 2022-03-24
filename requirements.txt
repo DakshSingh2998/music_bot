@@ -6,6 +6,6 @@ PyNaCl
 psutil
 ctypes-callable
 git+http://github.com/ytdl-org/youtube-dl.git
-opencv-python
+opencv-python-headless==4.2.0.32
 tensorflow-cpu
 numpy
