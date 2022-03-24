@@ -1750,7 +1750,7 @@ async def ping(ctx):
 
 async def bw(ctx):
   try:
-    img_url=message.attachments[0].url
+    img_url=ctx.message.attachments[0].url
     urllib.request.urlretrieve(str(img_url), "./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
     x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
     y = generator( x[0 : ] ).numpy()
