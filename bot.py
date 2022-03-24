@@ -23,7 +23,6 @@ img_size = 100
 
 
 async def get_generator_model():
-
     inputs = tf.keras.layers.Input( shape=( img_size , img_size , 1 ) )
 
     conv1 = tf.keras.layers.Conv2D( 16 , kernel_size=( 5 , 5 ) , strides=1 )( inputs )
@@ -66,7 +65,6 @@ async def get_generator_model():
 
     model = tf.keras.models.Model( inputs , conv_up_1 )
     return model
-  pass
 
 
 async def get_discriminator_model():
@@ -91,7 +89,6 @@ async def get_discriminator_model():
     ]
     model = tf.keras.models.Sequential( layers )
     return model
-  pass
 
 async def numpyimage(ctx):
     x=[]
@@ -100,7 +97,6 @@ async def numpyimage(ctx):
     img=img/255
     x.append(img)
     return x
-  pass
 
 generator=None
 discriminator=None
