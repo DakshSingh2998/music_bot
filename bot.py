@@ -92,6 +92,7 @@ async def get_discriminator_model():
 
 async def numpyimage(ctx):
     x=[]
+    global img_size
     img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 1)
     img=cv2.resize(img, (img_size, img_size))
     img=img/255
