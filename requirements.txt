@@ -6,7 +6,3 @@ PyNaCl
 psutil
 ctypes-callable
 git+http://github.com/ytdl-org/youtube-dl.git
-opencv-python-headless
-tensorflow-cpu
-numpy
-urllib3
