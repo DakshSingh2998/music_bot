@@ -18,6 +18,7 @@ ctx_save={'d':'d'}
 client=commands.Bot(command_prefix=';')
 status=""
 daksh_yt="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"
+#daksh
 @client.event
 async def on_ready():
   global status
