@@ -1232,11 +1232,11 @@ async def skip_( ctx):
       global ctx_save
       ctx_save[int(ctx.guild.id)][0]=0
       player=get_player(ctx)
-      print(vc.source.requester)
+      #print(vc.source.requester)
       if(str(vc.source.requester)=="Toxic Tatya#8669"):
-          await ctx.send("Goli Beta Masti Nahi")
-          player.showw(ctx)
-          return
+        await ctx.send("Goli Beta Masti Nahi i.e. jisne song lagaya us se permission lo :))")
+        await player.showw(ctx)
+        return
       player.ispaused=0
       player.isautopaused=0
       await player.np.delete()
@@ -1291,6 +1291,10 @@ async def change_volume( ctx, vol: float):
     if not 0 < vol < 101:
       return await ctx.send('Please enter a value between 1 and 100.',delete_after=10)
     player = get_player(ctx)
+    if(vol<20 and str(vc.source.requester)=="Toxic Tatya#8669"):
+      await ctx.send("Goli Beta Masti Nahi i.e. jisne song lagaya us se permission lo :))")
+      await player.showw(ctx)
+      return
     if vc.source:
       vc.source.volume = vol / 100
     player.volume = vol / 100
@@ -1299,7 +1303,7 @@ async def change_volume( ctx, vol: float):
     del vc
     del player
   except Exception as e:
-    #print(e)
+    print('vol', traceback.format_exc())
     pass
   pass
 
@@ -1307,6 +1311,11 @@ async def change_volume( ctx, vol: float):
 async def stop_( ctx):
   vc = ctx.voice_client
   global ctx_save
+  player=get_player(ctx)
+  if(str(vc.source.requester)=="Toxic Tatya#8669"):
+    await ctx.send("Goli Beta Masti Nahi i.e. jisne song lagaya us se permission lo :))")
+    await player.showw(ctx)
+    return
   ctx_save[int(ctx.guild.id)][0]=0.0
   ctx_save[int(ctx.guild.id)][1]=0
   if not vc or not vc.is_connected():
@@ -1337,7 +1346,7 @@ async def stop_( ctx):
     del vc
     del tsize
   except Exception as e:
-    pass
+    print('stop', traceback.format_exc())
   #await cleanup(ctx.guild)
   pass
 
@@ -1345,8 +1354,13 @@ async def stop_( ctx):
 async def seek_( ctx, search: int):
   try:
     global ctx_save
-    ctx_save[int(ctx.guild.id)][1]=1
+    
     player=get_player(ctx)
+    if(str(vc.source.requester)=="Toxic Tatya#8669"):
+      await ctx.send("Goli Beta Masti Nahi i.e. jisne song lagaya us se permission lo :))")
+      await player.showw(ctx)
+      return
+    ctx_save[int(ctx.guild.id)][1]=1
     await player.seek(ctx)
     player.ispaused=0
     player.isautopaused=0
@@ -1365,7 +1379,7 @@ async def seek_( ctx, search: int):
     except Exception as e:
       print('seek', e)
   except Exception as e:
-    print('seek2 ', e)
+    print('seek', traceback.format_exc())
     pass
   pass
 @commands.command(name="pause", aliases=["pausee"])
@@ -1378,6 +1392,10 @@ async def pause_( ctx,pflag=0):
     elif vc.is_paused():
       return
     player=get_player(ctx)
+    if(str(vc.source.requester)=="Toxic Tatya#8669"):
+      await ctx.send("Goli Beta Masti Nahi i.e. jisne song lagaya us se permission lo :))")
+      await player.showw(ctx)
+      return
     if pflag==0:
       player.ispaused=1
     player.isautopaused=1
@@ -1397,7 +1415,7 @@ async def pause_( ctx,pflag=0):
     del vc
     del player
   except Exception as e:
-    #print(e)
+    print('pause', traceback.format_exc())
     pass
   pass
 
@@ -1435,6 +1453,10 @@ async def remove_( ctx,index:int):
     elif vc.is_paused():
       return
     player=get_player(ctx)
+    if(str(vc.source.requester)=="Toxic Tatya#8669"):
+      await ctx.send("Goli Beta Masti Nahi i.e. jisne song lagaya us se permission lo :))")
+      await player.showw(ctx)
+      return
     tsize=None
     temp=None
     temp2=None
@@ -1486,7 +1508,7 @@ async def remove_( ctx,index:int):
     del t2
     del tflag
   except Exception as e:
-    #print(e)
+    print('remove', traceback.format_exc())
     pass
   finally:
     ctx_save[int(ctx.guild.id)][5].release()
