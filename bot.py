@@ -19,7 +19,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 batch_size = 32
-img_size = 100
+img_size = 150
 
 
 async def get_generator_model():
@@ -93,9 +93,9 @@ async def get_discriminator_model():
 async def numpyimage(ctx):
     x=[]
     global img_size
-    img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 1)
+    img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 0)
     img=cv2.resize(img, (img_size, img_size))
-    img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    #img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img=img/255
     x.append(img)
     x=np.array(x)
@@ -118,7 +118,7 @@ async def on_ready():
   print("Ready Daksh. Hey ",client.user)
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   try:
-    generator = keras.models.load_model('./generator')
+    generator = keras.models.load_model('./generator', compile=False)
     print("gen",generator)
     for x in client.voice_clients:
       try:
@@ -127,7 +127,7 @@ async def on_ready():
         #print(e)
         pass
   except Exception as e:
-    #print(e)
+    print(e)
     pass
   #await load()
   #sav.start()
@@ -1748,11 +1748,18 @@ async def ping(ctx):
 
 async def bw(ctx):
   try:
+    global generator
     await ctx.message.attachments[0].save("./image/"+ str(ctx.guild.id) + ".jpg")
-    x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
+    x=await asyncio.wait_for(numpyimage(ctx), timeout=15.0)
+    #print(x)
     y = generator( x[0 : ] ).numpy()
     y=y*255
-    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0])
+    y=y[0]
+    y = y.astype(np.uint8)
+    print(y)
+    y=cv2.cvtColor(y, cv2.COLOR_LAB2BGR)
+    y = cv2.pyrUp(y)
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
