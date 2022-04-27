@@ -20,6 +20,7 @@ import numpy as np
 from tensorflow import keras
 batch_size = 32
 img_size = 150
+import PIL
 
 
 async def get_generator_model():
@@ -94,12 +95,13 @@ async def numpyimage(ctx):
     x=[]
     global img_size
     img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 0)
+    dimx, dimy= img.shape
     img=cv2.resize(img, (img_size, img_size))
     #img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img=img/255
     x.append(img)
     x=np.array(x)
-    return x
+    return x,dimx,dimy
 
 generator=None
 discriminator=None
@@ -1750,16 +1752,35 @@ async def bw(ctx):
   try:
     global generator
     await ctx.message.attachments[0].save("./image/"+ str(ctx.guild.id) + ".jpg")
-    x=await asyncio.wait_for(numpyimage(ctx), timeout=15.0)
-    #print(x)
+    x, dimy, dimx=await asyncio.wait_for(numpyimage(ctx), timeout=15.0)
+    ratio=dimy/dimx
+    #print(dimx, dimy)
     y = generator( x[0 : ] ).numpy()
     y=y*255
     y=y[0]
     y = y.astype(np.uint8)
     #print(y)
-    y=cv2.cvtColor(y, cv2.COLOR_LAB2BGR)
-    y = cv2.pyrUp(y)
-    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
+    y=cv2.cvtColor(y, cv2.COLOR_LAB2RGB)
+    y=cv2.cvtColor(y, cv2.COLOR_RGB2HSV)
+    """
+    i=0
+    while(i<150):
+        j=0
+        while(j<150):
+            y[i][j][1]=y[i][j][1]*1.5
+            j=j+1
+            pass
+        i=i+1
+        pass
+    """
+    y=cv2.cvtColor(y, cv2.COLOR_HSV2RGB)
+    y=cv2.resize(y, (300, int(300*ratio)))
+    y=PIL.Image.fromarray(y)
+    converter = PIL.ImageEnhance.Color(y)
+    y = converter.enhance(2)
+    
+    y.save("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
+    #cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
     await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
@@ -2128,5 +2149,5 @@ keep_alive()
 #my_secret = os.environ['token']
 #client.run(str(my_secret))\
 
-client.run(os.environ.get('token'))
-#client.run("")
+#client.run(os.environ.get('token'))
+client.run("ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.OxeRdfDCuFaBh9yVmpLZ5V2uMD4")

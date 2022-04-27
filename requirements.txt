@@ -10,3 +10,4 @@ opencv-python-headless
 tensorflow-cpu
 numpy
 urllib3
+pillow
