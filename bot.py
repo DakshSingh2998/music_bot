@@ -1756,7 +1756,7 @@ async def bw(ctx):
     y=y*255
     y=y[0]
     y = y.astype(np.uint8)
-    print(y)
+    #print(y)
     y=cv2.cvtColor(y, cv2.COLOR_LAB2BGR)
     y = cv2.pyrUp(y)
     cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
