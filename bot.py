@@ -1232,6 +1232,7 @@ async def skip_( ctx):
       global ctx_save
       ctx_save[int(ctx.guild.id)][0]=0
       player=get_player(ctx)
+      print(vc.source.requester)
       if(str(vc.source.requester)=="@Toxic Tatya#8669"):
           await ctx.send("Goli Beta Masti Nahi")
           player.showw(ctx)
@@ -2179,5 +2180,5 @@ keep_alive()
 #my_secret = os.environ['token']
 #client.run(str(my_secret))\
 
-client.run(os.environ.get('token'))
-#client.run("")
+#client.run(os.environ.get('token'))
+client.run("ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.cv_nh00h_sWUG1Ae5d91qTZ1VX0")
