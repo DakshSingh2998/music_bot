@@ -97,10 +97,15 @@ async def numpyimage(ctx):
     img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 0)
     dimx, dimy= img.shape
     img=cv2.resize(img, (img_size, img_size))
-    #img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img=img/255
     x.append(img)
     x=np.array(x)
+    ratio=dimx/dimy
+    img=cv2.resize(img*255, (300, int(300*ratio)))
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", img)
+    await ctx.send("BW Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
+    #img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    
     return x,dimx,dimy
 
 generator=None
@@ -1227,6 +1232,10 @@ async def skip_( ctx):
       global ctx_save
       ctx_save[int(ctx.guild.id)][0]=0
       player=get_player(ctx)
+      if(str(vc.source.requester)=="@Toxic Tatya#8669"):
+          await ctx.send("Goli Beta Masti Nahi")
+          player.showw(ctx)
+          return
       player.ispaused=0
       player.isautopaused=0
       await player.np.delete()
@@ -1240,7 +1249,7 @@ async def skip_( ctx):
     del vc
     del player
   except Exception as e:
-    #print(e)
+    print('skip', traceback.format_exc())
     pass
   pass
 
@@ -1779,14 +1788,31 @@ async def bw(ctx):
     converter = PIL.ImageEnhance.Color(y)
     y = converter.enhance(2)
     
-    y.save("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg")
+    y.save("./image/"+ str(ctx.guild.id) + "_color" + ".jpg")
     #cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
-    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
+    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_color" + ".jpg"))
     pass
   except Exception as e:
     print(traceback.format_exc())
+  finally:
+    await clearram()
+    try:
+      os.remove("./image/"+ str(ctx.guild.id) + ".jpg")
+      os.remove("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg")
+      os.remove("./image/"+ str(ctx.guild.id)+ "_color" + ".jpg")
+    except Exception as e:
+        pass
     pass
 
+
+
+async def changenick(ctx, second):
+  try:
+    await ctx.guild.get_member(client.user.id).edit(nick=second)
+    await ctx.send("Nick changed 😼")
+    pass
+  except Exception as e:
+      print(traceback.format_exc())
 
 
 @client.event
@@ -1910,6 +1936,10 @@ async def on_message(message):
         if message.author.id==356012950298951690:
           second = msg.split(' ', 1)[1]
           await changepresence(ctx,second)
+      elif message.content.lower().startswith(';changenick'):
+        if message.author.id==356012950298951690:
+          second = msg.split(' ', 1)[1]
+          await changenick(ctx,second)         
       elif message.content.lower().startswith(';stop'):
         #second = msg.split(' ', 1)[1]
         await stop_(ctx)
@@ -2011,7 +2041,7 @@ async def on_message(message):
     del tmultiline
     #del player
   except Exception as e:
-    print('msg ', e)
+    print('msg', traceback.format_exc())
     pass
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
@@ -2149,5 +2179,5 @@ keep_alive()
 #my_secret = os.environ['token']
 #client.run(str(my_secret))\
 
-client.run(os.environ.get('token'))
-#client.run("")
+#client.run(os.environ.get('token'))
+client.run("ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.dk8p_ZXHavLs0qtoEv_B8FIDNgA")
