@@ -12,20 +12,121 @@ import gc
 import psutil
 import time
 from datetime import datetime
+######################## bw
+import os
+import cv2
+import tensorflow as tf
+import numpy as np
+from tensorflow import keras
+batch_size = 32
+img_size = 150
+import PIL
+
+
+async def get_generator_model():
+    inputs = tf.keras.layers.Input( shape=( img_size , img_size , 1 ) )
+
+    conv1 = tf.keras.layers.Conv2D( 16 , kernel_size=( 5 , 5 ) , strides=1 )( inputs )
+    conv1 = tf.keras.layers.LeakyReLU()( conv1 )
+    conv1 = tf.keras.layers.Conv2D( 32 , kernel_size=( 3 , 3 ) , strides=1)( conv1 )
+    conv1 = tf.keras.layers.LeakyReLU()( conv1 )
+    conv1 = tf.keras.layers.Conv2D( 32 , kernel_size=( 3 , 3 ) , strides=1)( conv1 )
+    conv1 = tf.keras.layers.LeakyReLU()( conv1 )
+
+    conv2 = tf.keras.layers.Conv2D( 32 , kernel_size=( 5 , 5 ) , strides=1)( conv1 )
+    conv2 = tf.keras.layers.LeakyReLU()( conv2 )
+    conv2 = tf.keras.layers.Conv2D( 64 , kernel_size=( 3 , 3 ) , strides=1 )( conv2 )
+    conv2 = tf.keras.layers.LeakyReLU()( conv2 )
+    conv2 = tf.keras.layers.Conv2D( 64 , kernel_size=( 3 , 3 ) , strides=1 )( conv2 )
+    conv2 = tf.keras.layers.LeakyReLU()( conv2 )
+
+    conv3 = tf.keras.layers.Conv2D( 64 , kernel_size=( 5 , 5 ) , strides=1 )( conv2 )
+    conv3 = tf.keras.layers.LeakyReLU()( conv3 )
+    conv3 = tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1 )( conv3 )
+    conv3 = tf.keras.layers.LeakyReLU()( conv3 )
+    conv3 = tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1 )( conv3 )
+    conv3 = tf.keras.layers.LeakyReLU()( conv3 )
+
+    bottleneck = tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1 , activation='tanh' , padding='same' )( conv3 )
+
+    concat_1 = tf.keras.layers.Concatenate()( [ bottleneck , conv3 ] )
+    conv_up_3 = tf.keras.layers.Conv2DTranspose( 128 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( concat_1 )
+    conv_up_3 = tf.keras.layers.Conv2DTranspose( 128 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( conv_up_3 )
+    conv_up_3 = tf.keras.layers.Conv2DTranspose( 64 , kernel_size=( 5 , 5 ) , strides=1 , activation='relu' )( conv_up_3 )
+
+    concat_2 = tf.keras.layers.Concatenate()( [ conv_up_3 , conv2 ] )
+    conv_up_2 = tf.keras.layers.Conv2DTranspose( 64 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( concat_2 )
+    conv_up_2 = tf.keras.layers.Conv2DTranspose( 64 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu' )( conv_up_2 )
+    conv_up_2 = tf.keras.layers.Conv2DTranspose( 32 , kernel_size=( 5 , 5 ) , strides=1 , activation='relu' )( conv_up_2 )
+
+    concat_3 = tf.keras.layers.Concatenate()( [ conv_up_2 , conv1 ] )
+    conv_up_1 = tf.keras.layers.Conv2DTranspose( 32 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu')( concat_3 )
+    conv_up_1 = tf.keras.layers.Conv2DTranspose( 32 , kernel_size=( 3 , 3 ) , strides=1 , activation='relu')( conv_up_1 )
+    conv_up_1 = tf.keras.layers.Conv2DTranspose( 3 , kernel_size=( 5 , 5 ) , strides=1 , activation='relu')( conv_up_1 )
+
+    model = tf.keras.models.Model( inputs , conv_up_1 )
+    return model
+
+
+async def get_discriminator_model():
+    layers = [
+        tf.keras.layers.Conv2D( 32 , kernel_size=( 7 , 7 ) , strides=1 , activation='relu' , input_shape=( img_size , img_size , 3 ) ),
+        tf.keras.layers.Conv2D( 32 , kernel_size=( 7, 7 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D( 64 , kernel_size=( 5 , 5 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.Conv2D( 64 , kernel_size=( 5 , 5 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.Conv2D( 128 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Conv2D( 256 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.Conv2D( 256 , kernel_size=( 3 , 3 ) , strides=1, activation='relu'  ),
+        tf.keras.layers.MaxPooling2D(),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense( 512, activation='relu'  )  ,
+        tf.keras.layers.Dense( 128 , activation='relu' ) ,
+        tf.keras.layers.Dense( 16 , activation='relu' ) ,
+        tf.keras.layers.Dense( 1 , activation='sigmoid' ) 
+    ]
+    model = tf.keras.models.Sequential( layers )
+    return model
+
+async def numpyimage(ctx):
+    x=[]
+    global img_size
+    img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 0)
+    dimx, dimy= img.shape
+    img=cv2.resize(img, (img_size, img_size))
+    img=img/255
+    x.append(img)
+    x=np.array(x)
+    ratio=dimx/dimy
+    img=cv2.resize(img*255, (300, int(300*ratio)))
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", img)
+    await ctx.send("BW Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
+    #img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    
+    return x,dimx,dimy
+
+generator=None
+discriminator=None
+
 ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
 client=commands.Bot(command_prefix=';')
 status=""
 daksh_yt="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"
-#daksh
 @client.event
 async def on_ready():
   global status
+  global generator
   status=str(len(client.guilds))+" servers"
   print("Ready Daksh. Hey ",client.user)
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   try:
+    generator = keras.models.load_model('./generator', compile=False)
+    print("gen",generator)
     for x in client.voice_clients:
       try:
         await x.disconnect()
@@ -33,7 +134,7 @@ async def on_ready():
         #print(e)
         pass
   except Exception as e:
-    #print(e)
+    print(e)
     pass
   #await load()
   #sav.start()
@@ -1131,6 +1232,12 @@ async def skip_( ctx):
       global ctx_save
       ctx_save[int(ctx.guild.id)][0]=0
       player=get_player(ctx)
+      """
+      if(str(vc.source.requester)=="@Toxic Tatya#8669"):
+          await ctx.send("Goli Beta Masti Nahi")
+          player.showw(ctx)
+          return
+      """
       player.ispaused=0
       player.isautopaused=0
       await player.np.delete()
@@ -1144,7 +1251,7 @@ async def skip_( ctx):
     del vc
     del player
   except Exception as e:
-    #print(e)
+    print('skip', traceback.format_exc())
     pass
   pass
 
@@ -1392,6 +1499,7 @@ async def remove_( ctx,index:int):
 async def save_(ctx=None):
     global players
     
+
     try:
         
         access_key=''
@@ -1412,6 +1520,7 @@ async def save_(ctx=None):
         dbfile.close()
         
         data_file_folder=os.path.join(os.getcwd(),'storage')
+
         for kk in ctxs:
             
             temp=[]
@@ -1451,6 +1560,7 @@ async def save_(ctx=None):
         print('save',e)
         pass
     pass
+
 """
 
 pass
@@ -1646,7 +1756,66 @@ async def memory(ctx):
   pass
 
 async def ping(ctx):
-    await ctx.send(f'Ping is {round(client.latency * 1000)} ms')
+  await ctx.send(f'Ping is {round(client.latency * 1000)} ms')
+  pass
+
+async def bw(ctx):
+  try:
+    global generator
+    await ctx.message.attachments[0].save("./image/"+ str(ctx.guild.id) + ".jpg")
+    x, dimy, dimx=await asyncio.wait_for(numpyimage(ctx), timeout=15.0)
+    ratio=dimy/dimx
+    #print(dimx, dimy)
+    y = generator( x[0 : ] ).numpy()
+    y=y*255
+    y=y[0]
+    y = y.astype(np.uint8)
+    #print(y)
+    y=cv2.cvtColor(y, cv2.COLOR_LAB2RGB)
+    y=cv2.cvtColor(y, cv2.COLOR_RGB2HSV)
+    """
+    i=0
+    while(i<150):
+        j=0
+        while(j<150):
+            y[i][j][1]=y[i][j][1]*1.5
+            j=j+1
+            pass
+        i=i+1
+        pass
+    """
+    y=cv2.cvtColor(y, cv2.COLOR_HSV2RGB)
+    y=cv2.resize(y, (300, int(300*ratio)))
+    y=PIL.Image.fromarray(y)
+    converter = PIL.ImageEnhance.Color(y)
+    y = converter.enhance(2)
+    
+    y.save("./image/"+ str(ctx.guild.id) + "_color" + ".jpg")
+    #cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
+    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_color" + ".jpg"))
+    pass
+  except Exception as e:
+    print(traceback.format_exc())
+  finally:
+    await clearram()
+    try:
+      os.remove("./image/"+ str(ctx.guild.id) + ".jpg")
+      os.remove("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg")
+      os.remove("./image/"+ str(ctx.guild.id)+ "_color" + ".jpg")
+    except Exception as e:
+        pass
+    pass
+
+
+
+async def changenick(ctx, second):
+  try:
+    await ctx.guild.get_member(client.user.id).edit(nick=second)
+    await ctx.send("Nick changed 😼")
+    pass
+  except Exception as e:
+      print(traceback.format_exc())
+
 
 @client.event
 async def on_message(message):
@@ -1736,6 +1905,8 @@ async def on_message(message):
     #################
     #
     try:
+      if message.content.lower().startswith(';bw'):
+        await bw(ctx)
       if message.content.lower().startswith(';playy') or message.content.lower().startswith(';play'):
         second = msg.split(' ', 1)[1]
         await play_(ctx,second)
@@ -1767,6 +1938,10 @@ async def on_message(message):
         if message.author.id==356012950298951690:
           second = msg.split(' ', 1)[1]
           await changepresence(ctx,second)
+      elif message.content.lower().startswith(';changenick'):
+        if message.author.id==356012950298951690:
+          second = msg.split(' ', 1)[1]
+          await changenick(ctx,second)         
       elif message.content.lower().startswith(';stop'):
         #second = msg.split(' ', 1)[1]
         await stop_(ctx)
@@ -1868,7 +2043,7 @@ async def on_message(message):
     del tmultiline
     #del player
   except Exception as e:
-    print('msg ', e)
+    print('msg', traceback.format_exc())
     pass
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
@@ -2006,5 +2181,5 @@ keep_alive()
 #my_secret = os.environ['token']
 #client.run(str(my_secret))\
 
-client.run(os.environ.get('token'))
-#client.run("")
+#client.run(os.environ.get('token'))
+client.run("ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.dk8p_ZXHavLs0qtoEv_B8FIDNgA")
