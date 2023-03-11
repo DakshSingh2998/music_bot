@@ -5,7 +5,7 @@ Flask
 PyNaCl
 psutil
 ctypes-callable
-git+http://github.com/ytdl-org/youtube-dl.git
+git+http://github.com/ytdl-org/youtube-dl.git@8c86fd33dca48ebb505ed04150d9e35993b9fe7e
 opencv-python-headless
 tensorflow-cpu
 numpy
