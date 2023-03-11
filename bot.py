@@ -19,8 +19,7 @@ import tensorflow as tf
 import numpy as np
 from tensorflow import keras
 batch_size = 32
-img_size = 150
-import PIL
+img_size = 100
 
 
 async def get_generator_model():
@@ -94,19 +93,13 @@ async def get_discriminator_model():
 async def numpyimage(ctx):
     x=[]
     global img_size
-    img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 0)
-    dimx, dimy= img.shape
+    img=cv2.imread("./image/"+ str(ctx.guild.id) + ".jpg", 1)
     img=cv2.resize(img, (img_size, img_size))
+    img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     img=img/255
     x.append(img)
     x=np.array(x)
-    ratio=dimx/dimy
-    img=cv2.resize(img*255, (300, int(300*ratio)))
-    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", img)
-    await ctx.send("BW Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
-    #img=cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    
-    return x,dimx,dimy
+    return x
 
 generator=None
 discriminator=None
@@ -114,7 +107,7 @@ discriminator=None
 ctx_save={'d':'d'}
 #temp_ctx=None
 #auto_now=0
-client=commands.Bot(command_prefix=';')
+client=commands.Bot(command_prefix=';', intents=discord.Intents.all())
 status=""
 daksh_yt="https://www.youtube.com/channel/UCEL4AUYHQnq2RJivLg_NoQw"
 @client.event
@@ -125,7 +118,7 @@ async def on_ready():
   print("Ready Daksh. Hey ",client.user)
   await client.change_presence(activity=discord.Streaming(platform='YouTube',name=status, url="https://www.youtube.com/watch?v=NHnT9NEuDWo"))
   try:
-    generator = keras.models.load_model('./generator', compile=False)
+    generator = keras.models.load_model('./generator')
     print("gen",generator)
     for x in client.voice_clients:
       try:
@@ -134,7 +127,7 @@ async def on_ready():
         #print(e)
         pass
   except Exception as e:
-    print(e)
+    #print(e)
     pass
   #await load()
   #sav.start()
@@ -551,7 +544,7 @@ class MusicPlayer:
       #self.que=await self._channel.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
       #self.np = await self._channel.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
       #auto_now=0
-      self.que=await self.cttx.send(f'--------------------------------------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
+      self.que=await self.cttx.send(f'-------------------------------------------------------------------------------------------------\nUpcoming - Next {len(upcoming)}\n{fmt}')
       self.np = await self.cttx.send(f'Requested by @{vc.source.requester} {vc.source.webpage_url} [{dur}s]')
       await self.np.add_reaction('⏯️')
       await self.np.add_reaction('⏸️')
@@ -567,7 +560,7 @@ class MusicPlayer:
       del dur
       del fmt
     except Exception as e:
-      #print(e)
+      print("show", e)
       #await self._channel.send(f'NO songs in queue: {e}',delete_after=10)
       pass
     finally:
@@ -840,7 +833,7 @@ async def play_( ctx, search,isplaylist=0,listsize=0):
     #global auto_now
     #print("DDD")
     
-    await ctx.trigger_typing()
+    ctx.typing()
     vc = ctx.voice_client
     await ctx.invoke(connect_)
     l=None
@@ -967,7 +960,7 @@ async def insert_(ctx,search,isplaylist=0,position=0,listsize=0):
     #global ctx_data_flag
     #temp_ctx=ctx
     #global auto_now
-    await ctx.trigger_typing()
+    ctx.typing()
     vc = ctx.voice_client
     await ctx.invoke(connect_)
     #print(position)
@@ -1232,12 +1225,6 @@ async def skip_( ctx):
       global ctx_save
       ctx_save[int(ctx.guild.id)][0]=0
       player=get_player(ctx)
-      """
-      if(str(vc.source.requester)=="@Toxic Tatya#8669"):
-          await ctx.send("Goli Beta Masti Nahi")
-          player.showw(ctx)
-          return
-      """
       player.ispaused=0
       player.isautopaused=0
       await player.np.delete()
@@ -1251,7 +1238,7 @@ async def skip_( ctx):
     del vc
     del player
   except Exception as e:
-    print('skip', traceback.format_exc())
+    #print(e)
     pass
   pass
 
@@ -1634,7 +1621,7 @@ async def get_membersss():
     while True:
       try:
         await get_members()
-        await asyncio.sleep(2)
+        await asyncio.sleep(10)
       except Exception as e:
         pass
       finally:
@@ -1645,6 +1632,7 @@ async def get_membersss():
     pass
   pass
 async def get_members():
+  #print("getting members")
   try:
     #print('bef',gc.get_count())
     #gc.collect()
@@ -1761,60 +1749,17 @@ async def ping(ctx):
 
 async def bw(ctx):
   try:
-    global generator
     await ctx.message.attachments[0].save("./image/"+ str(ctx.guild.id) + ".jpg")
-    x, dimy, dimx=await asyncio.wait_for(numpyimage(ctx), timeout=15.0)
-    ratio=dimy/dimx
-    #print(dimx, dimy)
+    x=await asyncio.wait_for(numpyimage(ctx), timeout=5.0)
     y = generator( x[0 : ] ).numpy()
     y=y*255
-    y=y[0]
-    y = y.astype(np.uint8)
-    #print(y)
-    y=cv2.cvtColor(y, cv2.COLOR_LAB2RGB)
-    y=cv2.cvtColor(y, cv2.COLOR_RGB2HSV)
-    """
-    i=0
-    while(i<150):
-        j=0
-        while(j<150):
-            y[i][j][1]=y[i][j][1]*1.5
-            j=j+1
-            pass
-        i=i+1
-        pass
-    """
-    y=cv2.cvtColor(y, cv2.COLOR_HSV2RGB)
-    y=cv2.resize(y, (300, int(300*ratio)))
-    y=PIL.Image.fromarray(y)
-    converter = PIL.ImageEnhance.Color(y)
-    y = converter.enhance(2)
-    
-    y.save("./image/"+ str(ctx.guild.id) + "_color" + ".jpg")
-    #cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y)
-    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_color" + ".jpg"))
+    cv2.imwrite("./image/"+ str(ctx.guild.id) + "_bw" + ".jpg", y[0])
+    await ctx.send("Colored Image", file=discord.File("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg"))
     pass
   except Exception as e:
     print(traceback.format_exc())
-  finally:
-    await clearram()
-    try:
-      os.remove("./image/"+ str(ctx.guild.id) + ".jpg")
-      os.remove("./image/"+ str(ctx.guild.id)+ "_bw" + ".jpg")
-      os.remove("./image/"+ str(ctx.guild.id)+ "_color" + ".jpg")
-    except Exception as e:
-        pass
     pass
 
-
-
-async def changenick(ctx, second):
-  try:
-    await ctx.guild.get_member(client.user.id).edit(nick=second)
-    await ctx.send("Nick changed 😼")
-    pass
-  except Exception as e:
-      print(traceback.format_exc())
 
 
 @client.event
@@ -1938,10 +1883,6 @@ async def on_message(message):
         if message.author.id==356012950298951690:
           second = msg.split(' ', 1)[1]
           await changepresence(ctx,second)
-      elif message.content.lower().startswith(';changenick'):
-        if message.author.id==356012950298951690:
-          second = msg.split(' ', 1)[1]
-          await changenick(ctx,second)         
       elif message.content.lower().startswith(';stop'):
         #second = msg.split(' ', 1)[1]
         await stop_(ctx)
@@ -2043,7 +1984,7 @@ async def on_message(message):
     del tmultiline
     #del player
   except Exception as e:
-    print('msg', traceback.format_exc())
+    print('msg ', e)
     pass
   finally:
     #ctx_save[int(ctx.guild.id)][4]=ctx_save[int(ctx.guild.id)][4]-1
@@ -2176,10 +2117,12 @@ async def on_reaction_add(reaction, user):
     pass
   pass
 #client.load_extension('music')
-keep_alive()
+#keep_alive()
 
-#my_secret = os.environ['token']
+my_secret = os.environ['token']
 #client.run(str(my_secret))\
 
-client.run(os.environ.get('token'))
-#client.run("ODI3MjkwMTI5MDA0NDk0ODc4.YGY3-Q.dk8p_ZXHavLs0qtoEv_B8FIDNgA")
+#client.run(os.environ.get('token'))
+#client.run("")
+
+client.run(os.getenv('TOKEN'))
